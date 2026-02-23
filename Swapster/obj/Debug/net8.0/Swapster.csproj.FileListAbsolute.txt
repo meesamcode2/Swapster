@@ -137,3 +137,4 @@ C:\Users\Meesam\source\repos\Swapster\Swapster\obj\Debug\net8.0\refint\Swapster.
 C:\Users\Meesam\source\repos\Swapster\Swapster\obj\Debug\net8.0\Swapster.pdb
 C:\Users\Meesam\source\repos\Swapster\Swapster\obj\Debug\net8.0\Swapster.genruntimeconfig.cache
 C:\Users\Meesam\source\repos\Swapster\Swapster\obj\Debug\net8.0\ref\Swapster.dll
+C:\Users\Meesam\source\repos\Swapster\Swapster\obj\Debug\net8.0\Swapster.sourcelink.json

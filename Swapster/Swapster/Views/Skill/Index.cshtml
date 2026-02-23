@@ -1,0 +1,32 @@
+﻿@model IEnumerable<Swapster.Models.UserSkill>
+
+<h2>Available Skills</h2>
+
+<a asp-action="Create" class="btn btn-primary">Add Skill</a>
+
+<table class="table mt-3">
+    <tr>
+        <th>Skill</th>
+        <th>Description</th>
+        <th>Owner</th>
+        <th>Action</th>
+    </tr>
+
+    @foreach (var item in Model)
+    {
+        <tr>
+            <td>@item.SkillName</td>
+            <td>@item.Description</td>
+            <td>@item.User?.Username</td>
+            <td>
+                <a asp-controller="Request"
+                   asp-action="Send"
+                   asp-route-skillId="@item.SkillId"
+                   asp-route-receiverId="@item.UserId"
+                   class="btn btn-success">
+                    Send Request
+                </a>
+            </td>
+        </tr>
+    }
+</table>

@@ -1,0 +1,30 @@
+﻿@model IEnumerable<Swapster.Models.SkillRequest>
+
+<h2>My Requests</h2>
+
+<table class="table">
+    <tr>
+        <th>Skill</th>
+        <th>Sender</th>
+        <th>Receiver</th>
+        <th>Status</th>
+        <th>Action</th>
+    </tr>
+
+    @foreach (var item in Model)
+    {
+        <tr>
+            <td>@item.Skill?.SkillName</td>
+            <td>@item.Sender?.Username</td>
+            <td>@item.Receiver?.Username</td>
+            <td>@item.Status</td>
+            <td>
+                @if (item.Status == "Pending")
+                {
+                    <a asp-action="Accept" asp-route-id="@item.RequestId" class="btn btn-success">Accept</a>
+                    <a asp-action="Reject" asp-route-id="@item.RequestId" class="btn btn-danger">Reject</a>
+                }
+            </td>
+        </tr>
+    }
+</table>

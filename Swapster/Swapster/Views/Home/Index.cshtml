@@ -1,0 +1,145 @@
+﻿@model Swapster.Controllers.HomeController
+
+@{
+    ViewData["Title"] = "Dashboard";
+}
+
+<div class="container mt-4">
+    <h2>Dashboard</h2>
+
+    <div class="row">
+
+
+        @if (ViewBag.AccessLevel == 0)
+        {
+            <div class="col-md-4">
+                <a asp-controller="Employee" asp-action="Index" style="text-decoration:none;">
+                    <div class="card text-white bg-primary mb-3 dashboard-card">
+                        <div class="card-header">Employees</div>
+                        <div class="card-body">
+                            <h5 class="card-title">Number of Employees @Model.</h5>
+                        </div>
+                    </div>
+                </a>
+            </div>
+        }
+
+
+        @if (ViewBag.AccessLevel == 0 || ViewBag.AccessLevel == 1)
+        {
+            <div class="col-md-4">
+                <a asp-controller="Order" asp-action="Index" style="text-decoration:none;">
+                    <div class="card text-white bg-info mb-3 dashboard-card">
+                        <div class="card-header">Orders</div>
+                        <div class="card-body">
+                            <h5 class="card-title">Number of Orders @Model.</h5>
+                        </div>
+                    </div>
+                </a>
+            </div>
+        }
+
+
+        @if (ViewBag.AccessLevel == 0 || ViewBag.AccessLevel == 1 || ViewBag.AccessLevel == 2)
+        {
+            <div class="col-md-4">
+                <a asp-controller="Product" asp-action="Index" style="text-decoration:none;">
+                    <div class="card text-white bg-success mb-3 dashboard-card">
+                        <div class="card-header">Products</div>
+                        <div class="card-body">
+                            <h5 class="card-title">Number of Products @Model.</h5>
+                        </div>
+                    </div>
+                </a>
+            </div>
+        }
+
+
+        @if (ViewBag.AccessLevel == 0 || ViewBag.AccessLevel == 1 || ViewBag.AccessLevel == 2)
+        {
+            <div class="col-md-4">
+                <a asp-controller="Customer" asp-action="Index" style="text-decoration:none;">
+                    <div class="card text-white bg-warning mb-3 dashboard-card">
+                        <div class="card-header">Customers</div>
+                        <div class="card-body">
+                            <h5 class="card-title">Number of Customers @Model.</h5>
+                        </div>
+                    </div>
+                </a>
+            </div>
+        }
+
+
+        @if (ViewBag.AccessLevel == 0 || ViewBag.AccessLevel == 1 || ViewBag.AccessLevel == 2)
+        {
+            <div class="col-md-4">
+                <a asp-controller="Delivery" asp-action="Index" style="text-decoration:none;">
+                    <div class="card text-white bg-secondary mb-3 dashboard-card">
+                        <div class="card-header">Deliveries</div>
+                        <div class="card-body">
+                            <h5 class="card-title">Number of Deliveries @Model.</h5>
+                        </div>
+                    </div>
+                </a>
+            </div>
+        }
+
+        @if (ViewBag.AccessLevel == 0 || ViewBag.AccessLevel == 1)
+        {
+            <div class="col-md-4">
+                <a asp-controller="Warehouse" asp-action="Index" style="text-decoration:none;">
+                    <div class="card text-white bg-dark mb-3 dashboard-card">
+                        <div class="card-header">Warehouses</div>
+                        <div class="card-body">
+                            <h5 class="card-title">Number of Warehouses @Model.</h5>
+                        </div>
+                    </div>
+                </a>
+            </div>
+        }
+
+
+        @if (ViewBag.AccessLevel == 0 || ViewBag.AccessLevel == 1 || ViewBag.AccessLevel == 2)
+        {
+            <div class="col-md-4">
+                <a asp-controller="Promotion" asp-action="Index" style="text-decoration:none;">
+                    <div class="card text-white bg-danger mb-3 dashboard-card">
+                        <div class="card-header">Promotions</div>
+                        <div class="card-body">
+                            <h5 class="card-title">Number of Promotions @Model.</h5>
+                        </div>
+                    </div>
+                </a>
+            </div>
+        }
+
+
+        @if (ViewBag.AccessLevel == 0)
+        {
+            <div class="col-md-4">
+                <div class="card text-white bg-success mb-3 dashboard-card">
+                    <div class="card-header">Weekly Sales</div>
+                    <div class="card-body">
+                        <h5 class="card-title">
+                            Rs @Model.
+                        </h5>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-md-4">
+                <div class="card text-white bg-primary mb-3 dashboard-card">
+                    <div class="card-header">Monthly Sales</div>
+                    <div class="card-body">
+                        <h5 class="card-title">
+                            Rs @Model.
+                        </h5>
+                    </div>
+                </div>
+            </div>
+        }
+
+    </div>
+
+</div>
+

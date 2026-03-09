@@ -12,14 +12,10 @@ namespace Swapster.Models
 
         [Required, StringLength(100)]
         public string Email { get; set; } = string.Empty;
-
-        [Required]
-        public string Password { get; set; } = string.Empty;
-
-        [Required]
-        [Range(0, 2)]
+        public string PasswordHash { get; set; } = string.Empty;
         public int AccessLevel { get; set; }
+        public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
 
-        
+
     }
 }

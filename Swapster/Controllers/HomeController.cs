@@ -1,32 +1,49 @@
-using System.Diagnostics;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
+using Swapster.Data;
 using Swapster.Models;
+using System.Diagnostics;
 
 namespace Swapster.Controllers
 {
     public class HomeController : Controller
     {
+        private readonly ApplicationDbContext _context;
         private readonly ILogger<HomeController> _logger;
 
-        public HomeController(ILogger<HomeController> logger)
+        public HomeController(ApplicationDbContext context)
         {
-            _logger = logger;
+            _context = context;
         }
 
         public IActionResult Index()
         {
-            return View();
-        }
+            int? userId = HttpContext.Session.GetInt32("UserId");
+            string username = HttpContext.Session.GetString("Username");
 
-        public IActionResult Privacy()
-        {
-            return View();
-        }
+            if (userId == null)
+                return RedirectToAction("Login", "Account");
 
-        [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
-        public IActionResult Error()
-        {
-            return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
+            var mySkills = _context.UserSkills
+                .Where(s => s.UserId == userId)
+                .ToList();
+
+            var req = _context.SkillRequests
+                .Where(r => r.SenderId == userId || r.ReceiverId == userId)
+                .ToList();
+
+            var model = new DashboardViewModel
+            {
+                UserName = username,
+                TotalSkills = mySkills.Count,
+                TotalRequests = req.Count,
+                IncomingRequests = req.Count(r => r.ReceiverId == userId),
+                OutgoingRequests = req.Count(r => r.SenderId == userId),
+                MySkills = mySkills,
+                RecommendedSkills = new List<UserSkill>() // AI LATER
+            };
+
+            return View(model);
         }
     }
 }

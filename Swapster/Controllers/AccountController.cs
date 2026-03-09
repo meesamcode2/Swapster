@@ -1,18 +1,20 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Swapster.Data;
 using Swapster.Models;
-using System.Linq;
 
 namespace Swapster.Controllers
 {
     public class AccountController : Controller
     {
         private readonly ApplicationDbContext _context;
+        private readonly PasswordHasher<User> _passwordHasher;
 
         public AccountController(ApplicationDbContext context)
         {
             _context = context;
+            _passwordHasher = new PasswordHasher<User>();
         }
 
 
@@ -25,18 +27,22 @@ namespace Swapster.Controllers
         [HttpPost]
         public IActionResult Login(string email, string password)
         {
-            var user = _context.Users.FirstOrDefault(u => u.Email == email && u.Password == password);
-            if (user != null)
+            var user = _context.Users.FirstOrDefault(x => x.Email == email);
+            if (user == null)
             {
-
-                HttpContext.Session.SetInt32("UserId", user.UserId);
-                HttpContext.Session.SetString("Username", user.Username);
-
-                return RedirectToAction("Index", "Home");
+                ViewBag.Error = "Invalid email or password";
+                return View();
             }
-
-            ViewBag.Error = "Invalid email or password";
-            return View();
+            var result = _passwordHasher.VerifyHashedPassword(user, user.PasswordHash, password);
+            if (result == PasswordVerificationResult.Failed)
+            {
+                ViewBag.Error = "Invalid email or password";
+                return View();
+            }
+            HttpContext.Session.SetInt32("UserId", user.UserId);
+            HttpContext.Session.SetString("Username", user.Username);
+            HttpContext.Session.SetInt32("AccessLevel", user.AccessLevel);
+            return RedirectToAction("Index", "Home");
         }
 
 
@@ -47,21 +53,19 @@ namespace Swapster.Controllers
 
 
         [HttpPost]
-        public IActionResult Signup(User user)
+        public IActionResult Signup(User user, string password)
         {
-            if (ModelState.IsValid)
+            if (!ModelState.IsValid)
+                return View(user);
+            if (_context.Users.Any(x => x.Email == user.Email))
             {
-                if (_context.Users.Any(u => u.Email == user.Email))
-                {
-                    ViewBag.Error = "Email already registered";
-                    return View();
-                }
-
-                _context.Users.Add(user);
-                _context.SaveChanges();
-                return RedirectToAction("Login");
+                ViewBag.Error = "Email already exists";
+                return View(user);
             }
-            return View();
+            user.PasswordHash = _passwordHasher.HashPassword(user, password);
+            _context.Users.Add(user);
+            _context.SaveChanges();
+            return RedirectToAction("Login");
         }
 
 

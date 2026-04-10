@@ -1,0 +1,45 @@
+﻿@model Swapster.Models.UserProfile
+
+@{
+    ViewData["Title"] = "Setup Profile";
+    ViewData["HideNavbar"] = true;
+}
+
+<div class="container mt-5" style="max-width:500px;">
+    <h2 class="text-center">Complete Your Profile</h2>
+
+    <form asp-action="Setup" method="post">
+
+        <!-- Experience -->
+        <div class="mb-3">
+            <label>Experience Level</label>
+            <select asp-for="ExperienceLevel" class="form-control" required>
+                <option value="">Select</option>
+                <option>Beginner</option>
+                <option>Intermediate</option>
+                <option>Expert</option>
+            </select>
+        </div>
+
+        <!-- Skills -->
+        <div class="mb-3">
+            <label>Skills (comma separated)</label>
+            <input asp-for="Skills" class="form-control" placeholder="e.g. HTML, C#, Design" />
+        </div>
+
+        <!-- Interests -->
+        <div class="mb-3">
+            <label>Interests</label>
+            <input asp-for="Interests" class="form-control" placeholder="e.g. AI, Web Dev" />
+        </div>
+
+        <!-- Bio -->
+        <div class="mb-3">
+            <label>Short Bio</label>
+            <textarea asp-for="Bio" class="form-control"></textarea>
+        </div>
+
+        <button class="btn btn-primary w-100">Save & Continue</button>
+
+    </form>
+</div>

@@ -3,57 +3,43 @@
 @{
     ViewData["Title"] = "Dashboard";
 }
-<h2 class="mb-4">Welcome, @Model.UserName 👋</h2>
 
-<div class="row">
+<h2>Welcome, @Model.UserName 👋</h2>
 
-    <!-- Total Skills -->
+<div class="row mt-4">
+
     <div class="col-md-4">
-        <div class="card text-white bg-primary mb-3">
-            <div class="card-header">Your Posted Skills</div>
-            <div class="card-body">
-                <h4>@Model.TotalSkills</h4>
-            </div>
+        <div class="card bg-primary text-white mb-3">
+            <div class="card-header">Your Skills</div>
+            <div class="card-body"><h4>@Model.TotalSkills</h4></div>
         </div>
     </div>
 
-    <!-- Incoming Requests -->
     <div class="col-md-4">
-        <div class="card text-white bg-info mb-3">
+        <div class="card bg-info text-white mb-3">
             <div class="card-header">Incoming Requests</div>
-            <div class="card-body">
-                <h4>@Model.IncomingRequests</h4>
-            </div>
+            <div class="card-body"><h4>@Model.IncomingRequests</h4></div>
         </div>
     </div>
 
-    <!-- Outgoing Requests -->
     <div class="col-md-4">
-        <div class="card text-white bg-warning mb-3">
+        <div class="card bg-warning text-white mb-3">
             <div class="card-header">Outgoing Requests</div>
-            <div class="card-body">
-                <h4>@Model.OutgoingRequests</h4>
-            </div>
+            <div class="card-body"><h4>@Model.OutgoingRequests</h4></div>
         </div>
     </div>
 
-    <!-- Total Requests -->
     <div class="col-md-4">
-        <div class="card text-white bg-success mb-3">
+        <div class="card bg-success text-white mb-3">
             <div class="card-header">Total Requests</div>
-            <div class="card-body">
-                <h4>@Model.TotalRequests</h4>
-            </div>
+            <div class="card-body"><h4>@Model.TotalRequests</h4></div>
         </div>
     </div>
 
-    <!-- Completed Swaps -->
     <div class="col-md-4">
-        <div class="card text-white bg-secondary mb-3">
+        <div class="card bg-secondary text-white mb-3">
             <div class="card-header">Completed Swaps</div>
-            <div class="card-body">
-                <h4>@Model.CompletedSwaps</h4>
-            </div>
+            <div class="card-body"><h4>@Model.CompletedSwaps</h4></div>
         </div>
     </div>
 
@@ -61,21 +47,32 @@
 
 <hr />
 
-<h3>Your Posted Skills</h3>
+<h3>Your Skills</h3>
 
 <table class="table table-bordered">
     <thead>
         <tr>
-            <th>Skill Name</th>
+            <th>Skill</th>
             <th>Description</th>
+            <th>Action</th> <!-- NEW COLUMN for request -->
         </tr>
     </thead>
     <tbody>
-        @foreach (var skill in Model.PostedSkills)
+        @foreach (var s in Model.MySkills)
         {
             <tr>
-                <td>@skill.SkillName</td>
-                <td>@skill.Description</td>
+                <td>@s.SkillName</td>
+                <td>@s.Description</td>
+                <td>
+                    <!-- SEND REQUEST BUTTON -->
+                    <a asp-controller="Request"
+                       asp-action="Send"
+                       asp-route-skillId="@s.SkillId"
+                       asp-route-receiverId="@s.UserId"
+                       class="btn btn-primary btn-sm">
+                        Request Skill
+                    </a>
+                </td>
             </tr>
         }
     </tbody>
@@ -83,33 +80,41 @@
 
 <hr />
 
-<h3>Recommended For You</h3>
+<h3>Recommended Skills (AI)</h3>
 
 @if (Model.RecommendedSkills.Count == 0)
 {
-    <p>No recommendations yet. (AI system coming soon)</p>
+    <p>No recommendations yet — AI engine coming soon.</p>
 }
 else
 {
     <table class="table table-striped">
         <thead>
             <tr>
-                <th>Skill Name</th>
+                <th>Skill</th>
                 <th>Description</th>
                 <th>Teacher</th>
+                <th>Action</th> <!-- NEW COLUMN for request -->
             </tr>
         </thead>
         <tbody>
-            @foreach (var skill in Model.RecommendedSkills)
+            @foreach (var r in Model.RecommendedSkills)
             {
                 <tr>
-                    <td>@skill.SkillName</td>
-                    <td>@skill.Description</td>
-                    <td>@skill.User?.Username</td>
+                    <td>@r.SkillName</td>
+                    <td>@r.Description</td>
+                    <td>@r.User?.Username</td>
+                    <td>
+                        <a asp-controller="Request"
+                           asp-action="Send"
+                           asp-route-skillId="@r.SkillId"
+                           asp-route-receiverId="@r.UserId"
+                           class="btn btn-success btn-sm">
+                            Request Skill
+                        </a>
+                    </td>
                 </tr>
             }
         </tbody>
     </table>
 }
-
-

@@ -15,6 +15,10 @@ namespace Swapster.Models
         public string PasswordHash { get; set; } = string.Empty;
         public int AccessLevel { get; set; }
         public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
+        public bool IsEmailVerified { get; set; } = false;
+        public string? VerificationToken { get; set; }
+        public string? ResetPasswordToken { get; set; }
+        public DateTime? ResetPasswordExpiry { get; set; }
 
 
     }

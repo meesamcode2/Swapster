@@ -21,8 +21,8 @@
             <td>
                 @if (item.Status == "Pending")
                 {
-                    <a asp-action="Accept" asp-route-id="@item.RequestId" class="btn btn-success">Accept</a>
-                    <a asp-action="Reject" asp-route-id="@item.RequestId" class="btn btn-danger">Reject</a>
+                    <a asp-action="Accept" asp-route-id="@item.Id" class="btn btn-success">Accept</a>
+                    <a asp-action="Reject" asp-route-id="@item.Id" class="btn btn-danger">Reject</a>
                 }
             </td>
         </tr>

@@ -9,24 +9,25 @@ namespace Swapster.Services
         {
             try
             {
-                var smtp = new SmtpClient("smtp.gmail.com")
+                var fromEmail = "swastersupport@gmail.com";
+                var appPassword = "zuou voaw uzzy otlb";
+
+                using (var smtp = new SmtpClient("smtp.gmail.com", 587))
                 {
-                    Port = 587,
-                    EnableSsl = true,
-                    Credentials = new NetworkCredential(
-                        "muhammadmeesam90@gmail.com",               // <-- change this
-                        "lykw hgfs nhih hrye"                   // <-- change this
-                    )
-                };
+                    smtp.EnableSsl = true;
+                    smtp.Credentials = new NetworkCredential(fromEmail, appPassword);
 
-                MailMessage message = new MailMessage();
-                message.From = new MailAddress("YOUR_EMAIL@gmail.com");  // same email
-                message.To.Add(toEmail);
-                message.Subject = subject;
-                message.Body = body;
-                message.IsBodyHtml = true;
+                    using (var message = new MailMessage())
+                    {
+                        message.From = new MailAddress(fromEmail);
+                        message.To.Add(toEmail);
+                        message.Subject = subject;
+                        message.Body = body;
+                        message.IsBodyHtml = true;
 
-                smtp.Send(message);
+                        smtp.Send(message);
+                    }
+                }
 
                 return true;
             }

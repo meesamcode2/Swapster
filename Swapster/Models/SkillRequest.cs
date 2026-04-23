@@ -8,11 +8,15 @@ namespace Swapster.Models
 
         public int SenderId { get; set; }
         public int ReceiverId { get; set; }
+        public int SkillId { get; set; }   // 👈 ADD THIS
 
-        public string SkillName { get; set; }
-
-        public string Status { get; set; } = "Pending"; // Pending, Accepted, Rejected
+        public string Status { get; set; } = "Pending";
 
         public DateTime CreatedAt { get; set; } = DateTime.Now;
+
+        // 🔥 Navigation Properties (VERY IMPORTANT)
+        public User Sender { get; set; }
+        public User Receiver { get; set; }
+        public UserSkill Skill { get; set; }
     }
 }

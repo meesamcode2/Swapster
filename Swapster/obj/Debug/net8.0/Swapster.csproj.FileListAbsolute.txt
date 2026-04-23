@@ -130,7 +130,6 @@ C:\Users\Meesam\source\repos\Swapster\Swapster\obj\Debug\net8.0\staticwebassets.
 C:\Users\Meesam\source\repos\Swapster\Swapster\obj\Debug\net8.0\staticwebassets.build.json.cache
 C:\Users\Meesam\source\repos\Swapster\Swapster\obj\Debug\net8.0\staticwebassets.development.json
 C:\Users\Meesam\source\repos\Swapster\Swapster\obj\Debug\net8.0\staticwebassets.build.endpoints.json
-C:\Users\Meesam\source\repos\Swapster\Swapster\obj\Debug\net8.0\staticwebassets.upToDateCheck.txt
 C:\Users\Meesam\source\repos\Swapster\Swapster\obj\Debug\net8.0\Swapster.csproj.Up2Date
 C:\Users\Meesam\source\repos\Swapster\Swapster\obj\Debug\net8.0\Swapster.dll
 C:\Users\Meesam\source\repos\Swapster\Swapster\obj\Debug\net8.0\refint\Swapster.dll
@@ -138,3 +137,5 @@ C:\Users\Meesam\source\repos\Swapster\Swapster\obj\Debug\net8.0\Swapster.pdb
 C:\Users\Meesam\source\repos\Swapster\Swapster\obj\Debug\net8.0\Swapster.genruntimeconfig.cache
 C:\Users\Meesam\source\repos\Swapster\Swapster\obj\Debug\net8.0\ref\Swapster.dll
 C:\Users\Meesam\source\repos\Swapster\Swapster\obj\Debug\net8.0\Swapster.sourcelink.json
+C:\Users\Meesam\source\repos\Swapster\Swapster\obj\Debug\net8.0\staticwebassets.upToDateCheck.txt
+C:\Users\Meesam\source\repos\Swapster\Swapster\bin\Debug\net8.0\Newtonsoft.Json.dll

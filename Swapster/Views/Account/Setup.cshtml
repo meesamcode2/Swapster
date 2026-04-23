@@ -1,0 +1,113 @@
+﻿@model Swapster.Models.UserProfile
+
+@{
+    ViewData["Title"] = "Setup Profile";
+    ViewData["HideNavbar"] = true;
+    ViewData["BodyClass"] = "auth-page";
+}
+
+<div class="auth-split">
+
+    <!-- LEFT SIDE -->
+    <div class="auth-image-side"
+         style="background-image: url('https://picsum.photos/seed/swapster-indoor-cozy/900/1400.jpg');">
+
+        <div class="auth-image-overlay"></div>
+
+        <div class="auth-image-content">
+            <div class="tagline">Almost There!</div>
+            <h1>Tell us about<br />your skills.</h1>
+            <p>A complete profile helps others find you and start swapping skills faster.</p>
+        </div>
+
+    </div>
+
+    <!-- RIGHT SIDE -->
+    <div class="auth-form-side">
+
+        <div class="auth-form-wrapper" style="max-width:460px;">
+
+            <a asp-controller="Home" asp-action="Index" class="brand-name">Swapster</a>
+
+            <h2 class="form-heading">Create profile</h2>
+            <p class="form-subtitle">Help others know what you can teach and learn.</p>
+
+            <form asp-action="Setup" method="post">
+
+                <div class="form-group">
+                    <label>Experience Level</label>
+                    <select asp-for="ExperienceLevel" class="form-control" required>
+                        <option value="">Select your level</option>
+                        <option>Beginner</option>
+                        <option>Intermediate</option>
+                        <option>Expert</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label>Skills I can teach</label>
+                    <textarea asp-for="Skills" class="form-control"
+                              placeholder="e.g. HTML, C#, UI Design, Photography"
+                              rows="2"></textarea>
+                </div>
+
+                <div class="form-group">
+                    <label>Skills I want to learn</label>
+                    <input asp-for="Interests" class="form-control"
+                           placeholder="e.g. AI, Machine Learning, Video Editing" />
+                </div>
+
+                <div class="form-group">
+                    <label>Short Bio</label>
+                    <textarea asp-for="Bio" class="form-control"
+                              placeholder="Tell others about yourself..."
+                              rows="3"></textarea>
+                </div>
+
+                <div class="form-group">
+                    <label>Preferred swap method</label>
+
+                    <div class="radio-group">
+                        <div class="form-check">
+                            <input class="form-check-input" type="radio"
+                                   name="SwapMethod" value="Virtual/Online" checked />
+                            <label class="form-check-label">Virtual / Online</label>
+                        </div>
+
+                        <div class="form-check">
+                            <input class="form-check-input" type="radio"
+                                   name="SwapMethod" value="In Person" />
+                            <label class="form-check-label">In Person</label>
+                        </div>
+
+                        <div class="form-check">
+                            <input class="form-check-input" type="radio"
+                                   name="SwapMethod" value="Open to both" />
+                            <label class="form-check-label">Open to both</label>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <div class="form-check">
+                        <input class="form-check-input" type="checkbox" required />
+                        <label class="form-check-label">
+                            I agree to the
+                            <a asp-controller="Home" asp-action="Terms">Terms of Service</a>
+                            and
+                            <a asp-controller="Home" asp-action="Privacy">Privacy Policy</a>.
+                        </label>
+                    </div>
+                </div>
+
+                <button type="submit" class="auth-btn-primary">
+                    SUBMIT
+                </button>
+
+            </form>
+
+        </div>
+
+    </div>
+
+</div>

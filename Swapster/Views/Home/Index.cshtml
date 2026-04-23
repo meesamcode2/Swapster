@@ -1,120 +1,405 @@
 ﻿@model Swapster.Models.DashboardViewModel
 
 @{
-    ViewData["Title"] = "Dashboard";
+    ViewData["Title"] = "Home";
 }
 
-<h2>Welcome, @Model.UserName 👋</h2>
+<style>
+    body {
+        background-color: #f5f7fb;
+        margin: 0;
+        font-family: Arial, sans-serif;
+    }
 
-<div class="row mt-4">
+    .sidebar {
+        height: calc(100vh - 56px);
+        background: #1e1e2f;
+        color: white;
+        padding: 20px;
+        position: fixed;
+        top: 56px;
+        left: 0;
+        width: 220px;
+        overflow-y: auto;
+    }
 
-    <div class="col-md-4">
-        <div class="card bg-primary text-white mb-3">
-            <div class="card-header">Your Skills</div>
-            <div class="card-body"><h4>@Model.TotalSkills</h4></div>
-        </div>
-    </div>
+        .sidebar a {
+            display: block;
+            color: #ccc;
+            padding: 10px;
+            border-radius: 8px;
+            text-decoration: none;
+            margin-bottom: 5px;
+        }
 
-    <div class="col-md-4">
-        <div class="card bg-info text-white mb-3">
-            <div class="card-header">Incoming Requests</div>
-            <div class="card-body"><h4>@Model.IncomingRequests</h4></div>
-        </div>
-    </div>
+            .sidebar a:hover {
+                background: #34344a;
+                color: white;
+            }
 
-    <div class="col-md-4">
-        <div class="card bg-warning text-white mb-3">
-            <div class="card-header">Outgoing Requests</div>
-            <div class="card-body"><h4>@Model.OutgoingRequests</h4></div>
-        </div>
-    </div>
+    .main {
+        margin-left: 240px;
+        padding: 20px;
+    }
 
-    <div class="col-md-4">
-        <div class="card bg-success text-white mb-3">
-            <div class="card-header">Total Requests</div>
-            <div class="card-body"><h4>@Model.TotalRequests</h4></div>
-        </div>
-    </div>
+    .top-navbar {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        padding: 10px 20px;
+        margin-bottom: 20px;
+    }
 
-    <div class="col-md-4">
-        <div class="card bg-secondary text-white mb-3">
-            <div class="card-header">Completed Swaps</div>
-            <div class="card-body"><h4>@Model.CompletedSwaps</h4></div>
-        </div>
-    </div>
+    .search-bar {
+        border-radius: 25px;
+        padding: 10px 20px;
+        width: 100%;
+        max-width: 500px;
+        border: 1px solid #ddd;
+        outline: none;
+    }
 
+        .search-bar:focus {
+            border-color: #007bff;
+            box-shadow: 0 0 5px rgba(0, 123, 255, 0.5);
+        }
+
+    .skill-card {
+        background: white;
+        padding: 15px;
+        border-radius: 12px;
+        box-shadow: 0 4px 10px rgba(0,0,0,0.08);
+        margin-bottom: 15px;
+        transition: 0.3s;
+    }
+
+        .skill-card:hover {
+            transform: translateY(-5px);
+        }
+
+    .hidden {
+        display: none !important;
+    }
+
+    /* ================= CHATBOT ================= */
+
+    #chatButton {
+        position: fixed;
+        bottom: 20px;
+        right: 20px;
+        background: #007bff;
+        color: white;
+        width: 55px;
+        height: 55px;
+        border-radius: 50%;
+        text-align: center;
+        font-size: 24px;
+        line-height: 55px;
+        cursor: pointer;
+        z-index: 9999;
+        box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+    }
+
+    #chatBox {
+        position: fixed;
+        bottom: 90px;
+        right: 20px;
+        width: 330px;
+        height: 460px;
+        background: white;
+        border-radius: 10px;
+        box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+        display: none;
+        flex-direction: column;
+        overflow: hidden;
+        z-index: 9999;
+    }
+
+    #chatHeader {
+        background: #007bff;
+        color: white;
+        padding: 10px;
+        font-weight: bold;
+    }
+
+    #chatMessages {
+        flex: 1;
+        padding: 10px;
+        overflow-y: auto;
+        font-size: 14px;
+        background: #f8f9fa;
+    }
+
+    .user-msg {
+        background: #007bff;
+        color: white;
+        padding: 8px;
+        border-radius: 8px;
+        margin-bottom: 8px;
+        max-width: 85%;
+        margin-left: auto;
+    }
+
+    .bot-msg {
+        background: #ffffff;
+        color: #333;
+        padding: 8px;
+        border-radius: 8px;
+        margin-bottom: 10px;
+        max-width: 95%;
+        box-shadow: 0 2px 5px rgba(0,0,0,0.08);
+    }
+
+    .bot-detail {
+        margin-top: 5px;
+        font-size: 13px;
+    }
+
+        .bot-detail ol,
+        .bot-detail ul {
+            margin-top: 5px;
+            padding-left: 20px;
+        }
+
+    #chatInputBox {
+        display: flex;
+        border-top: 1px solid #ddd;
+    }
+
+    #chatInput {
+        flex: 1;
+        padding: 8px;
+        border: none;
+        outline: none;
+    }
+
+    #chatInputBox button {
+        background: #007bff;
+        color: white;
+        border: none;
+        padding: 8px 12px;
+        cursor: pointer;
+    }
+
+        #chatInputBox button:hover {
+            background: #0056b3;
+        }
+</style>
+
+<div class="sidebar">
+    <h4>SkillSwap</h4>
+
+    <a href="/Home/Index">🏠 Home</a>
+    <a href="/Skill/Index">🔍 Explore Skills</a>
+    <a href="#">🔥 Trending Skills</a>
+    <a href="#">👤 My Account</a>
+    <a href="#">⚙ Settings</a>
 </div>
 
-<hr />
+<div class="main">
 
-<h3>Your Skills</h3>
+    <div class="top-navbar">
+        <input type="text" id="searchInput" class="form-control search-bar"
+               placeholder="Search skills..." onkeyup="filterSkills()" />
+    </div>
 
-<table class="table table-bordered">
-    <thead>
-        <tr>
-            <th>Skill</th>
-            <th>Description</th>
-            <th>Action</th> <!-- NEW COLUMN for request -->
-        </tr>
-    </thead>
-    <tbody>
-        @foreach (var s in Model.MySkills)
+    <h3>Welcome, @(Model?.UserName ?? "User") 👋</h3>
+
+    <hr />
+
+    <h4>🔥 Trending Skills</h4>
+
+    <div class="row" id="skillsContainer">
+
+        @if (Model?.RecommendedSkills != null)
         {
-            <tr>
-                <td>@s.SkillName</td>
-                <td>@s.Description</td>
-                <td>
-                    <!-- SEND REQUEST BUTTON -->
-                    <a asp-controller="Request"
-                       asp-action="Send"
-                       asp-route-skillId="@s.SkillId"
-                       asp-route-receiverId="@s.UserId"
-                       class="btn btn-primary btn-sm">
-                        Request Skill
-                    </a>
-                </td>
-            </tr>
-        }
-    </tbody>
-</table>
-
-<hr />
-
-<h3>Recommended Skills (AI)</h3>
-
-@if (Model.RecommendedSkills.Count == 0)
-{
-    <p>No recommendations yet — AI engine coming soon.</p>
-}
-else
-{
-    <table class="table table-striped">
-        <thead>
-            <tr>
-                <th>Skill</th>
-                <th>Description</th>
-                <th>Teacher</th>
-                <th>Action</th> <!-- NEW COLUMN for request -->
-            </tr>
-        </thead>
-        <tbody>
-            @foreach (var r in Model.RecommendedSkills)
+            foreach (var r in Model.RecommendedSkills.Take(6))
             {
-                <tr>
-                    <td>@r.SkillName</td>
-                    <td>@r.Description</td>
-                    <td>@r.User?.Username</td>
-                    <td>
+                <div class="col-md-4 skill-item">
+                    <div class="skill-card">
+                        <h5 class="skill-name">@r.SkillName</h5>
+                        <p>@r.Description</p>
+                        <small>By: @r.User?.Username</small>
+
+                        <br /><br />
+
                         <a asp-controller="Request"
                            asp-action="Send"
                            asp-route-skillId="@r.SkillId"
                            asp-route-receiverId="@r.UserId"
                            class="btn btn-success btn-sm">
-                            Request Skill
+                            Request
                         </a>
-                    </td>
-                </tr>
+                    </div>
+                </div>
             }
-        </tbody>
-    </table>
-}
+        }
+
+    </div>
+</div>
+
+<!-- ================= CHATBOT UI ================= -->
+
+<div id="chatButton" onclick="toggleChat()">💬</div>
+
+<div id="chatBox">
+    <div id="chatHeader">SkillSwap AI 🤖</div>
+
+    <div id="chatMessages"></div>
+
+    <div id="chatInputBox">
+        <input type="text" id="chatInput" placeholder="Type message..." />
+        <button onclick="sendMessage()">Send</button>
+    </div>
+</div>
+
+<!-- ================= SCRIPTS ================= -->
+
+<script>
+    function filterSkills() {
+        let input = document.getElementById("searchInput").value.toLowerCase();
+        let items = document.getElementsByClassName("skill-item");
+
+        for (let i = 0; i < items.length; i++) {
+            let name = items[i].getElementsByClassName("skill-name")[0].innerText.toLowerCase();
+
+            if (name.includes(input)) {
+                items[i].classList.remove("hidden");
+            } else {
+                items[i].classList.add("hidden");
+            }
+        }
+    }
+
+    function toggleChat() {
+        let box = document.getElementById("chatBox");
+        box.style.display = (box.style.display === "flex") ? "none" : "flex";
+    }
+
+    function sendMessage() {
+        let input = document.getElementById("chatInput");
+        let msg = input.value.trim();
+
+        if (msg === "") return;
+
+        let chatMessages = document.getElementById("chatMessages");
+
+        chatMessages.innerHTML += `
+            <div class="user-msg">
+                <b>You:</b> ${msg}
+            </div>
+        `;
+
+        fetch('/Home/Chat', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/x-www-form-urlencoded'
+            },
+            body: 'message=' + encodeURIComponent(msg)
+        })
+        .then(res => res.json())
+        .then(data => {
+
+            let response;
+
+            try {
+                response = typeof data === "string" ? JSON.parse(data) : data;
+            } catch (e) {
+                response = data;
+            }
+
+            let botHtml = `
+                <div class="bot-msg">
+                    <div><b>Bot:</b> ${response.answer || "No answer found"}</div>
+            `;
+
+            if (response.category) {
+                botHtml += `
+                    <div class="bot-detail">
+                        <b>Category:</b> ${response.category}
+                    </div>
+                `;
+            }
+
+            if (response.level) {
+                botHtml += `
+                    <div class="bot-detail">
+                        <b>Level:</b> ${response.level}
+                    </div>
+                `;
+            }
+
+            if (response.skills && response.skills.length > 0) {
+                botHtml += `
+                    <div class="bot-detail">
+                        <b>Skills:</b> ${response.skills.join(", ")}
+                    </div>
+                `;
+            }
+
+            if (response.tools && response.tools.length > 0) {
+                botHtml += `
+                    <div class="bot-detail">
+                        <b>Tools:</b> ${response.tools.join(", ")}
+                    </div>
+                `;
+            }
+
+            if (response.roadmap && response.roadmap.length > 0) {
+                botHtml += `
+                    <div class="bot-detail">
+                        <b>Roadmap:</b>
+                        <ol>
+                `;
+
+                response.roadmap.forEach(step => {
+                    botHtml += `<li>${step}</li>`;
+                });
+
+                botHtml += `
+                        </ol>
+                    </div>
+                `;
+            }
+
+            if (response.projects && response.projects.length > 0) {
+                botHtml += `
+                    <div class="bot-detail">
+                        <b>Projects:</b>
+                        <ul>
+                `;
+
+                response.projects.forEach(project => {
+                    botHtml += `<li>${project}</li>`;
+                });
+
+                botHtml += `
+                        </ul>
+                    </div>
+                `;
+            }
+
+            botHtml += `</div>`;
+
+            chatMessages.innerHTML += botHtml;
+            chatMessages.scrollTop = chatMessages.scrollHeight;
+        })
+        .catch(error => {
+            console.error("Chat error:", error);
+
+            chatMessages.innerHTML += `
+                <div class="bot-msg">
+                    <b>Bot:</b> Chatbot se connect nahi ho pa raha.
+                </div>
+            `;
+        });
+
+        input.value = "";
+    }
+
+    document.getElementById("chatInput").addEventListener("keypress", function (e) {
+        if (e.key === "Enter") {
+            sendMessage();
+        }
+    });
+</script>

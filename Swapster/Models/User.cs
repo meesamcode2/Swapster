@@ -19,6 +19,8 @@ namespace Swapster.Models
         public string? VerificationToken { get; set; }
         public string? ResetPasswordToken { get; set; }
         public DateTime? ResetPasswordExpiry { get; set; }
+        public DateTime? TokenExpiry { get; set; }
+
 
 
     }

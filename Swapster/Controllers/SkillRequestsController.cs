@@ -14,7 +14,7 @@ namespace Swapster.Controllers
         }
 
         // SEND REQUEST
-        public IActionResult Send(int receiverId, string skill)
+        public IActionResult Send(int receiverId, int skillId) // 👈 CHANGE
         {
             int? senderId = HttpContext.Session.GetInt32("UserId");
 
@@ -25,7 +25,7 @@ namespace Swapster.Controllers
             {
                 SenderId = senderId.Value,
                 ReceiverId = receiverId,
-                SkillName = skill
+                SkillId = skillId // 👈 FIXED
             };
 
             _context.SkillRequests.Add(request);
@@ -38,8 +38,11 @@ namespace Swapster.Controllers
         public IActionResult Accept(int id)
         {
             var req = _context.SkillRequests.Find(id);
-            req.Status = "Accepted";
-            _context.SaveChanges();
+            if (req != null)
+            {
+                req.Status = "Accepted";
+                _context.SaveChanges();
+            }
 
             return RedirectToAction("Index", "Home");
         }
@@ -48,8 +51,11 @@ namespace Swapster.Controllers
         public IActionResult Reject(int id)
         {
             var req = _context.SkillRequests.Find(id);
-            req.Status = "Rejected";
-            _context.SaveChanges();
+            if (req != null)
+            {
+                req.Status = "Rejected";
+                _context.SaveChanges();
+            }
 
             return RedirectToAction("Index", "Home");
         }

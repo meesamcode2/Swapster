@@ -1,32 +1,67 @@
 ﻿@model IEnumerable<Swapster.Models.UserSkill>
 
-<h2>Available Skills</h2>
+@{
+    ViewData["Title"] = "Available Skills";
+}
 
-<a asp-action="Create" class="btn btn-primary">Add Skill</a>
+<style>
+    .skill-card {
+        border-radius: 15px;
+        padding: 20px;
+        box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        transition: 0.3s;
+        height: 100%;
+    }
 
-<table class="table mt-3">
-    <tr>
-        <th>Skill</th>
-        <th>Description</th>
-        <th>Owner</th>
-        <th>Action</th>
-    </tr>
+        .skill-card:hover {
+            transform: translateY(-5px);
+        }
 
+    .skill-title {
+        font-weight: bold;
+        font-size: 18px;
+    }
+
+    .owner {
+        font-size: 14px;
+        color: gray;
+    }
+
+    .btn-custom {
+        border-radius: 20px;
+        padding: 5px 15px;
+    }
+</style>
+
+<h2>Explore Skills 🚀</h2>
+
+<a asp-action="Create" class="btn btn-dark mb-3">+ Add Skill</a>
+
+<div class="row">
     @foreach (var item in Model)
     {
-        <tr>
-            <td>@item.SkillName</td>
-            <td>@item.Description</td>
-            <td>@item.User?.Username</td>
-            <td>
+        <div class="col-md-4 mb-4">
+            <div class="skill-card">
+
+                <div class="skill-title">@item.SkillName</div>
+
+                <p>@item.Description</p>
+
+                <div class="owner">
+                    👤 @item.User?.Username
+                </div>
+
+                <br />
+
                 <a asp-controller="Request"
                    asp-action="Send"
                    asp-route-skillId="@item.SkillId"
                    asp-route-receiverId="@item.UserId"
-                   class="btn btn-success">
+                   class="btn btn-success btn-sm btn-custom">
                     Send Request
                 </a>
-            </td>
-        </tr>
+
+            </div>
+        </div>
     }
-</table>
+</div>

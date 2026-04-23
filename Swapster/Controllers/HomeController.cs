@@ -1,49 +1,38 @@
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
-using Swapster.Data;
-using Swapster.Models;
-using System.Diagnostics;
+﻿using Microsoft.AspNetCore.Mvc;
+using System.Net.Http;
+using System.Text;
 
 namespace Swapster.Controllers
 {
     public class HomeController : Controller
     {
-        private readonly ApplicationDbContext _context;
-        private readonly ILogger<HomeController> _logger;
-
-        public HomeController(ApplicationDbContext context)
-        {
-            _context = context;
-        }
-
         public IActionResult Index()
         {
-            int? userId = HttpContext.Session.GetInt32("UserId");
-            string username = HttpContext.Session.GetString("Username");
+            return View();
+        }
 
-            if (userId == null)
-                return RedirectToAction("Login", "Account");
-
-            var mySkills = _context.UserSkills
-                .Where(s => s.UserId == userId)
-                .ToList();
-
-            var req = _context.SkillRequests
-                .Where(r => r.SenderId == userId || r.ReceiverId == userId)
-                .ToList();
-
-            var model = new DashboardViewModel
+        // ================= CHATBOT API =================
+        [HttpPost]
+        public async Task<IActionResult> Chat(string message)
+        {
+            using (var client = new HttpClient())
             {
-                UserName = username,
-                TotalSkills = mySkills.Count,
-                TotalRequests = req.Count,
-                IncomingRequests = req.Count(r => r.ReceiverId == userId),
-                OutgoingRequests = req.Count(r => r.SenderId == userId),
-                MySkills = mySkills,
-                RecommendedSkills = new List<UserSkill>() // AI LATER
-            };
+                var payload = new { message = message };
 
-            return View(model);
+                var json = System.Text.Json.JsonSerializer.Serialize(payload);
+
+                var content = new StringContent(
+                    json,
+                    Encoding.UTF8,
+                    "application/json"
+                );
+
+                var response = await client.PostAsync("http://127.0.0.1:5000/chat", content);
+
+                var result = await response.Content.ReadAsStringAsync();
+
+                return Content(result, "application/json");
+            }
         }
     }
 }

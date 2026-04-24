@@ -120,6 +120,7 @@
         color: white;
         padding: 10px;
         font-weight: bold;
+        font-size: 16px;
     }
 
     #chatMessages {
@@ -138,6 +139,7 @@
         margin-bottom: 8px;
         max-width: 85%;
         margin-left: auto;
+        word-wrap: break-word;
     }
 
     .bot-msg {
@@ -148,6 +150,7 @@
         margin-bottom: 10px;
         max-width: 95%;
         box-shadow: 0 2px 5px rgba(0,0,0,0.08);
+        word-wrap: break-word;
     }
 
     .bot-detail {
@@ -160,6 +163,11 @@
             margin-top: 5px;
             padding-left: 20px;
         }
+
+    .thinking-text {
+        font-style: italic;
+        color: #666;
+    }
 
     #chatInputBox {
         display: flex;
@@ -187,7 +195,7 @@
 </style>
 
 <div class="sidebar">
-    <h4>SkillSwap</h4>
+    <h4>Swapster</h4>
 
     <a href="/Home/Index">🏠 Home</a>
     <a href="/Skill/Index">🔍 Explore Skills</a>
@@ -243,13 +251,13 @@
 <div id="chatButton" onclick="toggleChat()">💬</div>
 
 <div id="chatBox">
-    <div id="chatHeader">SkillSwap AI 🤖</div>
+    <div id="chatHeader">Swapster 💡</div>
 
     <div id="chatMessages"></div>
 
     <div id="chatInputBox">
         <input type="text" id="chatInput" placeholder="Type message..." />
-        <button onclick="sendMessage()">Send</button>
+        <button type="button" onclick="sendMessage()">Send</button>
     </div>
 </div>
 
@@ -261,7 +269,11 @@
         let items = document.getElementsByClassName("skill-item");
 
         for (let i = 0; i < items.length; i++) {
-            let name = items[i].getElementsByClassName("skill-name")[0].innerText.toLowerCase();
+            let nameElement = items[i].getElementsByClassName("skill-name")[0];
+
+            if (!nameElement) continue;
+
+            let name = nameElement.innerText.toLowerCase();
 
             if (name.includes(input)) {
                 items[i].classList.remove("hidden");
@@ -276,6 +288,18 @@
         box.style.display = (box.style.display === "flex") ? "none" : "flex";
     }
 
+    function escapeHtml(text) {
+        if (!text) return "";
+
+        return text
+            .toString()
+            .replaceAll("&", "&amp;")
+            .replaceAll("<", "&lt;")
+            .replaceAll(">", "&gt;")
+            .replaceAll('"', "&quot;")
+            .replaceAll("'", "&#039;");
+    }
+
     function sendMessage() {
         let input = document.getElementById("chatInput");
         let msg = input.value.trim();
@@ -286,9 +310,22 @@
 
         chatMessages.innerHTML += `
             <div class="user-msg">
-                <b>You:</b> ${msg}
+                <b>You:</b> ${escapeHtml(msg)}
             </div>
         `;
+
+        let thinkingId = "thinking-" + Date.now();
+
+        chatMessages.innerHTML += `
+            <div class="bot-msg" id="${thinkingId}">
+                <div><b>Swapster:</b> <span class="thinking-text">Thinking...</span></div>
+            </div>
+        `;
+
+        let thinkingMessage = document.getElementById(thinkingId);
+        if (thinkingMessage) {
+            thinkingMessage.scrollIntoView({ behavior: "smooth", block: "start" });
+        }
 
         fetch('/Home/Chat', {
             method: 'POST',
@@ -308,44 +345,46 @@
                 response = data;
             }
 
+            let answer = response?.answer || "No answer found";
+
             let botHtml = `
-                <div class="bot-msg">
-                    <div><b>Bot:</b> ${response.answer || "No answer found"}</div>
+                <div class="bot-msg" id="${thinkingId}">
+                    <div><b>Swapster:</b> ${escapeHtml(answer)}</div>
             `;
 
-            if (response.category) {
+            if (response?.category) {
                 botHtml += `
                     <div class="bot-detail">
-                        <b>Category:</b> ${response.category}
+                        <b>Category:</b> ${escapeHtml(response.category)}
                     </div>
                 `;
             }
 
-            if (response.level) {
+            if (response?.level) {
                 botHtml += `
                     <div class="bot-detail">
-                        <b>Level:</b> ${response.level}
+                        <b>Level:</b> ${escapeHtml(response.level)}
                     </div>
                 `;
             }
 
-            if (response.skills && response.skills.length > 0) {
+            if (response?.skills && response.skills.length > 0) {
                 botHtml += `
                     <div class="bot-detail">
-                        <b>Skills:</b> ${response.skills.join(", ")}
+                        <b>Skills:</b> ${response.skills.map(escapeHtml).join(", ")}
                     </div>
                 `;
             }
 
-            if (response.tools && response.tools.length > 0) {
+            if (response?.tools && response.tools.length > 0) {
                 botHtml += `
                     <div class="bot-detail">
-                        <b>Tools:</b> ${response.tools.join(", ")}
+                        <b>Tools:</b> ${response.tools.map(escapeHtml).join(", ")}
                     </div>
                 `;
             }
 
-            if (response.roadmap && response.roadmap.length > 0) {
+            if (response?.roadmap && response.roadmap.length > 0) {
                 botHtml += `
                     <div class="bot-detail">
                         <b>Roadmap:</b>
@@ -353,7 +392,7 @@
                 `;
 
                 response.roadmap.forEach(step => {
-                    botHtml += `<li>${step}</li>`;
+                    botHtml += `<li>${escapeHtml(step)}</li>`;
                 });
 
                 botHtml += `
@@ -362,7 +401,7 @@
                 `;
             }
 
-            if (response.projects && response.projects.length > 0) {
+            if (response?.projects && response.projects.length > 0) {
                 botHtml += `
                     <div class="bot-detail">
                         <b>Projects:</b>
@@ -370,7 +409,7 @@
                 `;
 
                 response.projects.forEach(project => {
-                    botHtml += `<li>${project}</li>`;
+                    botHtml += `<li>${escapeHtml(project)}</li>`;
                 });
 
                 botHtml += `
@@ -381,17 +420,38 @@
 
             botHtml += `</div>`;
 
-            chatMessages.innerHTML += botHtml;
-            chatMessages.scrollTop = chatMessages.scrollHeight;
+            let thinkingElement = document.getElementById(thinkingId);
+            if (thinkingElement) {
+                thinkingElement.outerHTML = botHtml;
+            } else {
+                chatMessages.innerHTML += botHtml;
+            }
+
+            let updatedBotMessage = document.getElementById(thinkingId);
+            if (updatedBotMessage) {
+                updatedBotMessage.scrollIntoView({ behavior: "smooth", block: "start" });
+            }
         })
         .catch(error => {
             console.error("Chat error:", error);
 
-            chatMessages.innerHTML += `
-                <div class="bot-msg">
-                    <b>Bot:</b> Chatbot se connect nahi ho pa raha.
+            let errorHtml = `
+                <div class="bot-msg" id="${thinkingId}">
+                    <b>Swapster:</b> Chatbot se connect nahi ho pa raha.
                 </div>
             `;
+
+            let thinkingElement = document.getElementById(thinkingId);
+            if (thinkingElement) {
+                thinkingElement.outerHTML = errorHtml;
+            } else {
+                chatMessages.innerHTML += errorHtml;
+            }
+
+            let errorMessage = document.getElementById(thinkingId);
+            if (errorMessage) {
+                errorMessage.scrollIntoView({ behavior: "smooth", block: "start" });
+            }
         });
 
         input.value = "";

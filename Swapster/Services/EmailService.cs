@@ -9,7 +9,7 @@ namespace Swapster.Services
         {
             try
             {
-                var fromEmail = "swastersupport@gmail.com";
+                var fromEmail = "swapstersupport@gmail.com";
                 var appPassword = "zuou voaw uzzy otlb";
 
                 using (var smtp = new SmtpClient("smtp.gmail.com", 587))

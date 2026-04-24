@@ -1,5 +1,512 @@
-﻿@*
-    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
-*@
+﻿@model Swapster.Models.DashboardViewModel
+
 @{
+    ViewData["Title"] = "Dashboard";
 }
+
+<style>
+    body {
+        background-color: #f5f7fb;
+        margin: 0;
+        font-family: Arial, sans-serif;
+    }
+
+    .sidebar {
+        height: calc(100vh - 56px);
+        background: #1e1e2f;
+        color: white;
+        padding: 20px;
+        position: fixed;
+        top: 56px;
+        left: 0;
+        width: 220px;
+        overflow-y: auto;
+        z-index: 1000;
+    }
+
+        .sidebar a {
+            display: block;
+            color: #ccc;
+            padding: 10px;
+            border-radius: 8px;
+            text-decoration: none;
+            margin-bottom: 5px;
+        }
+
+            .sidebar a:hover {
+                background: #34344a;
+                color: white;
+            }
+
+    .main {
+        margin-left: 240px;
+        padding: 20px;
+    }
+
+    .top-navbar {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        padding: 10px 20px;
+        margin-bottom: 20px;
+    }
+
+    .search-bar {
+        border-radius: 25px;
+        padding: 10px 20px;
+        width: 100%;
+        max-width: 500px;
+        border: 1px solid #ddd;
+        outline: none;
+    }
+
+        .search-bar:focus {
+            border-color: #007bff;
+            box-shadow: 0 0 5px rgba(0, 123, 255, 0.5);
+        }
+
+    .skill-card {
+        background: white;
+        padding: 15px;
+        border-radius: 12px;
+        box-shadow: 0 4px 10px rgba(0,0,0,0.08);
+        margin-bottom: 15px;
+        transition: 0.3s;
+        min-height: 180px;
+    }
+
+        .skill-card:hover {
+            transform: translateY(-5px);
+        }
+
+        .skill-card h5 {
+            font-weight: bold;
+            color: #1e1e2f;
+        }
+
+        .skill-card p {
+            color: #555;
+            min-height: 45px;
+        }
+
+    .hidden {
+        display: none !important;
+    }
+
+    /* ================= CHATBOT ================= */
+
+    #chatButton {
+        position: fixed;
+        bottom: 20px;
+        right: 20px;
+        background: #007bff;
+        color: white;
+        width: 55px;
+        height: 55px;
+        border-radius: 50%;
+        text-align: center;
+        font-size: 24px;
+        line-height: 55px;
+        cursor: pointer;
+        z-index: 9999;
+        box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+    }
+
+    #chatBox {
+        position: fixed;
+        bottom: 90px;
+        right: 20px;
+        width: 330px;
+        height: 460px;
+        background: white;
+        border-radius: 10px;
+        box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+        display: none;
+        flex-direction: column;
+        overflow: hidden;
+        z-index: 9999;
+    }
+
+    #chatHeader {
+        background: #007bff;
+        color: white;
+        padding: 10px;
+        font-weight: bold;
+        font-size: 16px;
+    }
+
+    #chatMessages {
+        flex: 1;
+        padding: 10px;
+        overflow-y: auto;
+        font-size: 14px;
+        background: #f8f9fa;
+    }
+
+    .user-msg {
+        background: #007bff;
+        color: white;
+        padding: 8px;
+        border-radius: 8px;
+        margin-bottom: 8px;
+        max-width: 85%;
+        margin-left: auto;
+        word-wrap: break-word;
+    }
+
+    .bot-msg {
+        background: #ffffff;
+        color: #333;
+        padding: 8px;
+        border-radius: 8px;
+        margin-bottom: 10px;
+        max-width: 95%;
+        box-shadow: 0 2px 5px rgba(0,0,0,0.08);
+        word-wrap: break-word;
+    }
+
+    .bot-detail {
+        margin-top: 5px;
+        font-size: 13px;
+    }
+
+        .bot-detail ol,
+        .bot-detail ul {
+            margin-top: 5px;
+            padding-left: 20px;
+        }
+
+    .thinking-text {
+        font-style: italic;
+        color: #666;
+    }
+
+    #chatInputBox {
+        display: flex;
+        border-top: 1px solid #ddd;
+    }
+
+    #chatInput {
+        flex: 1;
+        padding: 8px;
+        border: none;
+        outline: none;
+    }
+
+    #chatInputBox button {
+        background: #007bff;
+        color: white;
+        border: none;
+        padding: 8px 12px;
+        cursor: pointer;
+    }
+
+        #chatInputBox button:hover {
+            background: #0056b3;
+        }
+
+    @@media (max-width: 768px) {
+        .sidebar {
+            position: relative;
+            top: 0;
+            width: 100%;
+            height: auto;
+        }
+
+        .main {
+            margin-left: 0;
+        }
+
+        #chatBox {
+            width: 90%;
+            right: 5%;
+        }
+    }
+</style>
+
+<div class="sidebar">
+    <h4>Swapster</h4>
+
+    <a href="/Home/Index">🏠 Landing Page</a>
+    <a href="/Home/Dashboard">📊 Dashboard</a>
+    <a href="/Skill/Index">🔍 Explore Skills</a>
+    <a href="#">🔥 Trending Skills</a>
+    <a href="#">👤 My Account</a>
+    <a href="#">⚙ Settings</a>
+</div>
+
+<div class="main">
+
+    <div class="top-navbar">
+        <input type="text"
+               id="searchInput"
+               class="form-control search-bar"
+               placeholder="Search skills..."
+               onkeyup="filterSkills()" />
+    </div>
+
+    <h3>Welcome, @(Model?.UserName ?? "User") 👋</h3>
+
+    <hr />
+
+    <h4>🔥 Trending Skills</h4>
+
+    <div class="row" id="skillsContainer">
+
+        @if (Model?.RecommendedSkills != null && Model.RecommendedSkills.Any())
+        {
+            foreach (var r in Model.RecommendedSkills.Take(6))
+            {
+                <div class="col-md-4 skill-item">
+                    <div class="skill-card">
+                        <h5 class="skill-name">@r.SkillName</h5>
+
+                        <p>@r.Description</p>
+
+                        <small>
+                            By: @(r.User?.Username ?? "Unknown")
+                        </small>
+
+                        <br />
+                        <br />
+
+                        <a asp-controller="Request"
+                           asp-action="Send"
+                           asp-route-skillId="@r.SkillId"
+                           asp-route-receiverId="@r.UserId"
+                           class="btn btn-success btn-sm">
+                            Request
+                        </a>
+                    </div>
+                </div>
+            }
+        }
+        else
+        {
+            <div class="col-12">
+                <div class="alert alert-info">
+                    No trending skills found.
+                </div>
+            </div>
+        }
+
+    </div>
+</div>
+
+<!-- ================= CHATBOT UI ================= -->
+
+<div id="chatButton" onclick="toggleChat()">💬</div>
+
+<div id="chatBox">
+    <div id="chatHeader">Swapster 💡</div>
+
+    <div id="chatMessages"></div>
+
+    <div id="chatInputBox">
+        <input type="text" id="chatInput" placeholder="Type message..." />
+        <button type="button" onclick="sendMessage()">Send</button>
+    </div>
+</div>
+
+<!-- ================= SCRIPTS ================= -->
+
+<script>
+    function filterSkills() {
+        let input = document.getElementById("searchInput").value.toLowerCase();
+        let items = document.getElementsByClassName("skill-item");
+
+        for (let i = 0; i < items.length; i++) {
+            let nameElement = items[i].getElementsByClassName("skill-name")[0];
+
+            if (!nameElement) continue;
+
+            let name = nameElement.innerText.toLowerCase();
+
+            if (name.includes(input)) {
+                items[i].classList.remove("hidden");
+            } else {
+                items[i].classList.add("hidden");
+            }
+        }
+    }
+
+    function toggleChat() {
+        let box = document.getElementById("chatBox");
+        box.style.display = (box.style.display === "flex") ? "none" : "flex";
+    }
+
+    function escapeHtml(text) {
+        if (!text) return "";
+
+        return text
+            .toString()
+            .replaceAll("&", "&amp;")
+            .replaceAll("<", "&lt;")
+            .replaceAll(">", "&gt;")
+            .replaceAll('"', "&quot;")
+            .replaceAll("'", "&#039;");
+    }
+
+    function sendMessage() {
+        let input = document.getElementById("chatInput");
+        let msg = input.value.trim();
+
+        if (msg === "") return;
+
+        let chatMessages = document.getElementById("chatMessages");
+
+        chatMessages.innerHTML += `
+            <div class="user-msg">
+                <b>You:</b> ${escapeHtml(msg)}
+            </div>
+        `;
+
+        let thinkingId = "thinking-" + Date.now();
+
+        chatMessages.innerHTML += `
+            <div class="bot-msg" id="${thinkingId}">
+                <div><b>Swapster:</b> <span class="thinking-text">Thinking...</span></div>
+            </div>
+        `;
+
+        let thinkingMessage = document.getElementById(thinkingId);
+        if (thinkingMessage) {
+            thinkingMessage.scrollIntoView({ behavior: "smooth", block: "start" });
+        }
+
+        fetch('/Home/Chat', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/x-www-form-urlencoded'
+            },
+            body: 'message=' + encodeURIComponent(msg)
+        })
+        .then(res => res.json())
+        .then(data => {
+
+            let response;
+
+            try {
+                response = typeof data === "string" ? JSON.parse(data) : data;
+            } catch (e) {
+                response = data;
+            }
+
+            let answer = response?.answer || "No answer found";
+
+            let botHtml = `
+                <div class="bot-msg" id="${thinkingId}">
+                    <div><b>Swapster:</b> ${escapeHtml(answer)}</div>
+            `;
+
+            if (response?.category) {
+                botHtml += `
+                    <div class="bot-detail">
+                        <b>Category:</b> ${escapeHtml(response.category)}
+                    </div>
+                `;
+            }
+
+            if (response?.level) {
+                botHtml += `
+                    <div class="bot-detail">
+                        <b>Level:</b> ${escapeHtml(response.level)}
+                    </div>
+                `;
+            }
+
+            if (response?.skills && response.skills.length > 0) {
+                botHtml += `
+                    <div class="bot-detail">
+                        <b>Skills:</b> ${response.skills.map(escapeHtml).join(", ")}
+                    </div>
+                `;
+            }
+
+            if (response?.tools && response.tools.length > 0) {
+                botHtml += `
+                    <div class="bot-detail">
+                        <b>Tools:</b> ${response.tools.map(escapeHtml).join(", ")}
+                    </div>
+                `;
+            }
+
+            if (response?.roadmap && response.roadmap.length > 0) {
+                botHtml += `
+                    <div class="bot-detail">
+                        <b>Roadmap:</b>
+                        <ol>
+                `;
+
+                response.roadmap.forEach(step => {
+                    botHtml += `<li>${escapeHtml(step)}</li>`;
+                });
+
+                botHtml += `
+                        </ol>
+                    </div>
+                `;
+            }
+
+            if (response?.projects && response.projects.length > 0) {
+                botHtml += `
+                    <div class="bot-detail">
+                        <b>Projects:</b>
+                        <ul>
+                `;
+
+                response.projects.forEach(project => {
+                    botHtml += `<li>${escapeHtml(project)}</li>`;
+                });
+
+                botHtml += `
+                        </ul>
+                    </div>
+                `;
+            }
+
+            botHtml += `</div>`;
+
+            let thinkingElement = document.getElementById(thinkingId);
+            if (thinkingElement) {
+                thinkingElement.outerHTML = botHtml;
+            } else {
+                chatMessages.innerHTML += botHtml;
+            }
+
+            let updatedBotMessage = document.getElementById(thinkingId);
+            if (updatedBotMessage) {
+                updatedBotMessage.scrollIntoView({ behavior: "smooth", block: "start" });
+            }
+        })
+        .catch(error => {
+            console.error("Chat error:", error);
+
+            let errorHtml = `
+                <div class="bot-msg" id="${thinkingId}">
+                    <b>Swapster:</b> Chatbot se connect nahi ho pa raha.
+                </div>
+            `;
+
+            let thinkingElement = document.getElementById(thinkingId);
+            if (thinkingElement) {
+                thinkingElement.outerHTML = errorHtml;
+            } else {
+                chatMessages.innerHTML += errorHtml;
+            }
+
+            let errorMessage = document.getElementById(thinkingId);
+            if (errorMessage) {
+                errorMessage.scrollIntoView({ behavior: "smooth", block: "start" });
+            }
+        });
+
+        input.value = "";
+    }
+
+    document.getElementById("chatInput").addEventListener("keypress", function (e) {
+        if (e.key === "Enter") {
+            sendMessage();
+        }
+    });
+</script>

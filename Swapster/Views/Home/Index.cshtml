@@ -2,113 +2,443 @@
 
 @{
     ViewData["Title"] = "Home";
+    ViewData["HideNavbar"] = true;
+    ViewData["FullWidth"] = true;
+    ViewData["BodyClass"] = "landing-page";
 }
 
 <style>
+    * {
+        box-sizing: border-box;
+    }
+
     body {
-        background-color: #f5f7fb;
         margin: 0;
-        font-family: Arial, sans-serif;
+        font-family: 'Inter', 'Segoe UI', Arial, sans-serif;
+        background: #f6f8ff;
+        color: #151515;
     }
 
-    .sidebar {
-        height: calc(100vh - 56px);
-        background: #1e1e2f;
-        color: white;
-        padding: 20px;
-        position: fixed;
-        top: 56px;
-        left: 0;
-        width: 220px;
-        overflow-y: auto;
+    .page-wrapper {
+        min-height: 100vh;
+        background: radial-gradient(circle at top left, rgba(104, 124, 255, 0.18), transparent 35%), radial-gradient(circle at top right, rgba(255, 111, 181, 0.15), transparent 35%), #f6f8ff;
     }
 
-        .sidebar a {
-            display: block;
-            color: #ccc;
-            padding: 10px;
-            border-radius: 8px;
-            text-decoration: none;
-            margin-bottom: 5px;
+    .landing-nav {
+        width: 100%;
+        padding: 22px 7%;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+
+    .brand {
+        font-size: 26px;
+        font-weight: 800;
+        color: #111827;
+        text-decoration: none;
+    }
+
+        .brand span {
+            color: #6674ff;
         }
 
-            .sidebar a:hover {
-                background: #34344a;
-                color: white;
+    .nav-links {
+        display: flex;
+        gap: 24px;
+        align-items: center;
+    }
+
+        .nav-links a {
+            text-decoration: none;
+            color: #4b5563;
+            font-weight: 500;
+            transition: 0.3s;
+        }
+
+            .nav-links a:hover {
+                color: #6674ff;
             }
 
-    .main {
-        margin-left: 240px;
-        padding: 20px;
+    .nav-btn {
+        background: linear-gradient(135deg, #6674ff, #ff64aa);
+        color: white !important;
+        padding: 10px 20px;
+        border-radius: 30px;
+        box-shadow: 0 10px 22px rgba(102, 116, 255, 0.25);
     }
 
-    .top-navbar {
-        display: flex;
-        justify-content: center;
+    .hero {
+        padding: 45px 7% 70px;
+        display: grid;
+        grid-template-columns: 1.1fr 0.9fr;
         align-items: center;
-        padding: 10px 20px;
-        margin-bottom: 20px;
+        gap: 45px;
     }
 
-    .search-bar {
-        border-radius: 25px;
-        padding: 10px 20px;
-        width: 100%;
-        max-width: 500px;
-        border: 1px solid #ddd;
-        outline: none;
+    .hero-badge {
+        display: inline-block;
+        background: white;
+        color: #6674ff;
+        padding: 9px 16px;
+        border-radius: 50px;
+        font-weight: 700;
+        margin-bottom: 18px;
+        box-shadow: 0 8px 22px rgba(0,0,0,0.07);
     }
 
-        .search-bar:focus {
-            border-color: #007bff;
-            box-shadow: 0 0 5px rgba(0, 123, 255, 0.5);
+    .hero h1 {
+        font-size: 58px;
+        line-height: 1.05;
+        margin: 0;
+        letter-spacing: -2px;
+        color: #111827;
+    }
+
+        .hero h1 span {
+            background: linear-gradient(135deg, #6674ff, #ff64aa);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
         }
 
-    .skill-card {
-        background: white;
-        padding: 15px;
-        border-radius: 12px;
-        box-shadow: 0 4px 10px rgba(0,0,0,0.08);
-        margin-bottom: 15px;
+    .hero p {
+        margin-top: 20px;
+        font-size: 18px;
+        line-height: 1.7;
+        color: #5b6472;
+        max-width: 620px;
+    }
+
+    .hero-actions {
+        display: flex;
+        gap: 15px;
+        margin-top: 28px;
+        flex-wrap: wrap;
+    }
+
+    .primary-btn,
+    .secondary-btn {
+        border: none;
+        text-decoration: none;
+        padding: 14px 24px;
+        border-radius: 40px;
+        font-weight: 700;
+        display: inline-block;
         transition: 0.3s;
     }
 
-        .skill-card:hover {
-            transform: translateY(-5px);
+    .primary-btn {
+        background: linear-gradient(135deg, #6674ff, #ff64aa);
+        color: white;
+        box-shadow: 0 12px 25px rgba(102, 116, 255, 0.28);
+    }
+
+    .secondary-btn {
+        background: white;
+        color: #111827;
+        border: 1px solid #e5e7eb;
+    }
+
+        .primary-btn:hover,
+        .secondary-btn:hover {
+            transform: translateY(-3px);
         }
+
+    .search-panel {
+        margin-top: 30px;
+        background: white;
+        padding: 12px;
+        border-radius: 50px;
+        display: flex;
+        align-items: center;
+        max-width: 560px;
+        box-shadow: 0 16px 35px rgba(0,0,0,0.08);
+    }
+
+        .search-panel input {
+            flex: 1;
+            border: none;
+            outline: none;
+            padding: 13px 18px;
+            font-size: 15px;
+            border-radius: 40px;
+        }
+
+        .search-panel button {
+            border: none;
+            background: #111827;
+            color: white;
+            padding: 13px 22px;
+            border-radius: 35px;
+            font-weight: 700;
+        }
+
+    .hero-visual {
+        position: relative;
+        background: white;
+        border-radius: 35px;
+        padding: 25px;
+        box-shadow: 0 25px 50px rgba(35, 45, 90, 0.12);
+    }
+
+    .visual-card {
+        background: linear-gradient(135deg, #dfe4ff, #ffe1f0);
+        border-radius: 28px;
+        min-height: 430px;
+        padding: 28px;
+        position: relative;
+        overflow: hidden;
+    }
+
+    .floating-card {
+        background: white;
+        border-radius: 22px;
+        padding: 18px;
+        box-shadow: 0 15px 35px rgba(0,0,0,0.12);
+        position: absolute;
+    }
+
+    .card-one {
+        top: 35px;
+        left: 25px;
+        width: 220px;
+    }
+
+    .card-two {
+        right: 25px;
+        bottom: 35px;
+        width: 230px;
+    }
+
+    .circle-person {
+        width: 150px;
+        height: 150px;
+        background: linear-gradient(135deg, #6674ff, #ff64aa);
+        border-radius: 50%;
+        position: absolute;
+        left: 50%;
+        top: 48%;
+        transform: translate(-50%, -50%);
+        display: grid;
+        place-items: center;
+        color: white;
+        font-size: 62px;
+        box-shadow: 0 18px 35px rgba(102, 116, 255, 0.35);
+    }
+
+    .mini-title {
+        font-weight: 800;
+        margin-bottom: 6px;
+    }
+
+    .mini-text {
+        color: #6b7280;
+        font-size: 13px;
+        line-height: 1.5;
+    }
+
+    .stats {
+        padding: 0 7% 60px;
+        display: grid;
+        grid-template-columns: repeat(4, 1fr);
+        gap: 18px;
+    }
+
+    .stat-box {
+        background: white;
+        padding: 24px;
+        border-radius: 24px;
+        box-shadow: 0 12px 28px rgba(0,0,0,0.06);
+        text-align: center;
+    }
+
+        .stat-box h3 {
+            font-size: 30px;
+            margin: 0;
+            color: #6674ff;
+        }
+
+        .stat-box p {
+            margin: 8px 0 0;
+            color: #6b7280;
+            font-weight: 600;
+        }
+
+    .section {
+        padding: 70px 7%;
+    }
+
+    .section-header {
+        text-align: center;
+        margin-bottom: 38px;
+    }
+
+        .section-header h2 {
+            font-size: 38px;
+            margin: 0;
+            color: #111827;
+        }
+
+        .section-header p {
+            color: #6b7280;
+            margin-top: 12px;
+            font-size: 16px;
+        }
+
+    .skills-grid {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 22px;
+    }
+
+    .skill-card {
+        background: white;
+        padding: 24px;
+        border-radius: 25px;
+        box-shadow: 0 14px 30px rgba(0,0,0,0.07);
+        transition: 0.3s;
+        border: 1px solid #eef0f7;
+    }
+
+        .skill-card:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 18px 38px rgba(102, 116, 255, 0.15);
+        }
+
+    .skill-icon {
+        width: 54px;
+        height: 54px;
+        border-radius: 18px;
+        display: grid;
+        place-items: center;
+        background: #eef1ff;
+        color: #6674ff;
+        font-size: 24px;
+        margin-bottom: 16px;
+    }
+
+    .skill-card h4 {
+        margin: 0 0 10px;
+        font-size: 20px;
+    }
+
+    .skill-card p {
+        color: #6b7280;
+        line-height: 1.6;
+        min-height: 55px;
+    }
+
+    .skill-meta {
+        font-size: 13px;
+        color: #8a93a3;
+        margin-bottom: 16px;
+    }
+
+    .request-btn {
+        display: inline-block;
+        text-decoration: none;
+        background: #111827;
+        color: white;
+        padding: 10px 16px;
+        border-radius: 30px;
+        font-size: 14px;
+        font-weight: 700;
+    }
 
     .hidden {
         display: none !important;
     }
 
-    /* ================= CHATBOT ================= */
+    .steps {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 22px;
+    }
+
+    .step-card {
+        background: white;
+        padding: 28px;
+        border-radius: 25px;
+        box-shadow: 0 14px 30px rgba(0,0,0,0.06);
+    }
+
+    .step-number {
+        width: 45px;
+        height: 45px;
+        border-radius: 50%;
+        background: linear-gradient(135deg, #6674ff, #ff64aa);
+        color: white;
+        display: grid;
+        place-items: center;
+        font-weight: 800;
+        margin-bottom: 18px;
+    }
+
+    .step-card h4 {
+        font-size: 20px;
+        margin: 0 0 10px;
+    }
+
+    .step-card p {
+        color: #6b7280;
+        line-height: 1.6;
+    }
+
+    .cta {
+        margin: 50px 7% 80px;
+        padding: 55px;
+        border-radius: 35px;
+        background: linear-gradient(135deg, #6674ff, #ff64aa);
+        color: white;
+        text-align: center;
+        box-shadow: 0 20px 45px rgba(102, 116, 255, 0.25);
+    }
+
+        .cta h2 {
+            font-size: 38px;
+            margin: 0 0 12px;
+        }
+
+        .cta p {
+            opacity: 0.92;
+            margin-bottom: 25px;
+        }
+
+        .cta a {
+            background: white;
+            color: #111827;
+            padding: 13px 24px;
+            border-radius: 35px;
+            text-decoration: none;
+            font-weight: 800;
+        }
 
     #chatButton {
         position: fixed;
-        bottom: 20px;
-        right: 20px;
-        background: #007bff;
+        bottom: 22px;
+        right: 22px;
+        background: linear-gradient(135deg, #6674ff, #ff64aa);
         color: white;
-        width: 55px;
-        height: 55px;
+        width: 62px;
+        height: 62px;
         border-radius: 50%;
         text-align: center;
-        font-size: 24px;
-        line-height: 55px;
+        font-size: 26px;
+        line-height: 62px;
         cursor: pointer;
         z-index: 9999;
-        box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+        box-shadow: 0 12px 28px rgba(102, 116, 255, 0.35);
     }
 
     #chatBox {
         position: fixed;
-        bottom: 90px;
-        right: 20px;
-        width: 330px;
-        height: 460px;
+        bottom: 95px;
+        right: 22px;
+        width: 350px;
+        height: 480px;
         background: white;
-        border-radius: 10px;
-        box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+        border-radius: 22px;
+        box-shadow: 0 18px 45px rgba(0,0,0,0.22);
         display: none;
         flex-direction: column;
         overflow: hidden;
@@ -116,51 +446,51 @@
     }
 
     #chatHeader {
-        background: #007bff;
+        background: linear-gradient(135deg, #6674ff, #ff64aa);
         color: white;
-        padding: 10px;
-        font-weight: bold;
-        font-size: 16px;
+        padding: 15px;
+        font-weight: 800;
+        font-size: 17px;
     }
 
     #chatMessages {
         flex: 1;
-        padding: 10px;
+        padding: 13px;
         overflow-y: auto;
         font-size: 14px;
-        background: #f8f9fa;
+        background: #f6f8ff;
     }
 
     .user-msg {
-        background: #007bff;
+        background: #6674ff;
         color: white;
-        padding: 8px;
-        border-radius: 8px;
-        margin-bottom: 8px;
+        padding: 10px;
+        border-radius: 14px 14px 4px 14px;
+        margin-bottom: 10px;
         max-width: 85%;
         margin-left: auto;
         word-wrap: break-word;
     }
 
     .bot-msg {
-        background: #ffffff;
+        background: white;
         color: #333;
-        padding: 8px;
-        border-radius: 8px;
+        padding: 10px;
+        border-radius: 14px 14px 14px 4px;
         margin-bottom: 10px;
         max-width: 95%;
-        box-shadow: 0 2px 5px rgba(0,0,0,0.08);
+        box-shadow: 0 4px 12px rgba(0,0,0,0.07);
         word-wrap: break-word;
     }
 
     .bot-detail {
-        margin-top: 5px;
+        margin-top: 6px;
         font-size: 13px;
     }
 
         .bot-detail ol,
         .bot-detail ul {
-            margin-top: 5px;
+            margin-top: 6px;
             padding-left: 20px;
         }
 
@@ -171,82 +501,286 @@
 
     #chatInputBox {
         display: flex;
-        border-top: 1px solid #ddd;
+        border-top: 1px solid #e5e7eb;
     }
 
     #chatInput {
         flex: 1;
-        padding: 8px;
+        padding: 12px;
         border: none;
         outline: none;
     }
 
     #chatInputBox button {
-        background: #007bff;
+        background: #111827;
         color: white;
         border: none;
-        padding: 8px 12px;
+        padding: 10px 15px;
         cursor: pointer;
+        font-weight: 700;
     }
 
-        #chatInputBox button:hover {
-            background: #0056b3;
+    @@media (max-width: 992px) {
+        .hero {
+            grid-template-columns: 1fr;
         }
+
+            .hero h1 {
+                font-size: 44px;
+            }
+
+        .stats,
+        .skills-grid,
+        .steps {
+            grid-template-columns: repeat(2, 1fr);
+        }
+    }
+
+    @@media (max-width: 650px) {
+        .landing-nav {
+            flex-direction: column;
+            gap: 18px;
+        }
+
+        .nav-links {
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+
+        .hero {
+            padding-top: 25px;
+        }
+
+            .hero h1 {
+                font-size: 36px;
+            }
+
+        .stats,
+        .skills-grid,
+        .steps {
+            grid-template-columns: 1fr;
+        }
+
+        .search-panel {
+            border-radius: 22px;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+            .search-panel button {
+                width: 100%;
+            }
+
+        #chatBox {
+            width: calc(100% - 30px);
+            right: 15px;
+        }
+    }
 </style>
 
-<div class="sidebar">
-    <h4>Swapster</h4>
+<div class="page-wrapper">
 
-    <a href="/Home/Index">🏠 Home</a>
-    <a href="/Skill/Index">🔍 Explore Skills</a>
-    <a href="#">🔥 Trending Skills</a>
-    <a href="#">👤 My Account</a>
-    <a href="#">⚙ Settings</a>
-</div>
+    <nav class="landing-nav">
+        <a class="brand" asp-controller="Home" asp-action="Index">
+            Swap<span>ster</span>
+        </a>
 
-<div class="main">
+        <div class="nav-links">
+            <a asp-controller="Home" asp-action="Index">Home</a>
+            <a asp-controller="Skill" asp-action="Index">Explore Skills</a>
+            <a href="#trending">Trending</a>
+            <a href="#how">How it Works</a>
 
-    <div class="top-navbar">
-        <input type="text" id="searchInput" class="form-control search-bar"
-               placeholder="Search skills..." onkeyup="filterSkills()" />
-    </div>
+            <!-- Start Swapping now opens Signup page -->
+            <a class="nav-btn" asp-controller="Account" asp-action="Signup">
+                Start Swapping
+            </a>
+        </div>
+    </nav>
 
-    <h3>Welcome, @(Model?.UserName ?? "User") 👋</h3>
+    <section class="hero">
+        <div>
+            <div class="hero-badge"> Skill Exchanging Community</div>
 
-    <hr />
+            <h1>
+                Learn New Skills, <br />
+                Teach What You <span>Know.</span>
+            </h1>
 
-    <h4>🔥 Trending Skills</h4>
+            <p>
+                Swapster connects learners and skill owners. Find people who can teach you what you want to learn,
+                and offer your own skills in exchange.
+            </p>
 
-    <div class="row" id="skillsContainer">
+            <div class="hero-actions">
+                <!-- Hero button also opens Signup page -->
+                <a asp-controller="Account" asp-action="Signup" class="primary-btn">
+                    Start Swapping
+                </a>
 
-        @if (Model?.RecommendedSkills != null)
-        {
-            foreach (var r in Model.RecommendedSkills.Take(6))
+                <a href="#how" class="secondary-btn">
+                    How It Works
+                </a>
+            </div>
+
+            <div class="search-panel">
+                <input type="text"
+                       id="searchInput"
+                       placeholder="Search Java, Web Development, Graphic Design..."
+                       onkeyup="filterSkills()" />
+
+                <button type="button" onclick="filterSkills()">Search</button>
+            </div>
+        </div>
+
+        <div class="hero-visual">
+            <div class="visual-card">
+                <div class="floating-card card-one">
+                    <div class="mini-title">👨‍💻 Java</div>
+                    <div class="mini-text">Available for exchange with graphic designing.</div>
+                </div>
+
+                <div class="circle-person">🤝</div>
+
+                <div class="floating-card card-two">
+                    <div class="mini-title">🎨 Graphic Design</div>
+                    <div class="mini-text">Matched with learners interested in creative skills.</div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="stats">
+        <div class="stat-box">
+            <h3>500+</h3>
+            <p>Active Learners</p>
+        </div>
+
+        <div class="stat-box">
+            <h3>120+</h3>
+            <p>Skills Shared</p>
+        </div>
+
+        <div class="stat-box">
+            <h3>80+</h3>
+            <p>Successful Matches</p>
+        </div>
+
+        <div class="stat-box">
+            <h3>24/7</h3>
+            <p>AI Help</p>
+        </div>
+    </section>
+
+    <section class="section" id="trending">
+        <div class="section-header">
+            <h2>Trending Skills</h2>
+            <p>Discover skills people are currently sharing on Swapster.</p>
+        </div>
+
+        <div class="skills-grid" id="skillsContainer">
+
+            @if (Model?.RecommendedSkills != null && Model.RecommendedSkills.Any())
             {
-                <div class="col-md-4 skill-item">
+                foreach (var r in Model.RecommendedSkills.Take(6))
+                {
+                    <div class="skill-item">
+                        <div class="skill-card">
+                            <div class="skill-icon">💡</div>
+
+                            <h4 class="skill-name">@r.SkillName</h4>
+
+                            <p>@r.Description</p>
+
+                            <div class="skill-meta">
+                                Shared by: @(r.User?.Username ?? "Swapster User")
+                            </div>
+
+                            <a asp-controller="Request"
+                               asp-action="Send"
+                               asp-route-skillId="@r.SkillId"
+                               asp-route-receiverId="@r.UserId"
+                               class="request-btn">
+                                Request Skill
+                            </a>
+                        </div>
+                    </div>
+                }
+            }
+            else
+            {
+                <div class="skill-item">
                     <div class="skill-card">
-                        <h5 class="skill-name">@r.SkillName</h5>
-                        <p>@r.Description</p>
-                        <small>By: @r.User?.Username</small>
+                        <div class="skill-icon">👨‍💻</div>
+                        <h4 class="skill-name">Web Development</h4>
+                        <p>Learn HTML, CSS, JavaScript and build modern websites.</p>
+                        <div class="skill-meta">Shared by: Demo User</div>
+                        <a asp-controller="Account" asp-action="Signup" class="request-btn">Start Learning</a>
+                    </div>
+                </div>
 
-                        <br /><br />
+                <div class="skill-item">
+                    <div class="skill-card">
+                        <div class="skill-icon">🎨</div>
+                        <h4 class="skill-name">Graphic Design</h4>
+                        <p>Learn Canva, Photoshop, branding and creative design basics.</p>
+                        <div class="skill-meta">Shared by: Demo User</div>
+                        <a asp-controller="Account" asp-action="Signup" class="request-btn">Start Learning</a>
+                    </div>
+                </div>
 
-                        <a asp-controller="Request"
-                           asp-action="Send"
-                           asp-route-skillId="@r.SkillId"
-                           asp-route-receiverId="@r.UserId"
-                           class="btn btn-success btn-sm">
-                            Request
-                        </a>
+                <div class="skill-item">
+                    <div class="skill-card">
+                        <div class="skill-icon">💡</div>
+                        <h4 class="skill-name">AI Basics</h4>
+                        <p>Understand AI tools, prompts and beginner machine learning concepts.</p>
+                        <div class="skill-meta">Shared by: Demo User</div>
+                        <a asp-controller="Account" asp-action="Signup" class="request-btn">Start Learning</a>
                     </div>
                 </div>
             }
-        }
 
-    </div>
+        </div>
+    </section>
+
+    <section class="section" id="how">
+        <div class="section-header">
+            <h2>How Swapster Works</h2>
+            <p>Simple process to learn and exchange skills.</p>
+        </div>
+
+        <div class="steps">
+            <div class="step-card">
+                <div class="step-number">1</div>
+                <h4>Create Profile</h4>
+                <p>Add the skills you can teach and the skills you want to learn.</p>
+            </div>
+
+            <div class="step-card">
+                <div class="step-number">2</div>
+                <h4>Find Matches</h4>
+                <p>Browse compatible users and discover people with matching interests.</p>
+            </div>
+
+            <div class="step-card">
+                <div class="step-number">3</div>
+                <h4>Swap Skills</h4>
+                <p>Send requests, connect with users and start learning together.</p>
+            </div>
+        </div>
+    </section>
+
+    <section class="cta">
+        <h2>Ready to Exchange Your Skills?</h2>
+        <p>Join Swapster and start learning from real people today.</p>
+
+        <!-- CTA button also opens Signup page -->
+        <a asp-controller="Account" asp-action="Signup">
+            Find Skills Now
+        </a>
+    </section>
+
 </div>
-
-<!-- ================= CHATBOT UI ================= -->
 
 <div id="chatButton" onclick="toggleChat()">💬</div>
 
@@ -256,12 +790,10 @@
     <div id="chatMessages"></div>
 
     <div id="chatInputBox">
-        <input type="text" id="chatInput" placeholder="Type message..." />
+        <input type="text" id="chatInput" placeholder="Ask about skills..." />
         <button type="button" onclick="sendMessage()">Send</button>
     </div>
 </div>
-
-<!-- ================= SCRIPTS ================= -->
 
 <script>
     function filterSkills() {
@@ -421,6 +953,7 @@
             botHtml += `</div>`;
 
             let thinkingElement = document.getElementById(thinkingId);
+
             if (thinkingElement) {
                 thinkingElement.outerHTML = botHtml;
             } else {
@@ -428,6 +961,7 @@
             }
 
             let updatedBotMessage = document.getElementById(thinkingId);
+
             if (updatedBotMessage) {
                 updatedBotMessage.scrollIntoView({ behavior: "smooth", block: "start" });
             }
@@ -442,6 +976,7 @@
             `;
 
             let thinkingElement = document.getElementById(thinkingId);
+
             if (thinkingElement) {
                 thinkingElement.outerHTML = errorHtml;
             } else {
@@ -449,6 +984,7 @@
             }
 
             let errorMessage = document.getElementById(thinkingId);
+
             if (errorMessage) {
                 errorMessage.scrollIntoView({ behavior: "smooth", block: "start" });
             }

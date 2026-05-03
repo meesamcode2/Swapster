@@ -1,83 +1,652 @@
 ﻿@{
     ViewData["Title"] = "Privacy Policy";
+    ViewData["HideNavbar"] = true;
+    ViewData["FullWidth"] = true;
+    ViewData["BodyClass"] = "privacy-page";
 }
 
-<div class="container mt-5">
-    <h1 class="text-center mb-4">Privacy Policy</h1>
+<style>
+    * {
+        box-sizing: border-box;
+    }
 
-    <p>
-        Welcome to <strong>Swapster</strong>. Your privacy is important to us.
-        This Privacy Policy explains how we collect, use, and protect your information.
-    </p>
+    body {
+        margin: 0;
+        font-family: 'Inter', 'Segoe UI', Arial, sans-serif;
+        background: #f6f8ff;
+        color: #111827;
+    }
 
-    <hr />
+    .privacy-wrapper {
+        min-height: 100vh;
+        background: radial-gradient(circle at top left, rgba(104, 124, 255, 0.18), transparent 35%), radial-gradient(circle at bottom right, rgba(255, 100, 170, 0.15), transparent 35%), #f6f8ff;
+    }
 
-    <h4>1. Information We Collect</h4>
-    <p>We may collect the following information:</p>
-    <ul>
-        <li>Name and profile details</li>
-        <li>Email address</li>
-        <li>Skills you offer and request</li>
-        <li>Messages exchanged between users</li>
-    </ul>
+    /* ================= NAVBAR ================= */
 
-    <h4>2. How We Use Your Information</h4>
-    <p>Your information is used to:</p>
-    <ul>
-        <li>Connect users for skill swapping</li>
-        <li>Improve user experience</li>
-        <li>Ensure platform security</li>
-    </ul>
+    .privacy-nav {
+        width: 100%;
+        padding: 22px 7%;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
 
-    <h4>3. Data Protection</h4>
-    <p>
-        We implement appropriate security measures to protect your data.
-        However, no system is 100% secure.
-    </p>
+    .brand-name {
+        text-decoration: none;
+        font-size: 28px;
+        font-weight: 900;
+        color: #111827;
+        letter-spacing: -0.8px;
+    }
 
-    <h4>4. Sharing of Information</h4>
-    <p>
-        We do not sell or share your personal information with third parties
-        except when required by law.
-    </p>
+        .brand-name span {
+            color: #6674ff;
+        }
 
-    <h4>5. User Responsibilities</h4>
-    <p>
-        Users are responsible for the information they share publicly
-        on their profiles.
-    </p>
+    .nav-actions {
+        display: flex;
+        gap: 14px;
+        align-items: center;
+    }
 
-    <h4>6. Cookies</h4>
-    <p>
-        Swapster may use cookies to enhance your experience.
-    </p>
+        .nav-actions a {
+            text-decoration: none;
+            font-weight: 750;
+            color: #4b5563;
+            transition: 0.25s;
+        }
 
-    <h4>7. Changes to Policy</h4>
-    <p>
-        We may update this policy from time to time.
-        Changes will be posted on this page.
-    </p>
+            .nav-actions a:hover {
+                color: #6674ff;
+            }
 
-    <h4>8. Contact Us</h4>
-    <p>
-        If you have any questions, contact us at:
-        <br />
-        <strong>Email:</strong> support@swapster.com
-    </p>
+    .nav-btn {
+        padding: 10px 18px;
+        border-radius: 35px;
+        background: linear-gradient(135deg, #6674ff, #ff64aa);
+        color: white !important;
+        box-shadow: 0 10px 22px rgba(102, 116, 255, 0.25);
+    }
 
-    <!-- ✅ Added Terms Section -->
-    <hr />
+    /* ================= HERO ================= */
 
-    <h4>Related Policies</h4>
-    <p>
-        Please also review our
-        <a asp-controller="Home" asp-action="Terms">Terms & Conditions</a>
-        to understand the rules and responsibilities when using Swapster.
-    </p>
+    .privacy-hero {
+        padding: 55px 7% 40px;
+        text-align: center;
+    }
 
-    <hr />
+    .privacy-badge {
+        display: inline-block;
+        padding: 10px 18px;
+        border-radius: 40px;
+        background: white;
+        color: #6674ff;
+        font-weight: 850;
+        box-shadow: 0 10px 25px rgba(35, 45, 90, 0.08);
+        margin-bottom: 18px;
+    }
 
-    <p class="text-muted text-center">
+    .privacy-hero h1 {
+        font-size: 56px;
+        line-height: 1.05;
+        font-weight: 950;
+        margin: 0;
+        letter-spacing: -2px;
+        color: #111827;
+    }
+
+        .privacy-hero h1 span {
+            background: linear-gradient(135deg, #6674ff, #ff64aa);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+    .privacy-hero p {
+        max-width: 720px;
+        margin: 20px auto 0;
+        color: #6b7280;
+        font-size: 17px;
+        line-height: 1.8;
+    }
+
+    .last-updated {
+        margin-top: 20px;
+        color: #8a93a3;
+        font-size: 14px;
+        font-weight: 650;
+    }
+
+    /* ================= CONTENT ================= */
+
+    .privacy-container {
+        padding: 35px 7% 80px;
+        display: grid;
+        grid-template-columns: 320px 1fr;
+        gap: 28px;
+        align-items: start;
+    }
+
+    .policy-sidebar {
+        position: sticky;
+        top: 24px;
+        background: rgba(255, 255, 255, 0.88);
+        backdrop-filter: blur(16px);
+        border: 1px solid #eef0f7;
+        border-radius: 28px;
+        padding: 24px;
+        box-shadow: 0 18px 40px rgba(35, 45, 90, 0.08);
+    }
+
+        .policy-sidebar h3 {
+            margin: 0 0 16px;
+            font-size: 20px;
+            font-weight: 900;
+            color: #111827;
+        }
+
+        .policy-sidebar a {
+            display: block;
+            text-decoration: none;
+            color: #6b7280;
+            padding: 10px 12px;
+            border-radius: 14px;
+            font-size: 14px;
+            font-weight: 700;
+            transition: 0.25s;
+        }
+
+            .policy-sidebar a:hover {
+                background: #eef1ff;
+                color: #6674ff;
+                transform: translateX(4px);
+            }
+
+    .policy-support-card {
+        margin-top: 22px;
+        padding: 18px;
+        border-radius: 22px;
+        background: linear-gradient(135deg, #6674ff, #ff64aa);
+        color: white;
+    }
+
+        .policy-support-card h4 {
+            margin: 0 0 8px;
+            font-weight: 900;
+            font-size: 17px;
+        }
+
+        .policy-support-card p {
+            margin: 0;
+            font-size: 13px;
+            line-height: 1.6;
+            opacity: 0.94;
+        }
+
+    .privacy-card {
+        background: white;
+        border: 1px solid #eef0f7;
+        border-radius: 32px;
+        padding: 38px;
+        box-shadow: 0 22px 55px rgba(35, 45, 90, 0.10);
+    }
+
+    .intro-box {
+        padding: 24px;
+        border-radius: 24px;
+        background: linear-gradient(135deg, rgba(102, 116, 255, 0.10), rgba(255, 100, 170, 0.10));
+        border: 1px solid #eef0f7;
+        margin-bottom: 28px;
+    }
+
+        .intro-box h2 {
+            margin: 0 0 10px;
+            font-size: 25px;
+            font-weight: 900;
+            color: #111827;
+        }
+
+        .intro-box p {
+            margin: 0;
+            color: #5b6472;
+            line-height: 1.8;
+        }
+
+    .policy-section {
+        padding: 26px 0;
+        border-bottom: 1px solid #eef0f7;
+    }
+
+        .policy-section:last-child {
+            border-bottom: none;
+            padding-bottom: 0;
+        }
+
+    .section-title {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        margin-bottom: 14px;
+    }
+
+    .section-icon {
+        width: 46px;
+        height: 46px;
+        border-radius: 16px;
+        background: #eef1ff;
+        color: #6674ff;
+        display: grid;
+        place-items: center;
+        font-size: 22px;
+        flex-shrink: 0;
+    }
+
+    .section-title h3 {
+        margin: 0;
+        font-size: 23px;
+        font-weight: 900;
+        color: #111827;
+        letter-spacing: -0.4px;
+    }
+
+    .policy-section p {
+        color: #5b6472;
+        line-height: 1.8;
+        margin: 0 0 14px;
+    }
+
+    .policy-list {
+        display: grid;
+        gap: 10px;
+        margin: 16px 0 0;
+        padding: 0;
+        list-style: none;
+    }
+
+        .policy-list li {
+            background: #f9fafb;
+            border: 1px solid #eef0f7;
+            border-radius: 16px;
+            padding: 13px 15px;
+            color: #4b5563;
+            line-height: 1.6;
+            position: relative;
+            padding-left: 42px;
+        }
+
+            .policy-list li::before {
+                content: "✓";
+                position: absolute;
+                left: 15px;
+                top: 13px;
+                color: #6674ff;
+                font-weight: 900;
+            }
+
+    .highlight-note {
+        margin-top: 18px;
+        padding: 18px;
+        border-radius: 20px;
+        background: #fff7fb;
+        border: 1px solid rgba(255, 100, 170, 0.20);
+        color: #5b6472;
+        line-height: 1.7;
+    }
+
+    .related-card {
+        margin-top: 30px;
+        padding: 28px;
+        border-radius: 28px;
+        background: linear-gradient(135deg, #111827, #1f2937);
+        color: white;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        gap: 18px;
+    }
+
+        .related-card h3 {
+            margin: 0 0 8px;
+            font-size: 24px;
+            font-weight: 900;
+        }
+
+        .related-card p {
+            margin: 0;
+            color: #d1d5db;
+            line-height: 1.6;
+        }
+
+        .related-card a {
+            flex-shrink: 0;
+            text-decoration: none;
+            background: white;
+            color: #111827;
+            padding: 12px 20px;
+            border-radius: 35px;
+            font-weight: 900;
+            transition: 0.25s;
+        }
+
+            .related-card a:hover {
+                transform: translateY(-3px);
+            }
+
+    .privacy-footer {
+        padding: 28px 7%;
+        text-align: center;
+        color: #8a93a3;
+        font-size: 14px;
+        border-top: 1px solid #eef0f7;
+        background: rgba(255, 255, 255, 0.45);
+    }
+
+    @@media (max-width: 992px) {
+        .privacy-container {
+            grid-template-columns: 1fr;
+        }
+
+        .policy-sidebar {
+            position: static;
+        }
+
+        .privacy-hero h1 {
+            font-size: 44px;
+        }
+
+        .related-card {
+            flex-direction: column;
+            align-items: flex-start;
+        }
+    }
+
+    @@media (max-width: 576px) {
+        .privacy-nav {
+            flex-direction: column;
+            gap: 16px;
+        }
+
+        .nav-actions {
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+
+        .privacy-hero {
+            padding-top: 35px;
+        }
+
+            .privacy-hero h1 {
+                font-size: 36px;
+            }
+
+        .privacy-card {
+            padding: 24px;
+            border-radius: 24px;
+        }
+
+        .privacy-container {
+            padding-left: 22px;
+            padding-right: 22px;
+        }
+
+        .section-title {
+            align-items: flex-start;
+        }
+    }
+</style>
+
+<div class="privacy-wrapper">
+
+    <!-- ================= NAVBAR ================= -->
+
+    <nav class="privacy-nav">
+        <a asp-controller="Home" asp-action="Index" class="brand-name">
+            Swap<span>ster</span>
+        </a>
+
+        <div class="nav-actions">
+            <a asp-controller="Home" asp-action="Index">Home</a>
+            <a asp-controller="Home" asp-action="Terms">Terms</a>
+            <a asp-controller="Account" asp-action="Signup" class="nav-btn">Join Swapster</a>
+        </div>
+    </nav>
+
+    <!-- ================= HERO ================= -->
+
+    <section class="privacy-hero">
+        <div class="privacy-badge">🔐 Privacy & Data Protection</div>
+
+        <h1>Your privacy matters at <span>Swapster.</span></h1>
+
+        <p>
+            This Privacy Policy explains what information Swapster collects, how we use it,
+            how we protect it, and what choices you have while using our skill exchange platform.
+        </p>
+
+        <div class="last-updated">
+            Last updated: May 2026
+        </div>
+    </section>
+
+    <!-- ================= CONTENT ================= -->
+
+    <section class="privacy-container">
+
+        <!-- SIDEBAR -->
+        <aside class="policy-sidebar">
+            <h3>Policy Sections</h3>
+
+            <a href="#overview">Overview</a>
+            <a href="#information">Information We Collect</a>
+            <a href="#usage">How We Use Information</a>
+            <a href="#protection">Data Protection</a>
+            <a href="#sharing">Information Sharing</a>
+            <a href="#responsibilities">User Responsibilities</a>
+            <a href="#cookies">Cookies</a>
+            <a href="#rights">Your Choices</a>
+            <a href="#changes">Policy Updates</a>
+            <a href="#contact">Contact Us</a>
+
+            <div class="policy-support-card">
+                <h4>Need Help?</h4>
+                <p>
+                    For privacy questions, contact Swapster support anytime.
+                </p>
+            </div>
+        </aside>
+
+        <!-- MAIN CARD -->
+        <main class="privacy-card">
+
+            <div class="intro-box" id="overview">
+                <h2>Privacy Policy Overview</h2>
+                <p>
+                    Welcome to <strong>Swapster</strong>. We respect your privacy and aim to keep your
+                    personal information safe, transparent, and used only for improving your skill swapping experience.
+                </p>
+            </div>
+
+            <div class="policy-section" id="information">
+                <div class="section-title">
+                    <div class="section-icon">📌</div>
+                    <h3>1. Information We Collect</h3>
+                </div>
+
+                <p>
+                    To provide a useful skill exchange experience, Swapster may collect information that helps
+                    identify your account, profile, and learning preferences.
+                </p>
+
+                <ul class="policy-list">
+                    <li>Name, username, and profile details added by you.</li>
+                    <li>Email address used for account registration and recovery.</li>
+                    <li>Skills you can teach and skills you want to learn.</li>
+                    <li>Experience level, short bio, interests, and swap preferences.</li>
+                    <li>Messages, requests, or interactions made through the platform.</li>
+                    <li>Basic technical information needed for security and platform performance.</li>
+                </ul>
+            </div>
+
+            <div class="policy-section" id="usage">
+                <div class="section-title">
+                    <div class="section-icon">⚙️</div>
+                    <h3>2. How We Use Your Information</h3>
+                </div>
+
+                <p>
+                    Your information is used to make Swapster functional, personalized, and secure.
+                    We use your data for the following purposes:
+                </p>
+
+                <ul class="policy-list">
+                    <li>To create and manage your Swapster account.</li>
+                    <li>To connect users based on matching skills and learning interests.</li>
+                    <li>To show relevant skills, profiles, and recommendations.</li>
+                    <li>To send account-related updates such as password reset links.</li>
+                    <li>To improve platform design, features, and user experience.</li>
+                    <li>To prevent misuse, spam, unauthorized access, or suspicious activity.</li>
+                </ul>
+            </div>
+
+            <div class="policy-section" id="protection">
+                <div class="section-title">
+                    <div class="section-icon">🛡️</div>
+                    <h3>3. Data Protection</h3>
+                </div>
+
+                <p>
+                    We take reasonable technical and organizational measures to help protect your information
+                    from unauthorized access, misuse, loss, or alteration.
+                </p>
+
+                <div class="highlight-note">
+                    However, no online platform can guarantee 100% security. You should always use a strong password,
+                    avoid sharing your login details, and be careful with the information you post publicly.
+                </div>
+            </div>
+
+            <div class="policy-section" id="sharing">
+                <div class="section-title">
+                    <div class="section-icon">🤝</div>
+                    <h3>4. Sharing of Information</h3>
+                </div>
+
+                <p>
+                    Swapster does not sell your personal information. Some profile details may be visible to other
+                    users when needed for skill discovery and swapping.
+                </p>
+
+                <ul class="policy-list">
+                    <li>Your public profile may show your username, skills, bio, and interests.</li>
+                    <li>We may share information if required by law or legal process.</li>
+                    <li>We may use trusted services for hosting, email delivery, or platform support.</li>
+                    <li>Private account information such as passwords should never be shared publicly.</li>
+                </ul>
+            </div>
+
+            <div class="policy-section" id="responsibilities">
+                <div class="section-title">
+                    <div class="section-icon">👤</div>
+                    <h3>5. User Responsibilities</h3>
+                </div>
+
+                <p>
+                    You are responsible for the information you choose to share on Swapster.
+                    Avoid posting sensitive personal details in your profile, messages, or public sections.
+                </p>
+
+                <ul class="policy-list">
+                    <li>Keep your login information confidential.</li>
+                    <li>Share only accurate and appropriate profile information.</li>
+                    <li>Respect other users' privacy during communication.</li>
+                    <li>Report suspicious or harmful behavior if you notice it.</li>
+                </ul>
+            </div>
+
+            <div class="policy-section" id="cookies">
+                <div class="section-title">
+                    <div class="section-icon">🍪</div>
+                    <h3>6. Cookies</h3>
+                </div>
+
+                <p>
+                    Swapster may use cookies or similar technologies to improve your browsing experience,
+                    remember sessions, and understand how the platform is used.
+                </p>
+
+                <p>
+                    You may manage cookies through your browser settings, but some features may not work properly
+                    if cookies are disabled.
+                </p>
+            </div>
+
+            <div class="policy-section" id="rights">
+                <div class="section-title">
+                    <div class="section-icon">✅</div>
+                    <h3>7. Your Choices and Control</h3>
+                </div>
+
+                <p>
+                    You may update your profile information and control what you choose to share.
+                    You can also contact us for account-related privacy questions.
+                </p>
+
+                <ul class="policy-list">
+                    <li>You can edit your profile details when platform features allow it.</li>
+                    <li>You can choose what skills and interests to display.</li>
+                    <li>You can request help regarding account access or privacy concerns.</li>
+                </ul>
+            </div>
+
+            <div class="policy-section" id="changes">
+                <div class="section-title">
+                    <div class="section-icon">📢</div>
+                    <h3>8. Changes to This Policy</h3>
+                </div>
+
+                <p>
+                    We may update this Privacy Policy from time to time to reflect changes in features,
+                    security practices, or legal requirements. Updated versions will be posted on this page.
+                </p>
+            </div>
+
+            <div class="policy-section" id="contact">
+                <div class="section-title">
+                    <div class="section-icon">📩</div>
+                    <h3>9. Contact Us</h3>
+                </div>
+
+                <p>
+                    If you have any questions about this Privacy Policy or how Swapster handles your information,
+                    you can contact us at:
+                </p>
+
+                <ul class="policy-list">
+                    <li><strong>Email:</strong> support@swapster.com</li>
+                    <li><strong>Platform:</strong> Swapster Skill Exchange</li>
+                </ul>
+            </div>
+
+            <div class="related-card">
+                <div>
+                    <h3>Related Policies</h3>
+                    <p>
+                        Please also review our Terms & Conditions to understand rules,
+                        responsibilities, and acceptable use of Swapster.
+                    </p>
+                </div>
+
+                <a asp-controller="Home" asp-action="Terms">
+                    View Terms
+                </a>
+            </div>
+
+        </main>
+
+    </section>
+
+    <footer class="privacy-footer">
         © 2026 Swapster. All rights reserved.
-    </p>
+    </footer>
+
 </div>

@@ -1,69 +1,635 @@
 ﻿@{
     ViewData["Title"] = "Terms & Conditions";
+    ViewData["HideNavbar"] = true;
+    ViewData["FullWidth"] = true;
+    ViewData["BodyClass"] = "terms-page";
 }
 
-<div class="container mt-5">
-    <h1 class="text-center mb-4">Terms & Conditions</h1>
+<style>
+    * {
+        box-sizing: border-box;
+    }
 
-    <p>
-        Welcome to <strong>Swapster</strong>. By using our platform, you agree to the following terms and conditions.
-    </p>
+    body {
+        margin: 0;
+        font-family: 'Inter', 'Segoe UI', Arial, sans-serif;
+        background: #f6f8ff;
+        color: #111827;
+    }
 
-    <hr />
+    .terms-wrapper {
+        min-height: 100vh;
+        background: radial-gradient(circle at top left, rgba(104, 124, 255, 0.18), transparent 35%), radial-gradient(circle at bottom right, rgba(255, 100, 170, 0.15), transparent 35%), #f6f8ff;
+    }
 
-    <h4>1. Acceptance of Terms</h4>
-    <p>
-        By accessing or using Swapster, you agree to comply with these terms.
-        If you do not agree, please do not use our platform.
-    </p>
+    .terms-nav {
+        width: 100%;
+        padding: 22px 7%;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
 
-    <h4>2. User Accounts</h4>
-    <p>
-        You are responsible for maintaining the confidentiality of your account
-        and ensuring that your information is accurate.
-    </p>
+    .brand-name {
+        text-decoration: none;
+        font-size: 28px;
+        font-weight: 900;
+        color: #111827;
+        letter-spacing: -0.8px;
+    }
 
-    <h4>3. Skill Swap Responsibility</h4>
-    <p>
-        Swapster only provides a platform for users to exchange skills.
-        We are not responsible for the quality, safety, or legality of services provided by users.
-    </p>
+        .brand-name span {
+            color: #6674ff;
+        }
 
-    <h4>4. Prohibited Activities</h4>
-    <ul>
-        <li>Providing false information</li>
-        <li>Harassment or abusive behavior</li>
-        <li>Sharing inappropriate or illegal content</li>
-        <li>Using the platform for fraud or scams</li>
-    </ul>
+    .nav-actions {
+        display: flex;
+        gap: 14px;
+        align-items: center;
+    }
 
-    <h4>5. Termination</h4>
-    <p>
-        We reserve the right to suspend or terminate accounts that violate our terms.
-    </p>
+        .nav-actions a {
+            text-decoration: none;
+            font-weight: 750;
+            color: #4b5563;
+            transition: 0.25s;
+        }
 
-    <h4>6. Limitation of Liability</h4>
-    <p>
-        Swapster is not liable for any damages arising from user interactions
-        or skill exchanges.
-    </p>
+            .nav-actions a:hover {
+                color: #6674ff;
+            }
 
-    <h4>7. Changes to Terms</h4>
-    <p>
-        We may update these terms at any time. Continued use of the platform
-        means you accept the updated terms.
-    </p>
+    .nav-btn {
+        padding: 10px 18px;
+        border-radius: 35px;
+        background: linear-gradient(135deg, #6674ff, #ff64aa);
+        color: white !important;
+        box-shadow: 0 10px 22px rgba(102, 116, 255, 0.25);
+    }
 
-    <h4>8. Contact Information</h4>
-    <p>
-        For any questions regarding these terms:
-        <br />
-        <strong>Email:</strong> support@swapster.com
-    </p>
+    .terms-hero {
+        padding: 55px 7% 40px;
+        text-align: center;
+    }
 
-    <hr />
+    .terms-badge {
+        display: inline-block;
+        padding: 10px 18px;
+        border-radius: 40px;
+        background: white;
+        color: #6674ff;
+        font-weight: 850;
+        box-shadow: 0 10px 25px rgba(35, 45, 90, 0.08);
+        margin-bottom: 18px;
+    }
 
-    <p class="text-muted text-center">
+    .terms-hero h1 {
+        font-size: 56px;
+        line-height: 1.05;
+        font-weight: 950;
+        margin: 0;
+        letter-spacing: -2px;
+        color: #111827;
+    }
+
+        .terms-hero h1 span {
+            background: linear-gradient(135deg, #6674ff, #ff64aa);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+    .terms-hero p {
+        max-width: 760px;
+        margin: 20px auto 0;
+        color: #6b7280;
+        font-size: 17px;
+        line-height: 1.8;
+    }
+
+    .last-updated {
+        margin-top: 20px;
+        color: #8a93a3;
+        font-size: 14px;
+        font-weight: 650;
+    }
+
+    .terms-container {
+        padding: 35px 7% 80px;
+        display: grid;
+        grid-template-columns: 320px 1fr;
+        gap: 28px;
+        align-items: start;
+    }
+
+    .terms-sidebar {
+        position: sticky;
+        top: 24px;
+        background: rgba(255, 255, 255, 0.88);
+        backdrop-filter: blur(16px);
+        border: 1px solid #eef0f7;
+        border-radius: 28px;
+        padding: 24px;
+        box-shadow: 0 18px 40px rgba(35, 45, 90, 0.08);
+    }
+
+        .terms-sidebar h3 {
+            margin: 0 0 16px;
+            font-size: 20px;
+            font-weight: 900;
+            color: #111827;
+        }
+
+        .terms-sidebar a {
+            display: block;
+            text-decoration: none;
+            color: #6b7280;
+            padding: 10px 12px;
+            border-radius: 14px;
+            font-size: 14px;
+            font-weight: 700;
+            transition: 0.25s;
+        }
+
+            .terms-sidebar a:hover {
+                background: #eef1ff;
+                color: #6674ff;
+                transform: translateX(4px);
+            }
+
+    .terms-warning-card {
+        margin-top: 22px;
+        padding: 18px;
+        border-radius: 22px;
+        background: linear-gradient(135deg, #6674ff, #ff64aa);
+        color: white;
+    }
+
+        .terms-warning-card h4 {
+            margin: 0 0 8px;
+            font-weight: 900;
+            font-size: 17px;
+        }
+
+        .terms-warning-card p {
+            margin: 0;
+            font-size: 13px;
+            line-height: 1.6;
+            opacity: 0.94;
+        }
+
+    .terms-card {
+        background: white;
+        border: 1px solid #eef0f7;
+        border-radius: 32px;
+        padding: 38px;
+        box-shadow: 0 22px 55px rgba(35, 45, 90, 0.10);
+    }
+
+    .intro-box {
+        padding: 24px;
+        border-radius: 24px;
+        background: linear-gradient(135deg, rgba(102, 116, 255, 0.10), rgba(255, 100, 170, 0.10));
+        border: 1px solid #eef0f7;
+        margin-bottom: 28px;
+    }
+
+        .intro-box h2 {
+            margin: 0 0 10px;
+            font-size: 25px;
+            font-weight: 900;
+            color: #111827;
+        }
+
+        .intro-box p {
+            margin: 0;
+            color: #5b6472;
+            line-height: 1.8;
+        }
+
+    .terms-section {
+        padding: 26px 0;
+        border-bottom: 1px solid #eef0f7;
+    }
+
+        .terms-section:last-child {
+            border-bottom: none;
+            padding-bottom: 0;
+        }
+
+    .section-title {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        margin-bottom: 14px;
+    }
+
+    .section-icon {
+        width: 46px;
+        height: 46px;
+        border-radius: 16px;
+        background: #eef1ff;
+        color: #6674ff;
+        display: grid;
+        place-items: center;
+        font-size: 22px;
+        flex-shrink: 0;
+    }
+
+    .section-title h3 {
+        margin: 0;
+        font-size: 23px;
+        font-weight: 900;
+        color: #111827;
+        letter-spacing: -0.4px;
+    }
+
+    .terms-section p {
+        color: #5b6472;
+        line-height: 1.8;
+        margin: 0 0 14px;
+    }
+
+    .terms-list {
+        display: grid;
+        gap: 10px;
+        margin: 16px 0 0;
+        padding: 0;
+        list-style: none;
+    }
+
+        .terms-list li {
+            background: #f9fafb;
+            border: 1px solid #eef0f7;
+            border-radius: 16px;
+            padding: 13px 15px;
+            color: #4b5563;
+            line-height: 1.6;
+            position: relative;
+            padding-left: 42px;
+        }
+
+            .terms-list li::before {
+                content: "✓";
+                position: absolute;
+                left: 15px;
+                top: 13px;
+                color: #6674ff;
+                font-weight: 900;
+            }
+
+    .danger-list li::before {
+        content: "!";
+        color: #ff64aa;
+    }
+
+    .highlight-note {
+        margin-top: 18px;
+        padding: 18px;
+        border-radius: 20px;
+        background: #fff7fb;
+        border: 1px solid rgba(255, 100, 170, 0.20);
+        color: #5b6472;
+        line-height: 1.7;
+    }
+
+    .related-card {
+        margin-top: 30px;
+        padding: 28px;
+        border-radius: 28px;
+        background: linear-gradient(135deg, #111827, #1f2937);
+        color: white;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        gap: 18px;
+    }
+
+        .related-card h3 {
+            margin: 0 0 8px;
+            font-size: 24px;
+            font-weight: 900;
+        }
+
+        .related-card p {
+            margin: 0;
+            color: #d1d5db;
+            line-height: 1.6;
+        }
+
+        .related-card a {
+            flex-shrink: 0;
+            text-decoration: none;
+            background: white;
+            color: #111827;
+            padding: 12px 20px;
+            border-radius: 35px;
+            font-weight: 900;
+            transition: 0.25s;
+        }
+
+            .related-card a:hover {
+                transform: translateY(-3px);
+            }
+
+    .terms-footer {
+        padding: 28px 7%;
+        text-align: center;
+        color: #8a93a3;
+        font-size: 14px;
+        border-top: 1px solid #eef0f7;
+        background: rgba(255, 255, 255, 0.45);
+    }
+
+    @@media (max-width: 992px) {
+        .terms-container {
+            grid-template-columns: 1fr;
+        }
+
+        .terms-sidebar {
+            position: static;
+        }
+
+        .terms-hero h1 {
+            font-size: 44px;
+        }
+
+        .related-card {
+            flex-direction: column;
+            align-items: flex-start;
+        }
+    }
+
+    @@media (max-width: 576px) {
+        .terms-nav {
+            flex-direction: column;
+            gap: 16px;
+        }
+
+        .nav-actions {
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+
+        .terms-hero {
+            padding-top: 35px;
+        }
+
+            .terms-hero h1 {
+                font-size: 36px;
+            }
+
+        .terms-card {
+            padding: 24px;
+            border-radius: 24px;
+        }
+
+        .terms-container {
+            padding-left: 22px;
+            padding-right: 22px;
+        }
+
+        .section-title {
+            align-items: flex-start;
+        }
+    }
+</style>
+
+<div class="terms-wrapper">
+
+    <!-- ================= NAVBAR ================= -->
+
+    <nav class="terms-nav">
+        <a asp-controller="Home" asp-action="Index" class="brand-name">
+            Swap<span>ster</span>
+        </a>
+
+        <div class="nav-actions">
+            <a asp-controller="Home" asp-action="Index">Home</a>
+            <a asp-controller="Home" asp-action="Privacy">Privacy</a>
+            <a asp-controller="Account" asp-action="Signup" class="nav-btn">Join Swapster</a>
+        </div>
+    </nav>
+
+    <!-- ================= HERO ================= -->
+
+    <section class="terms-hero">
+        <div class="terms-badge">📄 Platform Rules & Responsibilities</div>
+
+        <h1>Terms & Conditions for <span>Swapster.</span></h1>
+
+        <p>
+            These Terms & Conditions explain the rules for using Swapster, your responsibilities
+            as a user, and how our skill exchange platform should be used safely and respectfully.
+        </p>
+
+        <div class="last-updated">
+            Last updated: May 2026
+        </div>
+    </section>
+
+    <!-- ================= CONTENT ================= -->
+
+    <section class="terms-container">
+
+        <!-- SIDEBAR -->
+        <aside class="terms-sidebar">
+            <h3>Terms Sections</h3>
+
+            <a href="#overview">Overview</a>
+            <a href="#acceptance">Acceptance of Terms</a>
+            <a href="#accounts">User Accounts</a>
+            <a href="#skill-swap">Skill Swap Responsibility</a>
+            <a href="#prohibited">Prohibited Activities</a>
+            <a href="#termination">Account Termination</a>
+            <a href="#liability">Limitation of Liability</a>
+            <a href="#changes">Changes to Terms</a>
+            <a href="#contact">Contact Information</a>
+
+            <div class="terms-warning-card">
+                <h4>Important</h4>
+                <p>
+                    By using Swapster, you agree to follow these platform rules.
+                </p>
+            </div>
+        </aside>
+
+        <!-- MAIN CARD -->
+        <main class="terms-card">
+
+            <div class="intro-box" id="overview">
+                <h2>Terms & Conditions Overview</h2>
+                <p>
+                    Welcome to <strong>Swapster</strong>. By accessing, creating an account,
+                    posting skills, sending requests, or interacting with other users, you agree
+                    to follow these Terms & Conditions.
+                </p>
+            </div>
+
+            <div class="terms-section" id="acceptance">
+                <div class="section-title">
+                    <div class="section-icon">✅</div>
+                    <h3>1. Acceptance of Terms</h3>
+                </div>
+
+                <p>
+                    By using Swapster, you confirm that you understand and agree to these terms.
+                    If you do not agree with any part of these terms, you should stop using the platform.
+                </p>
+
+                <ul class="terms-list">
+                    <li>You agree to use Swapster for lawful and respectful skill exchange.</li>
+                    <li>You agree to provide accurate information when creating an account.</li>
+                    <li>You agree not to misuse the platform or harm other users.</li>
+                </ul>
+            </div>
+
+            <div class="terms-section" id="accounts">
+                <div class="section-title">
+                    <div class="section-icon">👤</div>
+                    <h3>2. User Accounts</h3>
+                </div>
+
+                <p>
+                    Your account allows you to post skills, request skills, communicate with users,
+                    and access Swapster features. You are responsible for keeping your account secure.
+                </p>
+
+                <ul class="terms-list">
+                    <li>You must keep your login details private and secure.</li>
+                    <li>You are responsible for all activity under your account.</li>
+                    <li>Your profile information should be accurate, appropriate, and not misleading.</li>
+                    <li>You should not create fake accounts or impersonate another person.</li>
+                </ul>
+            </div>
+
+            <div class="terms-section" id="skill-swap">
+                <div class="section-title">
+                    <div class="section-icon">🤝</div>
+                    <h3>3. Skill Swap Responsibility</h3>
+                </div>
+
+                <p>
+                    Swapster provides a platform where users can discover, request, and exchange skills.
+                    The actual learning experience, communication, quality, timing, and commitment depend
+                    on the users involved.
+                </p>
+
+                <div class="highlight-note">
+                    Swapster does not guarantee the quality, safety, legality, or outcome of any skill exchange.
+                    Users should communicate clearly, act responsibly, and make safe decisions before meeting
+                    or sharing personal information.
+                </div>
+            </div>
+
+            <div class="terms-section" id="prohibited">
+                <div class="section-title">
+                    <div class="section-icon">🚫</div>
+                    <h3>4. Prohibited Activities</h3>
+                </div>
+
+                <p>
+                    To keep Swapster safe and useful for everyone, the following activities are not allowed:
+                </p>
+
+                <ul class="terms-list danger-list">
+                    <li>Providing false, misleading, or fake profile information.</li>
+                    <li>Harassing, threatening, bullying, or abusing other users.</li>
+                    <li>Sharing inappropriate, offensive, illegal, or harmful content.</li>
+                    <li>Using Swapster for fraud, scams, spam, or unauthorized promotions.</li>
+                    <li>Attempting to hack, disrupt, overload, or damage the platform.</li>
+                    <li>Sharing another user's private information without permission.</li>
+                    <li>Using the platform for activities unrelated to legitimate skill exchange.</li>
+                </ul>
+            </div>
+
+            <div class="terms-section" id="termination">
+                <div class="section-title">
+                    <div class="section-icon">⚠️</div>
+                    <h3>5. Account Suspension or Termination</h3>
+                </div>
+
+                <p>
+                    We reserve the right to suspend, restrict, or terminate accounts that violate these terms,
+                    misuse the platform, or create risk for other users.
+                </p>
+
+                <ul class="terms-list">
+                    <li>Accounts may be restricted if harmful activity is reported or detected.</li>
+                    <li>Repeated violations may lead to permanent account removal.</li>
+                    <li>We may remove content that violates platform rules or safety standards.</li>
+                </ul>
+            </div>
+
+            <div class="terms-section" id="liability">
+                <div class="section-title">
+                    <div class="section-icon">🛡️</div>
+                    <h3>6. Limitation of Liability</h3>
+                </div>
+
+                <p>
+                    Swapster is not responsible for losses, damages, disputes, or issues resulting from
+                    user interactions, offline meetings, skill quality, or agreements made between users.
+                </p>
+
+                <div class="highlight-note">
+                    Users are encouraged to communicate carefully, verify information, avoid sharing sensitive details,
+                    and make safe choices when arranging any skill exchange.
+                </div>
+            </div>
+
+            <div class="terms-section" id="changes">
+                <div class="section-title">
+                    <div class="section-icon">📢</div>
+                    <h3>7. Changes to Terms</h3>
+                </div>
+
+                <p>
+                    Swapster may update these Terms & Conditions when features, rules, security practices,
+                    or legal requirements change. Updated terms will be posted on this page.
+                </p>
+
+                <p>
+                    Continued use of Swapster after updates means you accept the revised terms.
+                </p>
+            </div>
+
+            <div class="terms-section" id="contact">
+                <div class="section-title">
+                    <div class="section-icon">📩</div>
+                    <h3>8. Contact Information</h3>
+                </div>
+
+                <p>
+                    For questions about these Terms & Conditions, platform rules, or account-related concerns,
+                    you can contact Swapster support.
+                </p>
+
+                <ul class="terms-list">
+                    <li><strong>Email:</strong> support@swapster.com</li>
+                    <li><strong>Platform:</strong> Swapster Skill Exchange</li>
+                </ul>
+            </div>
+
+            <div class="related-card">
+                <div>
+                    <h3>Privacy Matters Too</h3>
+                    <p>
+                        Please also review our Privacy Policy to understand how Swapster collects,
+                        protects, and uses your information.
+                    </p>
+                </div>
+
+                <a asp-controller="Home" asp-action="Privacy">
+                    View Privacy
+                </a>
+            </div>
+
+        </main>
+
+    </section>
+
+    <footer class="terms-footer">
         © 2026 Swapster. All rights reserved.
-    </p>
+    </footer>
+
 </div>

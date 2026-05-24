@@ -3,16 +3,60 @@
   "WorkspaceRootPath": "C:\\Users\\Meesam\\source\\repos\\Swapster\\",
   "Documents": [
     {
-      "AbsoluteMoniker": "D:0:0:{F803AD3F-87F0-438D-BA51-BEB13DB127A2}|Swapster\\Swapster.csproj|c:\\users\\meesam\\source\\repos\\swapster\\swapster\\views\\shared\\_layout.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
-      "RelativeMoniker": "D:0:0:{F803AD3F-87F0-438D-BA51-BEB13DB127A2}|Swapster\\Swapster.csproj|solutionrelative:swapster\\views\\shared\\_layout.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
+      "AbsoluteMoniker": "D:0:0:{F803AD3F-87F0-438D-BA51-BEB13DB127A2}|Swapster\\Swapster.csproj|c:\\users\\meesam\\source\\repos\\swapster\\swapster\\views\\home\\privacy.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
+      "RelativeMoniker": "D:0:0:{F803AD3F-87F0-438D-BA51-BEB13DB127A2}|Swapster\\Swapster.csproj|solutionrelative:swapster\\views\\home\\privacy.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{F803AD3F-87F0-438D-BA51-BEB13DB127A2}|Swapster\\Swapster.csproj|c:\\users\\meesam\\source\\repos\\swapster\\swapster\\views\\skill\\index.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
-      "RelativeMoniker": "D:0:0:{F803AD3F-87F0-438D-BA51-BEB13DB127A2}|Swapster\\Swapster.csproj|solutionrelative:swapster\\views\\skill\\index.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
+      "AbsoluteMoniker": "D:0:0:{F803AD3F-87F0-438D-BA51-BEB13DB127A2}|Swapster\\Swapster.csproj|c:\\users\\meesam\\source\\repos\\swapster\\swapster\\views\\home\\terms.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
+      "RelativeMoniker": "D:0:0:{F803AD3F-87F0-438D-BA51-BEB13DB127A2}|Swapster\\Swapster.csproj|solutionrelative:swapster\\views\\home\\terms.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{F803AD3F-87F0-438D-BA51-BEB13DB127A2}|Swapster\\Swapster.csproj|c:\\users\\meesam\\source\\repos\\swapster\\swapster\\views\\skill\\create.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
-      "RelativeMoniker": "D:0:0:{F803AD3F-87F0-438D-BA51-BEB13DB127A2}|Swapster\\Swapster.csproj|solutionrelative:swapster\\views\\skill\\create.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
+      "AbsoluteMoniker": "D:0:0:{F803AD3F-87F0-438D-BA51-BEB13DB127A2}|Swapster\\Swapster.csproj|c:\\users\\meesam\\source\\repos\\swapster\\swapster\\views\\home\\dashboard.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
+      "RelativeMoniker": "D:0:0:{F803AD3F-87F0-438D-BA51-BEB13DB127A2}|Swapster\\Swapster.csproj|solutionrelative:swapster\\views\\home\\dashboard.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{F803AD3F-87F0-438D-BA51-BEB13DB127A2}|Swapster\\Swapster.csproj|c:\\users\\meesam\\source\\repos\\swapster\\swapster\\views\\account\\myaccount.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
+      "RelativeMoniker": "D:0:0:{F803AD3F-87F0-438D-BA51-BEB13DB127A2}|Swapster\\Swapster.csproj|solutionrelative:swapster\\views\\account\\myaccount.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{F803AD3F-87F0-438D-BA51-BEB13DB127A2}|Swapster\\Swapster.csproj|c:\\users\\meesam\\source\\repos\\swapster\\swapster\\views\\home\\myaccount.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
+      "RelativeMoniker": "D:0:0:{F803AD3F-87F0-438D-BA51-BEB13DB127A2}|Swapster\\Swapster.csproj|solutionrelative:swapster\\views\\home\\myaccount.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{F803AD3F-87F0-438D-BA51-BEB13DB127A2}|Swapster\\Swapster.csproj|c:\\users\\meesam\\source\\repos\\swapster\\swapster\\controllers\\accountcontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{F803AD3F-87F0-438D-BA51-BEB13DB127A2}|Swapster\\Swapster.csproj|solutionrelative:swapster\\controllers\\accountcontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{F803AD3F-87F0-438D-BA51-BEB13DB127A2}|Swapster\\Swapster.csproj|c:\\users\\meesam\\source\\repos\\swapster\\swapster\\views\\home\\settings.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
+      "RelativeMoniker": "D:0:0:{F803AD3F-87F0-438D-BA51-BEB13DB127A2}|Swapster\\Swapster.csproj|solutionrelative:swapster\\views\\home\\settings.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{F803AD3F-87F0-438D-BA51-BEB13DB127A2}|Swapster\\Swapster.csproj|c:\\users\\meesam\\source\\repos\\swapster\\swapster\\models\\skillrequest.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{F803AD3F-87F0-438D-BA51-BEB13DB127A2}|Swapster\\Swapster.csproj|solutionrelative:swapster\\models\\skillrequest.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{F803AD3F-87F0-438D-BA51-BEB13DB127A2}|Swapster\\Swapster.csproj|c:\\users\\meesam\\source\\repos\\swapster\\swapster\\data\\applicationdbcontext.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{F803AD3F-87F0-438D-BA51-BEB13DB127A2}|Swapster\\Swapster.csproj|solutionrelative:swapster\\data\\applicationdbcontext.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{F803AD3F-87F0-438D-BA51-BEB13DB127A2}|Swapster\\Swapster.csproj|c:\\users\\meesam\\source\\repos\\swapster\\swapster\\models\\myaccountviewmodel.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{F803AD3F-87F0-438D-BA51-BEB13DB127A2}|Swapster\\Swapster.csproj|solutionrelative:swapster\\models\\myaccountviewmodel.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{F803AD3F-87F0-438D-BA51-BEB13DB127A2}|Swapster\\Swapster.csproj|c:\\users\\meesam\\source\\repos\\swapster\\swapster\\models\\userwantedskill.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{F803AD3F-87F0-438D-BA51-BEB13DB127A2}|Swapster\\Swapster.csproj|solutionrelative:swapster\\models\\userwantedskill.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{F803AD3F-87F0-438D-BA51-BEB13DB127A2}|Swapster\\Swapster.csproj|c:\\users\\meesam\\source\\repos\\swapster\\swapster\\models\\user.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{F803AD3F-87F0-438D-BA51-BEB13DB127A2}|Swapster\\Swapster.csproj|solutionrelative:swapster\\models\\user.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{F803AD3F-87F0-438D-BA51-BEB13DB127A2}|Swapster\\Swapster.csproj|c:\\users\\meesam\\source\\repos\\swapster\\swapster\\controllers\\homecontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{F803AD3F-87F0-438D-BA51-BEB13DB127A2}|Swapster\\Swapster.csproj|solutionrelative:swapster\\controllers\\homecontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{F803AD3F-87F0-438D-BA51-BEB13DB127A2}|Swapster\\Swapster.csproj|c:\\users\\meesam\\source\\repos\\swapster\\swapster\\views\\account\\signup.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
+      "RelativeMoniker": "D:0:0:{F803AD3F-87F0-438D-BA51-BEB13DB127A2}|Swapster\\Swapster.csproj|solutionrelative:swapster\\views\\account\\signup.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
     },
     {
       "AbsoluteMoniker": "D:0:0:{F803AD3F-87F0-438D-BA51-BEB13DB127A2}|Swapster\\Swapster.csproj|c:\\users\\meesam\\source\\repos\\swapster\\swapster\\views\\home\\index.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
@@ -23,44 +67,12 @@
       "RelativeMoniker": "D:0:0:{F803AD3F-87F0-438D-BA51-BEB13DB127A2}|Swapster\\Swapster.csproj|solutionrelative:swapster\\views\\account\\setup.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{F803AD3F-87F0-438D-BA51-BEB13DB127A2}|Swapster\\Swapster.csproj|c:\\users\\meesam\\source\\repos\\swapster\\swapster\\views\\account\\resetpassword.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
-      "RelativeMoniker": "D:0:0:{F803AD3F-87F0-438D-BA51-BEB13DB127A2}|Swapster\\Swapster.csproj|solutionrelative:swapster\\views\\account\\resetpassword.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{F803AD3F-87F0-438D-BA51-BEB13DB127A2}|Swapster\\Swapster.csproj|c:\\users\\meesam\\source\\repos\\swapster\\swapster\\views\\account\\adminlogin.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
-      "RelativeMoniker": "D:0:0:{F803AD3F-87F0-438D-BA51-BEB13DB127A2}|Swapster\\Swapster.csproj|solutionrelative:swapster\\views\\account\\adminlogin.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{F803AD3F-87F0-438D-BA51-BEB13DB127A2}|Swapster\\Swapster.csproj|c:\\users\\meesam\\source\\repos\\swapster\\swapster\\views\\account\\login.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
-      "RelativeMoniker": "D:0:0:{F803AD3F-87F0-438D-BA51-BEB13DB127A2}|Swapster\\Swapster.csproj|solutionrelative:swapster\\views\\account\\login.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{F803AD3F-87F0-438D-BA51-BEB13DB127A2}|Swapster\\Swapster.csproj|c:\\users\\meesam\\source\\repos\\swapster\\swapster\\views\\account\\signup.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
-      "RelativeMoniker": "D:0:0:{F803AD3F-87F0-438D-BA51-BEB13DB127A2}|Swapster\\Swapster.csproj|solutionrelative:swapster\\views\\account\\signup.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
-    },
-    {
       "AbsoluteMoniker": "D:0:0:{F803AD3F-87F0-438D-BA51-BEB13DB127A2}|Swapster\\Swapster.csproj|c:\\users\\meesam\\source\\repos\\swapster\\swapster\\wwwroot\\css\\site.css||{A5401142-F49D-43DB-90B1-F57BA349E55C}",
       "RelativeMoniker": "D:0:0:{F803AD3F-87F0-438D-BA51-BEB13DB127A2}|Swapster\\Swapster.csproj|solutionrelative:swapster\\wwwroot\\css\\site.css||{A5401142-F49D-43DB-90B1-F57BA349E55C}"
     },
     {
       "AbsoluteMoniker": "D:0:0:{F803AD3F-87F0-438D-BA51-BEB13DB127A2}|Swapster\\Swapster.csproj|c:\\users\\meesam\\source\\repos\\swapster\\swapster\\wwwroot\\images\\swapster.svg||{8B382828-6202-11D1-8870-0000F87579D2}",
       "RelativeMoniker": "D:0:0:{F803AD3F-87F0-438D-BA51-BEB13DB127A2}|Swapster\\Swapster.csproj|solutionrelative:swapster\\wwwroot\\images\\swapster.svg||{8B382828-6202-11D1-8870-0000F87579D2}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{F803AD3F-87F0-438D-BA51-BEB13DB127A2}|Swapster\\Swapster.csproj|c:\\users\\meesam\\source\\repos\\swapster\\swapster\\views\\home\\terms.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
-      "RelativeMoniker": "D:0:0:{F803AD3F-87F0-438D-BA51-BEB13DB127A2}|Swapster\\Swapster.csproj|solutionrelative:swapster\\views\\home\\terms.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{F803AD3F-87F0-438D-BA51-BEB13DB127A2}|Swapster\\Swapster.csproj|c:\\users\\meesam\\source\\repos\\swapster\\swapster\\views\\home\\privacy.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
-      "RelativeMoniker": "D:0:0:{F803AD3F-87F0-438D-BA51-BEB13DB127A2}|Swapster\\Swapster.csproj|solutionrelative:swapster\\views\\home\\privacy.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{F803AD3F-87F0-438D-BA51-BEB13DB127A2}|Swapster\\Swapster.csproj|c:\\users\\meesam\\source\\repos\\swapster\\swapster\\views\\account\\forgotpassword.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
-      "RelativeMoniker": "D:0:0:{F803AD3F-87F0-438D-BA51-BEB13DB127A2}|Swapster\\Swapster.csproj|solutionrelative:swapster\\views\\account\\forgotpassword.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{F803AD3F-87F0-438D-BA51-BEB13DB127A2}|Swapster\\Swapster.csproj|c:\\users\\meesam\\source\\repos\\swapster\\swapster\\views\\home\\dashboard.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
-      "RelativeMoniker": "D:0:0:{F803AD3F-87F0-438D-BA51-BEB13DB127A2}|Swapster\\Swapster.csproj|solutionrelative:swapster\\views\\home\\dashboard.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
     }
   ],
   "DocumentGroupContainers": [
@@ -70,7 +82,7 @@
       "DocumentGroups": [
         {
           "DockedWidth": 200,
-          "SelectedChildIndex": 4,
+          "SelectedChildIndex": 8,
           "Children": [
             {
               "$type": "Bookmark",
@@ -82,85 +94,167 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 2,
-              "Title": "Create.cshtml",
-              "DocumentMoniker": "C:\\Users\\Meesam\\source\\repos\\Swapster\\Swapster\\Views\\Skill\\Create.cshtml",
-              "RelativeDocumentMoniker": "Swapster\\Views\\Skill\\Create.cshtml",
-              "ToolTip": "C:\\Users\\Meesam\\source\\repos\\Swapster\\Swapster\\Views\\Skill\\Create.cshtml",
-              "RelativeToolTip": "Swapster\\Views\\Skill\\Create.cshtml",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAABAAAAAHAAAAAAAAAA==",
+              "DocumentIndex": 3,
+              "Title": "MyAccount.cshtml",
+              "DocumentMoniker": "C:\\Users\\Meesam\\source\\repos\\Swapster\\Swapster\\Views\\Account\\MyAccount.cshtml",
+              "RelativeDocumentMoniker": "Swapster\\Views\\Account\\MyAccount.cshtml",
+              "ToolTip": "C:\\Users\\Meesam\\source\\repos\\Swapster\\Swapster\\Views\\Account\\MyAccount.cshtml",
+              "RelativeToolTip": "Swapster\\Views\\Account\\MyAccount.cshtml",
+              "ViewState": "AgIAAHgCAAAAAAAAAAAAwIgCAAAaAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
-              "WhenOpened": "2026-05-03T14:13:35.178Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 1,
-              "Title": "Index.cshtml",
-              "DocumentMoniker": "C:\\Users\\Meesam\\source\\repos\\Swapster\\Swapster\\Views\\Skill\\Index.cshtml",
-              "RelativeDocumentMoniker": "Swapster\\Views\\Skill\\Index.cshtml",
-              "ToolTip": "C:\\Users\\Meesam\\source\\repos\\Swapster\\Swapster\\Views\\Skill\\Index.cshtml",
-              "RelativeToolTip": "Swapster\\Views\\Skill\\Index.cshtml",
-              "ViewState": "AgIAALgBAAAAAAAAAADwv88BAAAJAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
-              "WhenOpened": "2026-05-03T14:13:31.448Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 0,
-              "Title": "_Layout.cshtml",
-              "DocumentMoniker": "C:\\Users\\Meesam\\source\\repos\\Swapster\\Swapster\\Views\\Shared\\_Layout.cshtml",
-              "RelativeDocumentMoniker": "Swapster\\Views\\Shared\\_Layout.cshtml",
-              "ToolTip": "C:\\Users\\Meesam\\source\\repos\\Swapster\\Swapster\\Views\\Shared\\_Layout.cshtml",
-              "RelativeToolTip": "Swapster\\Views\\Shared\\_Layout.cshtml",
-              "ViewState": "AgIAAPQBAAAAAAAAAADwvwUCAAATAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
-              "WhenOpened": "2026-05-03T13:44:56.447Z",
+              "WhenOpened": "2026-05-15T13:16:45.924Z",
               "EditorCaption": ""
             },
             {
               "$type": "Document",
               "DocumentIndex": 7,
-              "Title": "Login.cshtml",
-              "DocumentMoniker": "C:\\Users\\Meesam\\source\\repos\\Swapster\\Swapster\\Views\\Account\\Login.cshtml",
-              "RelativeDocumentMoniker": "Swapster\\Views\\Account\\Login.cshtml",
-              "ToolTip": "C:\\Users\\Meesam\\source\\repos\\Swapster\\Swapster\\Views\\Account\\Login.cshtml",
-              "RelativeToolTip": "Swapster\\Views\\Account\\Login.cshtml",
-              "ViewState": "AgIAAEsBAAAAAAAAAADwv1QBAAAPAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
-              "WhenOpened": "2026-05-03T12:41:15.904Z",
-              "EditorCaption": ""
+              "Title": "SkillRequest.cs",
+              "DocumentMoniker": "C:\\Users\\Meesam\\source\\repos\\Swapster\\Swapster\\Models\\SkillRequest.cs",
+              "RelativeDocumentMoniker": "Swapster\\Models\\SkillRequest.cs",
+              "ToolTip": "C:\\Users\\Meesam\\source\\repos\\Swapster\\Swapster\\Models\\SkillRequest.cs",
+              "RelativeToolTip": "Swapster\\Models\\SkillRequest.cs",
+              "ViewState": "AgIAAAgAAAAAAAAAAAAAwBgAAAABAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-05-15T12:34:57.486Z"
             },
             {
               "$type": "Document",
               "DocumentIndex": 6,
-              "Title": "AdminLogin.cshtml",
-              "DocumentMoniker": "C:\\Users\\Meesam\\source\\repos\\Swapster\\Swapster\\Views\\Account\\AdminLogin.cshtml",
-              "RelativeDocumentMoniker": "Swapster\\Views\\Account\\AdminLogin.cshtml",
-              "ToolTip": "C:\\Users\\Meesam\\source\\repos\\Swapster\\Swapster\\Views\\Account\\AdminLogin.cshtml",
-              "RelativeToolTip": "Swapster\\Views\\Account\\AdminLogin.cshtml",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAAE0BAAAPAAAAAAAAAA==",
+              "Title": "Settings.cshtml",
+              "DocumentMoniker": "C:\\Users\\Meesam\\source\\repos\\Swapster\\Swapster\\Views\\Home\\Settings.cshtml",
+              "RelativeDocumentMoniker": "Swapster\\Views\\Home\\Settings.cshtml",
+              "ToolTip": "C:\\Users\\Meesam\\source\\repos\\Swapster\\Swapster\\Views\\Home\\Settings.cshtml",
+              "RelativeToolTip": "Swapster\\Views\\Home\\Settings.cshtml",
+              "ViewState": "AgIAAKYBAAAAAAAAAAAiwLIBAABRAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
-              "WhenOpened": "2026-05-03T12:40:52.923Z",
-              "EditorCaption": ""
+              "WhenOpened": "2026-05-15T12:03:17.479Z"
             },
             {
               "$type": "Document",
               "DocumentIndex": 5,
-              "Title": "ResetPassword.cshtml",
-              "DocumentMoniker": "C:\\Users\\Meesam\\source\\repos\\Swapster\\Swapster\\Views\\Account\\ResetPassword.cshtml",
-              "RelativeDocumentMoniker": "Swapster\\Views\\Account\\ResetPassword.cshtml",
-              "ToolTip": "C:\\Users\\Meesam\\source\\repos\\Swapster\\Swapster\\Views\\Account\\ResetPassword.cshtml",
-              "RelativeToolTip": "Swapster\\Views\\Account\\ResetPassword.cshtml",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAAO0AAAAGAAAAAAAAAA==",
+              "Title": "AccountController.cs",
+              "DocumentMoniker": "C:\\Users\\Meesam\\source\\repos\\Swapster\\Swapster\\Controllers\\AccountController.cs",
+              "RelativeDocumentMoniker": "Swapster\\Controllers\\AccountController.cs",
+              "ToolTip": "C:\\Users\\Meesam\\source\\repos\\Swapster\\Swapster\\Controllers\\AccountController.cs",
+              "RelativeToolTip": "Swapster\\Controllers\\AccountController.cs",
+              "ViewState": "AgIAAKgBAAAAAAAAAADwv7kBAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-05-15T12:06:09.325Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 2,
+              "Title": "Dashboard.cshtml",
+              "DocumentMoniker": "C:\\Users\\Meesam\\source\\repos\\Swapster\\Swapster\\Views\\Home\\Dashboard.cshtml",
+              "RelativeDocumentMoniker": "Swapster\\Views\\Home\\Dashboard.cshtml",
+              "ToolTip": "C:\\Users\\Meesam\\source\\repos\\Swapster\\Swapster\\Views\\Home\\Dashboard.cshtml",
+              "RelativeToolTip": "Swapster\\Views\\Home\\Dashboard.cshtml",
+              "ViewState": "AgIAAG8CAAAAAAAAAAAAAG8CAAAGAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
-              "WhenOpened": "2026-05-03T12:41:27.007Z",
+              "WhenOpened": "2026-05-15T06:50:58.904Z",
               "EditorCaption": ""
             },
             {
               "$type": "Document",
+              "DocumentIndex": 1,
+              "Title": "Terms.cshtml",
+              "DocumentMoniker": "C:\\Users\\Meesam\\source\\repos\\Swapster\\Swapster\\Views\\Home\\Terms.cshtml",
+              "RelativeDocumentMoniker": "Swapster\\Views\\Home\\Terms.cshtml",
+              "ToolTip": "C:\\Users\\Meesam\\source\\repos\\Swapster\\Swapster\\Views\\Home\\Terms.cshtml",
+              "RelativeToolTip": "Swapster\\Views\\Home\\Terms.cshtml",
+              "ViewState": "AgIAAMYBAAAAAAAAAAAiwNQBAAAwAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
+              "WhenOpened": "2026-05-03T12:54:29.69Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 0,
+              "Title": "Privacy.cshtml",
+              "DocumentMoniker": "C:\\Users\\Meesam\\source\\repos\\Swapster\\Swapster\\Views\\Home\\Privacy.cshtml",
+              "RelativeDocumentMoniker": "Swapster\\Views\\Home\\Privacy.cshtml",
+              "ToolTip": "C:\\Users\\Meesam\\source\\repos\\Swapster\\Swapster\\Views\\Home\\Privacy.cshtml",
+              "RelativeToolTip": "Swapster\\Views\\Home\\Privacy.cshtml",
+              "ViewState": "AgIAADwCAAAAAAAAAAAiwEoCAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
+              "WhenOpened": "2026-05-03T12:55:05.628Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 8,
+              "Title": "ApplicationDbContext.cs",
+              "DocumentMoniker": "C:\\Users\\Meesam\\source\\repos\\Swapster\\Swapster\\Data\\ApplicationDbContext.cs",
+              "RelativeDocumentMoniker": "Swapster\\Data\\ApplicationDbContext.cs",
+              "ToolTip": "C:\\Users\\Meesam\\source\\repos\\Swapster\\Swapster\\Data\\ApplicationDbContext.cs",
+              "RelativeToolTip": "Swapster\\Data\\ApplicationDbContext.cs",
+              "ViewState": "AgIAAAUAAAAAAAAAAAA0wBYAAAAIAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-05-15T12:40:55.003Z"
+            },
+            {
+              "$type": "Document",
               "DocumentIndex": 4,
+              "Title": "MyAccount.cshtml",
+              "DocumentMoniker": "C:\\Users\\Meesam\\source\\repos\\Swapster\\Swapster\\Views\\Home\\MyAccount.cshtml",
+              "RelativeDocumentMoniker": "Swapster\\Views\\Home\\MyAccount.cshtml",
+              "ToolTip": "C:\\Users\\Meesam\\source\\repos\\Swapster\\Swapster\\Views\\Home\\MyAccount.cshtml",
+              "RelativeToolTip": "Swapster\\Views\\Home\\MyAccount.cshtml",
+              "ViewState": "AgIAAHgCAAAAAAAAAADwv48CAAAGAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
+              "WhenOpened": "2026-05-15T12:27:05.298Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 9,
+              "Title": "MyAccountViewModel.cs",
+              "DocumentMoniker": "C:\\Users\\Meesam\\source\\repos\\Swapster\\Swapster\\Models\\MyAccountViewModel.cs",
+              "RelativeDocumentMoniker": "Swapster\\Models\\MyAccountViewModel.cs",
+              "ToolTip": "C:\\Users\\Meesam\\source\\repos\\Swapster\\Swapster\\Models\\MyAccountViewModel.cs",
+              "RelativeToolTip": "Swapster\\Models\\MyAccountViewModel.cs",
+              "ViewState": "AgIAAAIAAAAAAAAAAAAwwBkAAAABAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-05-15T12:40:26.489Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 10,
+              "Title": "UserWantedSkill.cs",
+              "DocumentMoniker": "C:\\Users\\Meesam\\source\\repos\\Swapster\\Swapster\\Models\\UserWantedSkill.cs",
+              "RelativeDocumentMoniker": "Swapster\\Models\\UserWantedSkill.cs",
+              "ToolTip": "C:\\Users\\Meesam\\source\\repos\\Swapster\\Swapster\\Models\\UserWantedSkill.cs",
+              "RelativeToolTip": "Swapster\\Models\\UserWantedSkill.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAEAAAAnAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-05-15T12:38:31.613Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 11,
+              "Title": "User.cs",
+              "DocumentMoniker": "C:\\Users\\Meesam\\source\\repos\\Swapster\\Swapster\\Models\\User.cs",
+              "RelativeDocumentMoniker": "Swapster\\Models\\User.cs",
+              "ToolTip": "C:\\Users\\Meesam\\source\\repos\\Swapster\\Swapster\\Models\\User.cs",
+              "RelativeToolTip": "Swapster\\Models\\User.cs",
+              "ViewState": "AgIAAAsAAAAAAAAAAAAAABoAAAABAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-05-15T12:34:45.248Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 12,
+              "Title": "HomeController.cs",
+              "DocumentMoniker": "C:\\Users\\Meesam\\source\\repos\\Swapster\\Swapster\\Controllers\\HomeController.cs",
+              "RelativeDocumentMoniker": "Swapster\\Controllers\\HomeController.cs",
+              "ToolTip": "C:\\Users\\Meesam\\source\\repos\\Swapster\\Swapster\\Controllers\\HomeController.cs",
+              "RelativeToolTip": "Swapster\\Controllers\\HomeController.cs",
+              "ViewState": "AgIAABoAAAAAAAAAAAAwwC8AAAAaAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-05-15T12:01:50.196Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 15,
               "Title": "Setup.cshtml",
               "DocumentMoniker": "C:\\Users\\Meesam\\source\\repos\\Swapster\\Swapster\\Views\\Account\\Setup.cshtml",
               "RelativeDocumentMoniker": "Swapster\\Views\\Account\\Setup.cshtml",
@@ -168,12 +262,11 @@
               "RelativeToolTip": "Swapster\\Views\\Account\\Setup.cshtml",
               "ViewState": "AgIAAAAAAAAAAAAAAAAAAGgBAAAPAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
-              "WhenOpened": "2026-05-03T12:43:29.729Z",
-              "EditorCaption": ""
+              "WhenOpened": "2026-05-03T12:43:29.729Z"
             },
             {
               "$type": "Document",
-              "DocumentIndex": 9,
+              "DocumentIndex": 16,
               "Title": "site.css",
               "DocumentMoniker": "C:\\Users\\Meesam\\source\\repos\\Swapster\\Swapster\\wwwroot\\css\\site.css",
               "RelativeDocumentMoniker": "Swapster\\wwwroot\\css\\site.css",
@@ -181,38 +274,35 @@
               "RelativeToolTip": "Swapster\\wwwroot\\css\\site.css",
               "ViewState": "AgIAABsBAAAAAAAAAAAswDQBAAABAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.003000|",
-              "WhenOpened": "2026-05-03T12:12:58.715Z",
-              "EditorCaption": ""
+              "WhenOpened": "2026-05-03T12:12:58.715Z"
             },
             {
               "$type": "Document",
-              "DocumentIndex": 8,
+              "DocumentIndex": 13,
               "Title": "Signup.cshtml",
               "DocumentMoniker": "C:\\Users\\Meesam\\source\\repos\\Swapster\\Swapster\\Views\\Account\\Signup.cshtml",
               "RelativeDocumentMoniker": "Swapster\\Views\\Account\\Signup.cshtml",
               "ToolTip": "C:\\Users\\Meesam\\source\\repos\\Swapster\\Swapster\\Views\\Account\\Signup.cshtml",
               "RelativeToolTip": "Swapster\\Views\\Account\\Signup.cshtml",
-              "ViewState": "AgIAAHQBAAAAAAAAAAAiwH8BAAALAAAAAAAAAA==",
+              "ViewState": "AgIAAPIBAAAAAAAAAADwvwkCAAAGAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
-              "WhenOpened": "2026-05-03T12:43:39.705Z",
-              "EditorCaption": ""
+              "WhenOpened": "2026-05-03T12:43:39.705Z"
             },
             {
               "$type": "Document",
-              "DocumentIndex": 3,
+              "DocumentIndex": 14,
               "Title": "Index.cshtml",
               "DocumentMoniker": "C:\\Users\\Meesam\\source\\repos\\Swapster\\Swapster\\Views\\Home\\Index.cshtml",
               "RelativeDocumentMoniker": "Swapster\\Views\\Home\\Index.cshtml",
               "ToolTip": "C:\\Users\\Meesam\\source\\repos\\Swapster\\Swapster\\Views\\Home\\Index.cshtml",
               "RelativeToolTip": "Swapster\\Views\\Home\\Index.cshtml",
-              "ViewState": "AgIAANMCAAAAAAAAAAAAAN0CAAAyAAAAAAAAAA==",
+              "ViewState": "AgIAAJYCAAAAAAAAAAAiwKICAAApAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
-              "WhenOpened": "2026-05-03T12:49:28.209Z",
-              "EditorCaption": ""
+              "WhenOpened": "2026-05-03T12:49:28.209Z"
             },
             {
               "$type": "Document",
-              "DocumentIndex": 10,
+              "DocumentIndex": 17,
               "Title": "swapster.svg",
               "DocumentMoniker": "C:\\Users\\Meesam\\source\\repos\\Swapster\\Swapster\\wwwroot\\images\\swapster.svg",
               "RelativeDocumentMoniker": "Swapster\\wwwroot\\images\\swapster.svg",
@@ -220,60 +310,7 @@
               "RelativeToolTip": "Swapster\\wwwroot\\images\\swapster.svg",
               "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAABRAAAAAAAAAA==",
               "Icon": "00000000-0000-0000-0000-000000000000.000000|iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAYAAABzenr0AAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAAAJcEhZcwAADsMAAA7DAcdvqGQAAAgASURBVFhHxVZ7UFTnFf/de3f37oNd3qw8BFQeFhGrgo3BigarMQn5wxLMpNqGVDJJnNFOx5namSbtNDOdtA5tjUVbxmYmTEvTpjjNjJqpNdOHGmjIBERBHvKShwu7cHeBZd\u002B7PffuvbDASpqZzvTHHL7Hfvec33fO953v4P\u002BKUCjEyN2oaGpqOk/Nq\u002BFRGPTNina1viwXjh49\u002Bpr0wzJ8HoHQoUOH5NEXR39/P8bGRjE5aYXb7e4iEpvknxbAyu3nIryTIILB1SSAQGBRTCYTbLYpVFZWiioKLl682Ckpi8B/TYAoEAG5GwnfIFhXHVjhm2As28BaywDHOfi9XsTHx0vERVRVVYmkCurq6paQ\u002BAIekDsSiIz7LtjZarCWrwJ9P0Gw/wb8tjwEhCRwA29BNfgteOfnJc8oEEn4fL6C3xDkKajkNioU9iOCC58NCxiecoJXu1CRfgmJ\u002BCX8VjIwocNI7M/AxmwH46VDFeBg4IeQbDkOf7IHiYkJaGhogMfjgZe8kpOTA4vF8jKpPUniXvUQvvOHppA3bSu6yZA51YTi9U7s0X4fnPOvQJcL12dr8A/vc7AKDDatTURVaR5STDzmpqdhsBzDbHI9GF4DwW6Hy\u002BWCTqeD2bwGjY2NqKmpSSUTlkeGIPv01W0fjqkwzPLY/EQBXvhyD/YZq6Gy/wVoc\u002BPvKY3ozH8dzJYdmNtajGZBhZ9evovOMQf0cfFgDOngVCoYDAZkZGQgNzdXavV6veJZrfgvKgHROMOGvptfUY6S7Smo5N9FJvMGMNyC4G0Vfpf0RzRzuzFvSoY\u002B0YSszDioN2bjfswanL/ejZ5xK4KaLWBYRb3oaFHCIVVCK2IFATJupiWvvfDSE0/vyOJxIHQRJua3QE8zArfVeNN2ATduJ8Jy5yGEzmF4HU5oSHdKoh6xaQl4YExD/T8HMaXaB7VO3KQSZdFouL8qAfr1pacObinfnsbH7Qk2Qs80Avduwn9XhZsZl1D9bBUufHs3Th/IR9kaHSZvdSAwPUOu5pCQoIUmOR7DLh5/apunEKhlm\u002BErrNh9JIHs713OSk\u002BNLXtsa1r2TnwEI9dAV\u002BwGAvdU6C64gl07n0R6gl5Sajbp8GRhGg6VZMHZPwrO54cxRo3YODVmU9fik4FpjE7PSXoX7YU7jyTAMMzOXSWZOcVsF9aozgKDHyHUyeDXvlrkbaIEI3sz4nuU5iRh3jYN1uuHljZsMKhhICJzQRVa\u002ByblVSIiPorAkjzAq9mi3esC6fnMm8DYZaADuLbxV7jXXoTvvNdGhoOScXEH4V2ERNK0ixC5m9jRdniOgU6rgl1jRK9lRia71HikB5YQSIpBxi5VI8/MXKV7DnyadQrjOS\u002BipFBHXzFL1ITNEyjR\u002BfwhuAMMyAlEhINKw8EdE4MJx4i4YgGK3aghoEn2xc3dm7X\u002B9xncn4WVyUV73utg9TqwtDuW3MtFiHi\u002B1JxoENDQ72rS5CW9QT\u002BxCPiJF0PEAqJmWb/USIgkIEeVJoW34x2OG0M64ZKJ6wEailvBpBWRcQ4f//5jSUFIzOvUkf6CchjEsaQw3A9GzBWuTcDJp4rEoYwQeF6Lc\u002BfO4cSJE\u002BtoYkgKgbj7kOUbz2tU/xJTHz4w/wgOYx5MlEgCriBoo/jFkWKwFO/weqkhLHQkPGp\u002B5XgRSghYhrMeZgTB65wxeK7qj8BKD8uMJwAfOZOPNaD3YfhALTeizEUzvnR\u002BEZEhkDzgGz6coeZbc9Xjfk/tUJnFlsFs1M37odOo6TGhBLPejD\u002B3DuN0RRFUMmWlmrPNufCD91pgd3phpNMfDAQRp1cjPV6P/VuzUZiZtLBWIRdJQFLHBWzFcDnBOoJTjZ2bPgxNCsNWuw/2eR9c/iCMmclwxujx8ysddLUcCFD8Z90\u002B3Oq14K0PPoMuKxOZz5QjoWI/Yp/dDyFjPWbmPSigFzIM0WAUVxDCZyBoN9ORhXcaLcmtf2tqS8xPWa81JnJqNoahc5oQo0HGjlwIfRacvzmIeWEGDMdCF2\u002BC7ks59BCYQfQxPevD5JAVGwa78MrhUvqSrm4Uuys8EHQ5Q6DbMyvgQcpAq5Xz\u002B870X2\u002B5\u002BnDIhpFpLybnfBA8dO2yUpFatgXrni5F6tceQ0xxIQLpGXCEWIzYPBjoHIOx\u002Bw6q9xXBHGcgzUt3rthdQcA55WoTE4pWD56G3pL6Yx3klh8bb/8b/PA47ltc6J/yYozOhdXHwEaOs1MymKDqZ0Rwo29kFo67vcgf78DJ/fnYvoEe1GWGwzYX5xRIBF7e\u002B\u002BDToBu39JnYSzUDpT1wo3VHOg\u002Bke7E3gYO5vR2aO70QukbR12NDR78DPfemMNU\u002BCO8nd5Dc3oIytYA3qkpRujFNVLkMouFIQot98YqDivVQwIPm3BysO3gQ1V8/irwf1uArvoC\u002BvKL8GTxOceZpgWpaQKwwCWawH3FTD5FD9eG2FB7P79yAysfzEWvQSEojEWFLgopSaHNzM65du0avHewLmfA5CjE1cSSxJGIp695z9uzYK8ePE/cQldRKdRu5E7kjYZklQjS3a7U61NbW4tSpU1ImlG818D6lAxIryX2SAZJxnuo5luOotFaUKCQUiGNFxDVhEdeL5Xj49QynZUWWY4FANCgfqNVqaDQaEqp4NPyC8LwuqojVr06njyrLsRCCaKivrz9PJF5dvoPI8fK5aP3IVsTExMSVM2fOHKOuZVUCMsTKUjwbUhn9P4KbxA7A/R/p8uJkqR8S6QAAAABJRU5ErkJggg==",
-              "WhenOpened": "2026-05-03T13:43:08.762Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 11,
-              "Title": "Terms.cshtml",
-              "DocumentMoniker": "C:\\Users\\Meesam\\source\\repos\\Swapster\\Swapster\\Views\\Home\\Terms.cshtml",
-              "RelativeDocumentMoniker": "Swapster\\Views\\Home\\Terms.cshtml",
-              "ToolTip": "C:\\Users\\Meesam\\source\\repos\\Swapster\\Swapster\\Views\\Home\\Terms.cshtml",
-              "RelativeToolTip": "Swapster\\Views\\Home\\Terms.cshtml",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAAHoCAAAGAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
-              "WhenOpened": "2026-05-03T12:54:29.69Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 12,
-              "Title": "Privacy.cshtml",
-              "DocumentMoniker": "C:\\Users\\Meesam\\source\\repos\\Swapster\\Swapster\\Views\\Home\\Privacy.cshtml",
-              "RelativeDocumentMoniker": "Swapster\\Views\\Home\\Privacy.cshtml",
-              "ToolTip": "C:\\Users\\Meesam\\source\\repos\\Swapster\\Swapster\\Views\\Home\\Privacy.cshtml",
-              "RelativeToolTip": "Swapster\\Views\\Home\\Privacy.cshtml",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAAIsCAAAGAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
-              "WhenOpened": "2026-05-03T12:55:05.628Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 13,
-              "Title": "ForgotPassword.cshtml",
-              "DocumentMoniker": "C:\\Users\\Meesam\\source\\repos\\Swapster\\Swapster\\Views\\Account\\ForgotPassword.cshtml",
-              "RelativeDocumentMoniker": "Swapster\\Views\\Account\\ForgotPassword.cshtml",
-              "ToolTip": "C:\\Users\\Meesam\\source\\repos\\Swapster\\Swapster\\Views\\Account\\ForgotPassword.cshtml",
-              "RelativeToolTip": "Swapster\\Views\\Account\\ForgotPassword.cshtml",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAAKUBAAAGAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
-              "WhenOpened": "2026-05-03T12:41:05.777Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 14,
-              "Title": "Dashboard.cshtml",
-              "DocumentMoniker": "C:\\Users\\Meesam\\source\\repos\\Swapster\\Swapster\\Views\\Home\\Dashboard.cshtml",
-              "RelativeDocumentMoniker": "Swapster\\Views\\Home\\Dashboard.cshtml",
-              "ToolTip": "C:\\Users\\Meesam\\source\\repos\\Swapster\\Swapster\\Views\\Home\\Dashboard.cshtml",
-              "RelativeToolTip": "Swapster\\Views\\Home\\Dashboard.cshtml",
-              "ViewState": "AgIAABgEAAAAAAAAAADwvy8EAAAJAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
-              "WhenOpened": "2026-05-03T12:49:26.803Z",
-              "EditorCaption": ""
+              "WhenOpened": "2026-05-03T13:43:08.762Z"
             }
           ]
         }

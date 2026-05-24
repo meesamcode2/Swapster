@@ -43,50 +43,35 @@
 
     .sidebar-brand {
         text-decoration: none;
-        color: white;
-        display: flex;
+        display: inline-flex;
         align-items: center;
-        gap: 10px;
-        font-size: 27px;
+        gap: 0;
+        font-size: 30px;
         font-weight: 900;
         margin-bottom: 34px;
-        letter-spacing: -0.8px;
+        letter-spacing: -1px;
+        transition: 0.25s;
     }
 
-        .sidebar-brand span {
-            color: #ff64aa;
+        .sidebar-brand .brand-swap {
+            color: #d9573b;
         }
 
-    .sidebar-user {
-        background: rgba(255, 255, 255, 0.09);
-        border: 1px solid rgba(255, 255, 255, 0.13);
-        border-radius: 22px;
-        padding: 18px;
-        margin-bottom: 26px;
-    }
+        .sidebar-brand .brand-ster {
+            color: #6674ff;
+        }
 
-    .user-avatar {
-        width: 52px;
-        height: 52px;
-        border-radius: 18px;
-        background: linear-gradient(135deg, #6674ff, #ff64aa);
-        display: grid;
-        place-items: center;
-        font-size: 24px;
-        margin-bottom: 12px;
-    }
+        .sidebar-brand:hover {
+            transform: translateY(-2px);
+        }
 
-    .sidebar-user h4 {
-        margin: 0;
-        font-size: 17px;
-        font-weight: 800;
-    }
+            .sidebar-brand:hover .brand-swap {
+                color: #d9573b;
+            }
 
-    .sidebar-user p {
-        margin: 6px 0 0;
-        color: #cbd5e1;
-        font-size: 13px;
-    }
+            .sidebar-brand:hover .brand-ster {
+                color: #6674ff;
+            }
 
     .sidebar-menu {
         display: grid;
@@ -126,6 +111,7 @@
         border-radius: 16px;
         font-weight: 750;
         transition: 0.25s;
+        cursor: pointer;
     }
 
         .logout-btn:hover {
@@ -392,6 +378,10 @@
         color: #6674ff;
         font-weight: 850;
     }
+
+        .view-all:hover {
+            color: #ff64aa;
+        }
 
     .skills-grid {
         display: grid;
@@ -672,40 +662,32 @@
 
     <aside class="sidebar">
 
-        <a asp-controller="Home" asp-action="Index" class="sidebar-brand">
-            Swap<span>ster</span>
+        <a href="/Home/Dashboard" class="sidebar-brand">
+            <span class="brand-swap">Swap</span><span class="brand-ster">ster</span>
         </a>
 
-        <div class="sidebar-user">
-            <div class="user-avatar">👋</div>
-            <h4>@(Model?.UserName ?? "User")</h4>
-            <p>Welcome to your dashboard</p>
-        </div>
-
         <div class="sidebar-menu">
-            <a asp-controller="Home" asp-action="Index" class="menu-link">
-                🏠 Landing Page
-            </a>
 
-            <a asp-controller="Home" asp-action="Dashboard" class="menu-link active">
+            <a href="/Home/Dashboard" class="menu-link active">
                 📊 Dashboard
             </a>
 
-            <a asp-controller="Skill" asp-action="Index" class="menu-link">
+            <a href="/Skill/Index" class="menu-link">
                 🔍 Explore Skills
             </a>
 
             <a href="#trending" class="menu-link">
-                🔥 Trending Skills
+                ⚡ Trending Skills
             </a>
 
-            <a href="#" class="menu-link">
+            <a href="/Account/MyAccount" class="menu-link">
                 👤 My Account
             </a>
 
-            <a href="#" class="menu-link">
+            <a href="/Home/Settings" class="menu-link">
                 ⚙ Settings
             </a>
+
         </div>
 
         <form asp-controller="Account" asp-action="Logout" method="post" class="logout-form">
@@ -740,7 +722,7 @@
             <div class="welcome-content">
                 <div class="badge-text">✨ Skill Exchange Hub</div>
 
-                <h1>Welcome, @(Model?.UserName ?? "User") 👋</h1>
+                <h1>Welcome, @(Model?.UserName ?? "User") 😁</h1>
 
                 <p>
                     Discover trending skills, connect with people who match your learning goals,
@@ -765,7 +747,7 @@
 
         <section class="stats-grid">
             <div class="stat-card">
-                <div class="stat-icon">🔥</div>
+                <div class="stat-icon">⚡</div>
                 <h3>6</h3>
                 <p>Trending Skills</p>
             </div>
@@ -783,7 +765,7 @@
             </div>
 
             <div class="stat-card">
-                <div class="stat-icon">🤖</div>
+                <div class="stat-icon">💬</div>
                 <h3>24/7</h3>
                 <p>AI Skill Help</p>
             </div>

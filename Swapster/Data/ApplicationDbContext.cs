@@ -13,6 +13,7 @@ namespace Swapster.Data
         public DbSet<User> Users { get; set; } = null!;
         public DbSet<UserSkill> UserSkills { get; set; } = null!;
         public DbSet<SkillRequest> SkillRequests { get; set; } = null!;
+        public DbSet<UserWantedSkill> UserWantedSkills { get; set; }
         public DbSet<UserProfile> UserProfiles { get; set; }
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {

@@ -4,17 +4,19 @@ namespace Swapster.Models
 {
     public class UserProfile
     {
+        [Key]
         public int Id { get; set; }
 
         public int UserId { get; set; }
 
-        [Required]
-        public string ExperienceLevel { get; set; } // Beginner, Intermediate, Expert
+        public string ExperienceLevel { get; set; } = string.Empty;
 
-        public string Skills { get; set; } // comma separated
+        // Legacy field: agar project mein kahin UserProfile.Skills use ho raha hai
+        // to build error nahi aayega.
+        public string Skills { get; set; } = string.Empty;
 
-        public string Bio { get; set; }
+        public string Bio { get; set; } = string.Empty;
 
-        public string Interests { get; set; }
+        public string Interests { get; set; } = string.Empty;
     }
 }

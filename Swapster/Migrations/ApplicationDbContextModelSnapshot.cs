@@ -163,6 +163,31 @@ namespace Swapster.Migrations
                     b.ToTable("UserSkills");
                 });
 
+            modelBuilder.Entity("Swapster.Models.UserWantedSkill", b =>
+                {
+                    b.Property<int>("WantedSkillId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("WantedSkillId"));
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("SkillName")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("UserId")
+                        .HasColumnType("int");
+
+                    b.HasKey("WantedSkillId");
+
+                    b.HasIndex("UserId");
+
+                    b.ToTable("UserWantedSkills");
+                });
+
             modelBuilder.Entity("Swapster.Models.SkillRequest", b =>
                 {
                     b.HasOne("Swapster.Models.User", "Receiver")
@@ -191,6 +216,17 @@ namespace Swapster.Migrations
                 });
 
             modelBuilder.Entity("Swapster.Models.UserSkill", b =>
+                {
+                    b.HasOne("Swapster.Models.User", "User")
+                        .WithMany()
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("User");
+                });
+
+            modelBuilder.Entity("Swapster.Models.UserWantedSkill", b =>
                 {
                     b.HasOne("Swapster.Models.User", "User")
                         .WithMany()

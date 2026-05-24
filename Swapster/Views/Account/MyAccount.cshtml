@@ -1,0 +1,656 @@
+﻿@model Swapster.Models.MyAccountViewModel
+
+@{
+    ViewData["Title"] = "My Account";
+    ViewData["HideNavbar"] = true;
+    ViewData["FullWidth"] = true;
+    ViewData["BodyClass"] = "dashboard-page";
+}
+
+<style>
+    * {
+        box-sizing: border-box;
+    }
+
+    body {
+        margin: 0;
+        font-family: 'Inter', 'Segoe UI', Arial, sans-serif;
+        background: #f6f8ff;
+        color: #111827;
+    }
+
+    .dashboard-layout {
+        min-height: 100vh;
+        display: flex;
+        background: radial-gradient(circle at top left, rgba(104, 124, 255, 0.16), transparent 35%), radial-gradient(circle at bottom right, rgba(255, 100, 170, 0.14), transparent 35%), #f6f8ff;
+    }
+
+    .sidebar {
+        width: 260px;
+        min-height: 100vh;
+        background: linear-gradient(180deg, #111827, #1f1f3a);
+        color: white;
+        padding: 26px 20px;
+        position: fixed;
+        top: 0;
+        left: 0;
+        z-index: 1000;
+        overflow-y: auto;
+        box-shadow: 18px 0 45px rgba(17, 24, 39, 0.18);
+    }
+
+    .sidebar-brand {
+        text-decoration: none;
+        display: inline-flex;
+        align-items: center;
+        gap: 0;
+        font-size: 30px;
+        font-weight: 900;
+        margin-bottom: 34px;
+        letter-spacing: -1px;
+        transition: 0.25s;
+    }
+
+    .brand-swap {
+        color: #d9573b;
+    }
+
+    .brand-ster {
+        color: #6674ff;
+    }
+
+    .sidebar-brand:hover {
+        transform: translateY(-2px);
+    }
+
+    .sidebar-menu {
+        display: grid;
+        gap: 8px;
+    }
+
+    .sidebar a.menu-link {
+        display: flex;
+        align-items: center;
+        gap: 11px;
+        color: #d1d5db;
+        padding: 13px 14px;
+        border-radius: 16px;
+        text-decoration: none;
+        font-weight: 650;
+        transition: 0.25s;
+    }
+
+        .sidebar a.menu-link:hover,
+        .sidebar a.active {
+            background: linear-gradient(135deg, #6674ff, #ff64aa);
+            color: white;
+            transform: translateX(4px);
+            box-shadow: 0 12px 25px rgba(102, 116, 255, 0.22);
+        }
+
+    .logout-form {
+        margin-top: 20px;
+    }
+
+    .logout-btn {
+        width: 100%;
+        border: 1px solid rgba(255,255,255,0.15);
+        background: rgba(255,255,255,0.08);
+        color: white;
+        padding: 12px 14px;
+        border-radius: 16px;
+        font-weight: 750;
+        transition: 0.25s;
+        cursor: pointer;
+    }
+
+        .logout-btn:hover {
+            background: rgba(255, 100, 170, 0.22);
+        }
+
+    .main {
+        margin-left: 260px;
+        width: calc(100% - 260px);
+        padding: 30px;
+    }
+
+    .topbar {
+        background: rgba(255, 255, 255, 0.88);
+        backdrop-filter: blur(18px);
+        border: 1px solid #eef0f7;
+        border-radius: 28px;
+        padding: 22px 24px;
+        box-shadow: 0 16px 35px rgba(35, 45, 90, 0.08);
+        margin-bottom: 28px;
+    }
+
+        .topbar h2 {
+            margin: 0;
+            font-size: 30px;
+            font-weight: 900;
+            color: #111827;
+            letter-spacing: -0.8px;
+        }
+
+        .topbar p {
+            margin: 7px 0 0;
+            color: #6b7280;
+            font-size: 15px;
+        }
+
+    .account-hero {
+        background: linear-gradient(135deg, #6674ff, #ff64aa);
+        color: white;
+        border-radius: 32px;
+        padding: 34px;
+        margin-bottom: 28px;
+        box-shadow: 0 24px 55px rgba(102, 116, 255, 0.24);
+        position: relative;
+        overflow: hidden;
+    }
+
+        .account-hero::before {
+            content: "";
+            position: absolute;
+            width: 260px;
+            height: 260px;
+            border-radius: 50%;
+            background: rgba(255,255,255,0.13);
+            right: -80px;
+            top: -90px;
+        }
+
+        .account-hero h1 {
+            margin: 0;
+            font-size: 38px;
+            font-weight: 900;
+            letter-spacing: -1px;
+            position: relative;
+            z-index: 2;
+        }
+
+        .account-hero p {
+            margin: 10px 0 0;
+            max-width: 720px;
+            opacity: 0.94;
+            line-height: 1.7;
+            position: relative;
+            z-index: 2;
+        }
+
+    .alert-success,
+    .alert-error {
+        border-radius: 18px;
+        padding: 13px 15px;
+        font-size: 14px;
+        font-weight: 750;
+        margin-bottom: 18px;
+    }
+
+    .alert-success {
+        background: #ecfdf5;
+        color: #047857;
+        border: 1px solid #a7f3d0;
+    }
+
+    .alert-error {
+        background: #fff1f2;
+        color: #e11d48;
+        border: 1px solid #fecdd3;
+    }
+
+    .account-grid {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 22px;
+        margin-bottom: 28px;
+    }
+
+    .account-card {
+        background: white;
+        border: 1px solid #eef0f7;
+        border-radius: 26px;
+        padding: 24px;
+        box-shadow: 0 16px 35px rgba(35, 45, 90, 0.07);
+    }
+
+        .account-card h3 {
+            margin: 0 0 6px;
+            color: #111827;
+            font-size: 22px;
+            font-weight: 900;
+            letter-spacing: -0.5px;
+        }
+
+    .card-subtitle {
+        margin: 0 0 22px;
+        color: #6b7280;
+        font-size: 14px;
+        line-height: 1.6;
+    }
+
+    .form-group {
+        margin-bottom: 15px;
+    }
+
+        .form-group label {
+            display: block;
+            font-size: 14px;
+            font-weight: 800;
+            color: #374151;
+            margin-bottom: 8px;
+        }
+
+    .form-control {
+        width: 100%;
+        min-height: 50px;
+        border-radius: 16px;
+        border: 1px solid #e5e7eb;
+        padding: 12px 15px;
+        font-size: 15px;
+        color: #111827;
+        background: #f9fafb;
+        transition: 0.25s;
+        outline: none;
+        font-family: inherit;
+    }
+
+    textarea.form-control {
+        min-height: 96px;
+        resize: vertical;
+    }
+
+    .form-control:focus {
+        background: white;
+        border-color: #6674ff;
+        box-shadow: 0 0 0 4px rgba(102, 116, 255, 0.13);
+    }
+
+    .primary-btn,
+    .remove-btn {
+        border: none;
+        text-decoration: none;
+        padding: 11px 16px;
+        border-radius: 35px;
+        font-size: 14px;
+        font-weight: 900;
+        cursor: pointer;
+        transition: 0.25s;
+    }
+
+    .primary-btn {
+        background: linear-gradient(135deg, #6674ff, #ff64aa);
+        color: white;
+        box-shadow: 0 12px 25px rgba(102, 116, 255, 0.22);
+    }
+
+    .remove-btn {
+        background: #fff1f2;
+        color: #e11d48;
+        border: 1px solid #fecdd3;
+    }
+
+        .primary-btn:hover,
+        .remove-btn:hover {
+            transform: translateY(-2px);
+        }
+
+    .skill-list {
+        display: grid;
+        gap: 12px;
+        margin-top: 18px;
+    }
+
+    .skill-item-box {
+        background: #f9fafb;
+        border: 1px solid #eef0f7;
+        border-radius: 18px;
+        padding: 15px;
+        display: flex;
+        justify-content: space-between;
+        align-items: flex-start;
+        gap: 12px;
+    }
+
+        .skill-item-box h4 {
+            margin: 0 0 5px;
+            color: #111827;
+            font-size: 16px;
+            font-weight: 900;
+        }
+
+        .skill-item-box p {
+            margin: 0;
+            color: #6b7280;
+            font-size: 13px;
+            line-height: 1.5;
+        }
+
+    .empty-state {
+        background: #f9fafb;
+        border: 1px dashed #dbe0ff;
+        color: #6b7280;
+        border-radius: 18px;
+        padding: 18px;
+        text-align: center;
+        font-weight: 700;
+    }
+
+    .recommend-section {
+        background: white;
+        border: 1px solid #eef0f7;
+        border-radius: 26px;
+        padding: 24px;
+        box-shadow: 0 16px 35px rgba(35, 45, 90, 0.07);
+    }
+
+        .recommend-section h3 {
+            margin: 0 0 6px;
+            font-size: 24px;
+            font-weight: 900;
+            color: #111827;
+        }
+
+    .recommend-grid {
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        gap: 18px;
+        margin-top: 22px;
+    }
+
+    .recommend-card {
+        border: 1px solid #eef0f7;
+        border-radius: 22px;
+        padding: 20px;
+        background: #f9fafb;
+        transition: 0.25s;
+    }
+
+        .recommend-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 16px 35px rgba(102, 116, 255, 0.12);
+            background: white;
+        }
+
+        .recommend-card h4 {
+            margin: 0 0 10px;
+            font-size: 19px;
+            font-weight: 900;
+            color: #111827;
+        }
+
+    .match-pill {
+        display: inline-block;
+        margin-bottom: 12px;
+        background: #eef1ff;
+        color: #6674ff;
+        padding: 7px 12px;
+        border-radius: 30px;
+        font-size: 13px;
+        font-weight: 900;
+    }
+
+    .match-row {
+        margin: 8px 0;
+        color: #4b5563;
+        font-size: 14px;
+        line-height: 1.5;
+    }
+
+        .match-row b {
+            color: #111827;
+        }
+
+    @@media (max-width: 1000px) {
+        .account-grid,
+        .recommend-grid {
+            grid-template-columns: 1fr;
+        }
+    }
+
+    @@media (max-width: 768px) {
+        .dashboard-layout {
+            display: block;
+        }
+
+        .sidebar {
+            position: relative;
+            width: 100%;
+            min-height: auto;
+            border-radius: 0 0 28px 28px;
+        }
+
+        .main {
+            margin-left: 0;
+            width: 100%;
+            padding: 22px;
+        }
+
+        .account-hero h1 {
+            font-size: 30px;
+        }
+
+        .skill-item-box {
+            flex-direction: column;
+        }
+    }
+</style>
+
+<div class="dashboard-layout">
+
+    <aside class="sidebar">
+
+        <a href="/Home/Dashboard" class="sidebar-brand">
+            <span class="brand-swap">Swap</span><span class="brand-ster">ster</span>
+        </a>
+
+        <div class="sidebar-menu">
+
+            <a href="/Home/Dashboard" class="menu-link">
+                📊 Dashboard
+            </a>
+
+            <a href="/Skill/Index" class="menu-link">
+                🔍 Explore Skills
+            </a>
+
+            <a href="/Home/Dashboard#trending" class="menu-link">
+                ⚡ Trending Skills
+            </a>
+
+            <a href="/Account/MyAccount" class="menu-link active">
+                👤 My Account
+            </a>
+
+            <a href="/Home/Settings" class="menu-link">
+                ⚙ Settings
+            </a>
+
+        </div>
+
+        <form asp-controller="Account" asp-action="Logout" method="post" class="logout-form">
+            <button type="submit" class="logout-btn">
+                Logout
+            </button>
+        </form>
+
+    </aside>
+
+    <main class="main">
+
+        <div class="topbar">
+            <h2>My Account</h2>
+            <p>Add your teaching skills and learning goals to get better profile recommendations.</p>
+        </div>
+
+        <section class="account-hero">
+            <h1>Hello, @(Model.User?.Username ?? "User") 👋</h1>
+            <p>
+                Add skills you can teach and skills you want to learn.
+                Swapster will recommend users whose skills match your learning goals and who want to learn what you can teach.
+            </p>
+        </section>
+
+        @if (TempData["Success"] != null)
+        {
+            <div class="alert-success">
+                @TempData["Success"]
+            </div>
+        }
+
+        @if (TempData["Error"] != null)
+        {
+            <div class="alert-error">
+                @TempData["Error"]
+            </div>
+        }
+
+        <section class="account-grid">
+
+            <div class="account-card">
+                <h3>🧑‍🏫 Skills I Can Teach</h3>
+                <p class="card-subtitle">Add skills that you can offer to other learners.</p>
+
+                <form asp-controller="Account" asp-action="AddMySkill" method="post">
+
+                    <div class="form-group">
+                        <label>Skill Name</label>
+                        <input type="text"
+                               name="skillName"
+                               class="form-control"
+                               placeholder="Example: Java, Graphic Design, Python"
+                               required />
+                    </div>
+
+                    <div class="form-group">
+                        <label>Description</label>
+                        <textarea name="description"
+                                  class="form-control"
+                                  placeholder="Write a short description about what you can teach."></textarea>
+                    </div>
+
+                    <button type="submit" class="primary-btn">
+                        + Add Teaching Skill
+                    </button>
+
+                </form>
+
+                <div class="skill-list">
+                    @if (Model.MySkills != null && Model.MySkills.Any())
+                    {
+                        foreach (var skill in Model.MySkills)
+                        {
+                            <div class="skill-item-box">
+                                <div>
+                                    <h4>@skill.SkillName</h4>
+                                    <p>@skill.Description</p>
+                                </div>
+
+                                <form asp-controller="Account" asp-action="RemoveMySkill" method="post">
+                                    <input type="hidden" name="skillId" value="@skill.SkillId" />
+                                    <button type="submit" class="remove-btn">
+                                        Remove
+                                    </button>
+                                </form>
+                            </div>
+                        }
+                    }
+                    else
+                    {
+                        <div class="empty-state">
+                            No teaching skills added yet.
+                        </div>
+                    }
+                </div>
+            </div>
+
+            <div class="account-card">
+                <h3>🎯 Skills I Want To Learn</h3>
+                <p class="card-subtitle">Add skills you are looking for. Recommendations will be based on these skills.</p>
+
+                <form asp-controller="Account" asp-action="AddWantedSkill" method="post">
+
+                    <div class="form-group">
+                        <label>Looking For Skill</label>
+                        <input type="text"
+                               name="skillName"
+                               class="form-control"
+                               placeholder="Example: UI Design, C#, Digital Marketing"
+                               required />
+                    </div>
+
+                    <button type="submit" class="primary-btn">
+                        + Add Learning Goal
+                    </button>
+
+                </form>
+
+                <div class="skill-list">
+                    @if (Model.WantedSkills != null && Model.WantedSkills.Any())
+                    {
+                        foreach (var wanted in Model.WantedSkills)
+                        {
+                            <div class="skill-item-box">
+                                <div>
+                                    <h4>@wanted.SkillName</h4>
+                                    <p>You are looking for this skill.</p>
+                                </div>
+
+                                <form asp-controller="Account" asp-action="RemoveWantedSkill" method="post">
+                                    <input type="hidden" name="wantedSkillId" value="@wanted.WantedSkillId" />
+                                    <button type="submit" class="remove-btn">
+                                        Remove
+                                    </button>
+                                </form>
+                            </div>
+                        }
+                    }
+                    else
+                    {
+                        <div class="empty-state">
+                            No learning goals added yet.
+                        </div>
+                    }
+                </div>
+            </div>
+
+        </section>
+
+        <section class="recommend-section">
+            <h3>🤝 Recommended Profiles</h3>
+            <p class="card-subtitle">
+                These users match your skill-swapping goals.
+            </p>
+
+            <div class="recommend-grid">
+                @if (Model.RecommendedProfiles != null && Model.RecommendedProfiles.Any())
+                {
+                    foreach (var profile in Model.RecommendedProfiles)
+                    {
+                        <div class="recommend-card">
+                            <span class="match-pill">@profile.MatchType</span>
+
+                            <h4>@profile.Username</h4>
+
+                            <div class="match-row">
+                                <b>They can teach you:</b> @profile.TheyTeach
+                            </div>
+
+                            <div class="match-row">
+                                <b>You can teach them:</b> @profile.YouTeach
+                            </div>
+                        </div>
+                    }
+                }
+                else
+                {
+                    <div class="empty-state">
+                        No profile recommendations yet. Add your teaching skills and learning goals to find matches.
+                    </div>
+                }
+            </div>
+        </section>
+
+    </main>
+
+</div>

@@ -40,6 +40,14 @@ namespace Swapster.Controllers
             return View(model);
         }
 
+        public IActionResult Settings()
+        {
+            ViewBag.Username = HttpContext.Session.GetString("Username") ?? "User";
+            ViewBag.Email = HttpContext.Session.GetString("Email") ?? "Not available";
+
+            return View();
+        }
+
         // ================= PRIVACY PAGE =================
         public IActionResult Privacy()
         {

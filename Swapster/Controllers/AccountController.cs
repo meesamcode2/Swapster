@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Http;
 using Swapster.Data;
 using Swapster.Models;
 using Swapster.Services;
@@ -19,10 +20,21 @@ namespace Swapster.Controllers
             _emailService = emailService;
         }
 
+        // ================= SAVE USER SESSION =================
+        private void SetUserSession(User user)
+        {
+            HttpContext.Session.SetInt32("UserId", user.UserId);
+            HttpContext.Session.SetString("Username", user.Username ?? "User");
+            HttpContext.Session.SetString("Email", user.Email ?? "Not available");
+            HttpContext.Session.SetInt32("AccessLevel", user.AccessLevel);
+        }
+
         // ================= LOGIN GET =================
+        [HttpGet]
         public IActionResult Login()
         {
             ViewData["HideNavbar"] = true;
+            ViewData["BodyClass"] = "auth-page";
             return View();
         }
 
@@ -30,6 +42,15 @@ namespace Swapster.Controllers
         [HttpPost]
         public IActionResult Login(string email, string password)
         {
+            ViewData["HideNavbar"] = true;
+            ViewData["BodyClass"] = "auth-page";
+
+            if (string.IsNullOrWhiteSpace(email) || string.IsNullOrWhiteSpace(password))
+            {
+                ViewBag.Error = "Please enter email and password";
+                return View();
+            }
+
             var user = _context.Users.FirstOrDefault(x => x.Email == email);
 
             if (user == null)
@@ -38,7 +59,11 @@ namespace Swapster.Controllers
                 return View();
             }
 
-            var result = _passwordHasher.VerifyHashedPassword(user, user.PasswordHash, password);
+            var result = _passwordHasher.VerifyHashedPassword(
+                user,
+                user.PasswordHash,
+                password
+            );
 
             if (result == PasswordVerificationResult.Failed)
             {
@@ -46,17 +71,17 @@ namespace Swapster.Controllers
                 return View();
             }
 
-            HttpContext.Session.SetInt32("UserId", user.UserId);
-            HttpContext.Session.SetString("Username", user.Username);
-            HttpContext.Session.SetInt32("AccessLevel", user.AccessLevel);
+            SetUserSession(user);
 
             return RedirectToAction("Dashboard", "Home");
         }
 
         // ================= ADMIN LOGIN GET =================
+        [HttpGet]
         public IActionResult AdminLogin()
         {
             ViewData["HideNavbar"] = true;
+            ViewData["BodyClass"] = "auth-page";
             return View();
         }
 
@@ -64,6 +89,15 @@ namespace Swapster.Controllers
         [HttpPost]
         public IActionResult AdminLogin(string email, string password)
         {
+            ViewData["HideNavbar"] = true;
+            ViewData["BodyClass"] = "auth-page";
+
+            if (string.IsNullOrWhiteSpace(email) || string.IsNullOrWhiteSpace(password))
+            {
+                ViewBag.Error = "Please enter admin email and password";
+                return View();
+            }
+
             var user = _context.Users.FirstOrDefault(x => x.Email == email);
 
             if (user == null)
@@ -72,7 +106,11 @@ namespace Swapster.Controllers
                 return View();
             }
 
-            var result = _passwordHasher.VerifyHashedPassword(user, user.PasswordHash, password);
+            var result = _passwordHasher.VerifyHashedPassword(
+                user,
+                user.PasswordHash,
+                password
+            );
 
             if (result == PasswordVerificationResult.Failed)
             {
@@ -87,28 +125,47 @@ namespace Swapster.Controllers
                 return View();
             }
 
-            HttpContext.Session.SetInt32("UserId", user.UserId);
-            HttpContext.Session.SetString("Username", user.Username);
-            HttpContext.Session.SetInt32("AccessLevel", user.AccessLevel);
+            SetUserSession(user);
 
-            // Agar AdminController nahi bana hua to Home Dashboard par bhej do
             return RedirectToAction("Dashboard", "Home");
-
-            // Agar baad mein AdminController banao, tab ye use karna:
-            // return RedirectToAction("Dashboard", "Admin");
         }
 
         // ================= SIGNUP GET =================
+        [HttpGet]
         public IActionResult Signup()
         {
             ViewData["HideNavbar"] = true;
+            ViewData["BodyClass"] = "auth-page";
             return View();
         }
 
         // ================= SIGNUP POST =================
         [HttpPost]
-        public IActionResult Signup(User user, string password)
+        public IActionResult Signup(User user, string password, string confirmPassword)
         {
+            ViewData["HideNavbar"] = true;
+            ViewData["BodyClass"] = "auth-page";
+
+            if (user == null)
+            {
+                ViewBag.Error = "Invalid signup data";
+                return View();
+            }
+
+            if (string.IsNullOrWhiteSpace(user.Username) ||
+                string.IsNullOrWhiteSpace(user.Email) ||
+                string.IsNullOrWhiteSpace(password))
+            {
+                ViewBag.Error = "Please fill all required fields";
+                return View(user);
+            }
+
+            if (password != confirmPassword)
+            {
+                ViewBag.Error = "Password and confirm password do not match";
+                return View(user);
+            }
+
             if (_context.Users.Any(x => x.Email == user.Email))
             {
                 ViewBag.Error = "Email already exists";
@@ -122,10 +179,11 @@ namespace Swapster.Controllers
             _context.Users.Add(user);
             _context.SaveChanges();
 
-            return RedirectToAction("Login");
+            return RedirectToAction("Login", "Account");
         }
 
         // ================= FORGOT PASSWORD GET =================
+        [HttpGet]
         public IActionResult ForgotPassword()
         {
             ViewData["HideNavbar"] = true;
@@ -139,6 +197,12 @@ namespace Swapster.Controllers
         {
             ViewData["HideNavbar"] = true;
             ViewData["BodyClass"] = "auth-page";
+
+            if (string.IsNullOrWhiteSpace(email))
+            {
+                ViewBag.Error = "Please enter your email";
+                return View();
+            }
 
             var user = _context.Users.FirstOrDefault(x => x.Email == email);
 
@@ -175,7 +239,7 @@ namespace Swapster.Controllers
 
                 <p>
                     <a href='{resetLink}'
-                       style='background:#007bff;color:white;padding:12px 18px;text-decoration:none;border-radius:6px;display:inline-block;'>
+                       style='background:#6674ff;color:white;padding:12px 18px;text-decoration:none;border-radius:6px;display:inline-block;'>
                         Reset Password
                     </a>
                 </p>
@@ -202,15 +266,54 @@ namespace Swapster.Controllers
             return View();
         }
 
+        // ================= CHANGE PASSWORD FROM SETTINGS =================
+        [HttpGet]
+        public IActionResult ChangePassword()
+        {
+            ViewData["HideNavbar"] = true;
+            ViewData["BodyClass"] = "auth-page";
+
+            int? userId = HttpContext.Session.GetInt32("UserId");
+
+            if (userId == null)
+            {
+                return RedirectToAction("Login", "Account");
+            }
+
+            var user = _context.Users.FirstOrDefault(x => x.UserId == userId.Value);
+
+            if (user == null)
+            {
+                HttpContext.Session.Clear();
+                return RedirectToAction("Login", "Account");
+            }
+
+            string token = Guid.NewGuid().ToString();
+
+            user.VerificationToken = token;
+            user.TokenExpiry = DateTime.Now.AddMinutes(15);
+
+            _context.SaveChanges();
+
+            return RedirectToAction("ResetPassword", "Account", new { token = token });
+        }
+
         // ================= RESET PASSWORD GET =================
+        [HttpGet]
         public IActionResult ResetPassword(string token)
         {
             ViewData["HideNavbar"] = true;
             ViewData["BodyClass"] = "auth-page";
 
+            if (string.IsNullOrWhiteSpace(token))
+            {
+                return Content("Invalid or expired token");
+            }
+
             var user = _context.Users.FirstOrDefault(x =>
                 x.VerificationToken == token &&
-                x.TokenExpiry > DateTime.Now);
+                x.TokenExpiry > DateTime.Now
+            );
 
             if (user == null)
             {
@@ -228,9 +331,15 @@ namespace Swapster.Controllers
             ViewData["HideNavbar"] = true;
             ViewData["BodyClass"] = "auth-page";
 
+            if (string.IsNullOrWhiteSpace(token) || string.IsNullOrWhiteSpace(newPassword))
+            {
+                return Content("Invalid request");
+            }
+
             var user = _context.Users.FirstOrDefault(x =>
                 x.VerificationToken == token &&
-                x.TokenExpiry > DateTime.Now);
+                x.TokenExpiry > DateTime.Now
+            );
 
             if (user == null)
             {
@@ -244,20 +353,96 @@ namespace Swapster.Controllers
 
             _context.SaveChanges();
 
-            HttpContext.Session.SetInt32("UserId", user.UserId);
-            HttpContext.Session.SetString("Username", user.Username);
-            HttpContext.Session.SetInt32("AccessLevel", user.AccessLevel);
+            SetUserSession(user);
 
-            TempData["msg"] = "Password reset successful! You are now logged in.";
+            TempData["msg"] = "Password reset successful!";
 
             return RedirectToAction("Dashboard", "Home");
         }
 
         // ================= LOGOUT =================
+        [HttpPost]
         public IActionResult Logout()
         {
             HttpContext.Session.Clear();
-            return RedirectToAction("Login");
+            return RedirectToAction("Login", "Account");
+        }
+        // ================= MY ACCOUNT GET =================
+        [HttpGet]
+        public IActionResult MyAccount()
+        {
+            ViewData["HideNavbar"] = true;
+            ViewData["FullWidth"] = true;
+            ViewData["BodyClass"] = "dashboard-page";
+
+            int? userId = HttpContext.Session.GetInt32("UserId");
+
+            if (userId == null)
+            {
+                return RedirectToAction("Login", "Account");
+            }
+
+            var user = _context.Users.FirstOrDefault(x => x.UserId == userId.Value);
+
+            if (user == null)
+            {
+                HttpContext.Session.Clear();
+                return RedirectToAction("Login", "Account");
+            }
+
+            return View(user);
+        }
+
+        // ================= UPDATE ACCOUNT POST =================
+        [HttpPost]
+        public IActionResult UpdateAccount(string username, string email)
+        {
+            ViewData["HideNavbar"] = true;
+            ViewData["FullWidth"] = true;
+            ViewData["BodyClass"] = "dashboard-page";
+
+            int? userId = HttpContext.Session.GetInt32("UserId");
+
+            if (userId == null)
+            {
+                return RedirectToAction("Login", "Account");
+            }
+
+            var user = _context.Users.FirstOrDefault(x => x.UserId == userId.Value);
+
+            if (user == null)
+            {
+                HttpContext.Session.Clear();
+                return RedirectToAction("Login", "Account");
+            }
+
+            if (string.IsNullOrWhiteSpace(username) || string.IsNullOrWhiteSpace(email))
+            {
+                TempData["Error"] = "Username and email are required.";
+                return RedirectToAction("MyAccount", "Account");
+            }
+
+            bool emailExists = _context.Users.Any(x =>
+                x.Email == email &&
+                x.UserId != userId.Value
+            );
+
+            if (emailExists)
+            {
+                TempData["Error"] = "This email is already used by another account.";
+                return RedirectToAction("MyAccount", "Account");
+            }
+
+            user.Username = username.Trim();
+            user.Email = email.Trim();
+
+            _context.SaveChanges();
+
+            SetUserSession(user);
+
+            TempData["Success"] = "Account updated successfully.";
+
+            return RedirectToAction("MyAccount", "Account");
         }
     }
 }

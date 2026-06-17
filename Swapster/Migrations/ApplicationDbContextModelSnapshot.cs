@@ -149,6 +149,9 @@ namespace Swapster.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<int>("ProficiencyLevel")
+                        .HasColumnType("int");
+
                     b.Property<string>("SkillName")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
@@ -173,6 +176,9 @@ namespace Swapster.Migrations
 
                     b.Property<DateTime>("CreatedAt")
                         .HasColumnType("datetime2");
+
+                    b.Property<int>("DesiredLevel")
+                        .HasColumnType("int");
 
                     b.Property<string>("SkillName")
                         .IsRequired()
@@ -218,7 +224,7 @@ namespace Swapster.Migrations
             modelBuilder.Entity("Swapster.Models.UserSkill", b =>
                 {
                     b.HasOne("Swapster.Models.User", "User")
-                        .WithMany()
+                        .WithMany("UserSkills")
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -229,12 +235,19 @@ namespace Swapster.Migrations
             modelBuilder.Entity("Swapster.Models.UserWantedSkill", b =>
                 {
                     b.HasOne("Swapster.Models.User", "User")
-                        .WithMany()
+                        .WithMany("UserWantedSkills")
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.Navigation("User");
+                });
+
+            modelBuilder.Entity("Swapster.Models.User", b =>
+                {
+                    b.Navigation("UserSkills");
+
+                    b.Navigation("UserWantedSkills");
                 });
 #pragma warning restore 612, 618
         }

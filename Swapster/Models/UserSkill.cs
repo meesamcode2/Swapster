@@ -9,15 +9,19 @@ namespace Swapster.Models
         public int SkillId { get; set; }
 
         [Required]
-        public string SkillName { get; set; } = string.Empty;
+        public string SkillName { get; set; } = string.Empty; 
+
+        public string Description { get; set; } = string.Empty;
+
 
         [Required]
-        public string Description { get; set; } = string.Empty;
+        [Range(1, 5, ErrorMessage = "Rating must be between 1 and 5")]
+        public int ProficiencyLevel { get; set; }
 
         // Foreign Key
         public int UserId { get; set; }
 
         [ForeignKey("UserId")]
-        public User? User { get; set; }
+        public virtual User? User { get; set; }
     }
 }

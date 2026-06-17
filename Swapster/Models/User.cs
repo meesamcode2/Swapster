@@ -21,7 +21,8 @@ namespace Swapster.Models
         public DateTime? ResetPasswordExpiry { get; set; }
         public DateTime? TokenExpiry { get; set; }
 
-
-
+  
+        public virtual ICollection<UserSkill> UserSkills { get; set; } = new List<UserSkill>();
+        public virtual ICollection<UserWantedSkill> UserWantedSkills { get; set; } = new List<UserWantedSkill>();
     }
 }

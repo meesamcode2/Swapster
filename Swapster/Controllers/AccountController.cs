@@ -4,6 +4,8 @@ using Microsoft.AspNetCore.Http;
 using Swapster.Data;
 using Swapster.Models;
 using Swapster.Services;
+using System;
+using System.Linq;
 
 namespace Swapster.Controllers
 {
@@ -127,7 +129,13 @@ namespace Swapster.Controllers
 
             SetUserSession(user);
 
-            return RedirectToAction("Dashboard", "Home");
+            // FIX: Model name hatakar actual Action aur Controller ka naam likha hai
+            // Agar aapka method HomeController me "AdminDashboard" hai:
+            return RedirectToAction("AdminDashboard", "Home");
+
+            // NOTE: Agar aapne Admin ke liye alag Controller banaya hai (AdminController), 
+            // toh upar wali line comment karke niche wali uncomment karlein:
+            // return RedirectToAction("Dashboard", "Admin");
         }
 
         // ================= SIGNUP GET =================
@@ -230,27 +238,19 @@ namespace Swapster.Controllers
 
             string body = $@"
                 <h2>Reset Your Password</h2>
-
                 <p>Hello {user.Username},</p>
-
                 <p>You requested to reset your Swapster password.</p>
-
                 <p>Click the button below to reset your password:</p>
-
                 <p>
                     <a href='{resetLink}'
                        style='background:#6674ff;color:white;padding:12px 18px;text-decoration:none;border-radius:6px;display:inline-block;'>
-                        Reset Password
+                         Reset Password
                     </a>
                 </p>
-
                 <p>Or copy this link and open it in your browser:</p>
                 <p>{resetLink}</p>
-
                 <p>This link will expire in 15 minutes.</p>
-
                 <br />
-
                 <p>Regards,<br/>Swapster Team</p>
             ";
 
@@ -367,6 +367,7 @@ namespace Swapster.Controllers
             HttpContext.Session.Clear();
             return RedirectToAction("Login", "Account");
         }
+
         // ================= MY ACCOUNT GET =================
         [HttpGet]
         public IActionResult MyAccount()

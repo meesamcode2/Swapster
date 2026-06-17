@@ -1,11 +1,12 @@
 ﻿@model IEnumerable<Swapster.Models.UserSkill>
 
 @{
-    ViewData["Title"] = "Available Skills";
+    ViewData["Title"] = "Available Matches & Skills";
     ViewData["BodyClass"] = "skills-page";
 }
 
 <style>
+    /* Aapki pehle wali saari CSS same rahegi... */
     .skills-page {
         margin: 0;
         font-family: 'Inter', 'Segoe UI', Arial, sans-serif;
@@ -38,77 +39,20 @@
         margin-bottom: 30px;
     }
 
-        .skills-hero::before {
-            content: "";
-            position: absolute;
-            width: 260px;
-            height: 260px;
-            border-radius: 50%;
-            background: rgba(255, 255, 255, 0.14);
-            top: -80px;
-            right: -70px;
+        .skills-hero h1 {
+            margin: 0;
+            font-size: 48px;
+            font-weight: 950;
+            letter-spacing: -1.8px;
         }
 
-        .skills-hero::after {
-            content: "";
-            position: absolute;
-            width: 190px;
-            height: 190px;
-            border-radius: 50%;
-            background: rgba(255, 255, 255, 0.11);
-            bottom: -70px;
-            right: 160px;
+        .skills-hero p {
+            margin: 16px 0 0;
+            max-width: 640px;
+            line-height: 1.7;
+            opacity: 0.94;
+            font-size: 16px;
         }
-
-    .skills-hero-content {
-        position: relative;
-        z-index: 2;
-    }
-
-    .skills-badge {
-        display: inline-block;
-        background: rgba(255, 255, 255, 0.18);
-        border: 1px solid rgba(255, 255, 255, 0.28);
-        padding: 9px 16px;
-        border-radius: 40px;
-        font-weight: 800;
-        margin-bottom: 18px;
-    }
-
-    .skills-hero h1 {
-        margin: 0;
-        font-size: 48px;
-        line-height: 1.08;
-        font-weight: 950;
-        letter-spacing: -1.8px;
-    }
-
-    .skills-hero p {
-        margin: 16px 0 0;
-        max-width: 640px;
-        line-height: 1.7;
-        opacity: 0.94;
-        font-size: 16px;
-    }
-
-    .skills-hero-visual {
-        position: relative;
-        z-index: 2;
-        display: grid;
-        place-items: center;
-    }
-
-    .skills-circle {
-        width: 180px;
-        height: 180px;
-        border-radius: 50%;
-        background: rgba(255, 255, 255, 0.16);
-        border: 1px solid rgba(255, 255, 255, 0.28);
-        display: grid;
-        place-items: center;
-        font-size: 72px;
-        box-shadow: inset 0 0 45px rgba(255, 255, 255, 0.12);
-    }
 
     .skills-toolbar {
         background: rgba(255, 255, 255, 0.88);
@@ -148,14 +92,7 @@
             outline: none;
             background: #f9fafb;
             color: #111827;
-            transition: 0.25s;
         }
-
-            .search-box input:focus {
-                background: white;
-                border-color: #6674ff;
-                box-shadow: 0 0 0 4px rgba(102, 116, 255, 0.13);
-            }
 
     .add-skill-btn {
         text-decoration: none;
@@ -166,23 +103,13 @@
         border-radius: 35px;
         font-weight: 900;
         box-shadow: 0 12px 24px rgba(102, 116, 255, 0.25);
-        transition: 0.25s;
         white-space: nowrap;
     }
-
-        .add-skill-btn:hover {
-            transform: translateY(-3px);
-            box-shadow: 0 16px 32px rgba(102, 116, 255, 0.32);
-        }
 
     .skills-grid {
         display: grid;
         grid-template-columns: repeat(3, 1fr);
         gap: 22px;
-    }
-
-    .skill-item {
-        min-width: 0;
     }
 
     .skill-card {
@@ -199,61 +126,30 @@
         overflow: hidden;
     }
 
-        .skill-card::before {
-            content: "";
-            position: absolute;
-            width: 120px;
-            height: 120px;
-            border-radius: 50%;
-            background: rgba(102, 116, 255, 0.08);
-            top: -45px;
-            right: -45px;
-        }
-
         .skill-card:hover {
             transform: translateY(-8px);
             box-shadow: 0 22px 45px rgba(102, 116, 255, 0.15);
         }
 
-    .skill-icon {
-        width: 56px;
-        height: 56px;
-        border-radius: 18px;
-        background: #eef1ff;
-        color: #6674ff;
-        display: grid;
-        place-items: center;
-        font-size: 25px;
-        margin-bottom: 16px;
-        position: relative;
-        z-index: 2;
-    }
-
     .skill-title {
         font-size: 21px;
         font-weight: 900;
         color: #111827;
-        margin-bottom: 10px;
-        position: relative;
-        z-index: 2;
+        margin-bottom: 5px;
     }
 
     .skill-description {
         color: #6b7280;
         line-height: 1.65;
-        margin-bottom: 18px;
+        margin-bottom: 12px;
         flex: 1;
-        position: relative;
-        z-index: 2;
     }
 
     .owner {
         font-size: 14px;
         color: #8a93a3;
         font-weight: 650;
-        margin-bottom: 18px;
-        position: relative;
-        z-index: 2;
+        margin-bottom: 14px;
     }
 
     .request-btn {
@@ -265,98 +161,46 @@
         border-radius: 35px;
         font-size: 14px;
         font-weight: 850;
-        transition: 0.25s;
-        position: relative;
-        z-index: 2;
-    }
-
-        .request-btn:hover {
-            background: linear-gradient(135deg, #6674ff, #ff64aa);
-            transform: translateY(-2px);
-            box-shadow: 0 10px 22px rgba(102, 116, 255, 0.22);
-        }
-
-    .empty-state {
-        background: white;
-        border: 1px solid #eef0f7;
-        border-radius: 30px;
-        padding: 48px 28px;
-        text-align: center;
-        box-shadow: 0 16px 35px rgba(35, 45, 90, 0.08);
-    }
-
-    .empty-icon {
-        width: 76px;
-        height: 76px;
-        margin: 0 auto 18px;
-        border-radius: 24px;
-        background: linear-gradient(135deg, #6674ff, #ff64aa);
-        color: white;
-        display: grid;
-        place-items: center;
-        font-size: 34px;
-        box-shadow: 0 16px 35px rgba(102, 116, 255, 0.28);
-    }
-
-    .empty-state h3 {
-        margin: 0 0 8px;
-        font-weight: 900;
-        color: #111827;
-    }
-
-    .empty-state p {
-        color: #6b7280;
-        margin-bottom: 22px;
     }
 
     .hidden {
         display: none !important;
     }
 
-    @@media (max-width: 1100px) {
-        .skills-grid {
-            grid-template-columns: repeat(2, 1fr);
-        }
-
-        .skills-hero {
-            grid-template-columns: 1fr;
-        }
-
-        .skills-hero-visual {
-            display: none;
-        }
+    /* --- NEW ADDITIONS FOR RATINGS & MATCHES --- */
+    .rating-container {
+        margin-bottom: 12px;
+        display: flex;
+        align-items: center;
+        gap: 6px;
     }
 
-    @@media (max-width: 768px) {
-        .skills-wrapper {
-            padding: 28px 22px 60px;
-        }
+    .stars {
+        color: #ffb100;
+        font-size: 16px;
+        letter-spacing: 2px;
+    }
 
-        .skills-hero {
-            padding: 30px 24px;
-            border-radius: 26px;
-        }
+    .rating-text {
+        font-size: 12px;
+        color: #6b7280;
+        font-weight: 600;
+        background: #f3f4f6;
+        padding: 2px 8px;
+        border-radius: 12px;
+    }
 
-            .skills-hero h1 {
-                font-size: 36px;
-            }
-
-        .skills-toolbar {
-            flex-direction: column;
-            align-items: stretch;
-        }
-
-        .search-box {
-            max-width: 100%;
-        }
-
-        .add-skill-btn {
-            text-align: center;
-        }
-
-        .skills-grid {
-            grid-template-columns: 1fr;
-        }
+    .match-badge {
+        position: absolute;
+        top: 20px;
+        right: 20px;
+        background: rgba(34, 197, 94, 0.1);
+        color: #16a34a;
+        padding: 6px 12px;
+        border-radius: 20px;
+        font-size: 12px;
+        font-weight: 800;
+        border: 1px solid rgba(34, 197, 94, 0.2);
     }
 </style>
 
@@ -364,33 +208,19 @@
 
     <section class="skills-hero">
         <div class="skills-hero-content">
-            <div class="skills-badge">🚀 Skill Exchange Marketplace</div>
-
-            <h1>Explore Skills</h1>
-
+            <h1>Smart Skill Matches</h1>
             <p>
-                Discover skills shared by Swapster users, find what you want to learn,
-                and send a request to start your skill exchange journey.
+                Discover personalized skill-swap matches. We calculate compatibility based on what you want to learn and what others are offering!
             </p>
-        </div>
-
-        <div class="skills-hero-visual">
-            <div class="skills-circle">💡</div>
         </div>
     </section>
 
     <div class="skills-toolbar">
         <div class="search-box">
             <span>🔍</span>
-            <input type="text"
-                   id="skillSearch"
-                   placeholder="Search skills by name, description or user..."
-                   onkeyup="filterSkills()" />
+            <input type="text" id="skillSearch" placeholder="Search skills by name..." onkeyup="filterSkills()" />
         </div>
-
-        <a asp-action="Create" class="add-skill-btn">
-            + Add Skill
-        </a>
+        <a asp-action="Create" class="add-skill-btn">+ Add Your Skill</a>
     </div>
 
     @if (Model != null && Model.Any())
@@ -401,18 +231,36 @@
                 <div class="skill-item">
                     <div class="skill-card">
 
-                        <div class="skill-icon">💡</div>
-
-                        <div class="skill-title">
-                            @item.SkillName
+                        <div class="match-badge">
+                            ✨ Best Match
                         </div>
 
-                        <p class="skill-description">
-                            @item.Description
-                        </p>
+                        <div style="font-size: 32px; margin-bottom: 10px;">💡</div>
+
+                        <div class="skill-title">@item.SkillName</div>
+
+                        <div class="rating-container">
+                            <span class="stars">
+                                @for (int i = 1; i <= 5; i++)
+                                {
+                                    if (i <= item.ProficiencyLevel)
+                                    {
+                                        <text>★</text>
+                                    }
+                                    else
+                                    {
+
+                                        <text>☆</text>
+                                    }
+                                }
+                            </span>
+                            <span class="rating-text">Level @item.ProficiencyLevel/5</span>
+                        </div>
+
+                        <p class="skill-description">@item.Description</p>
 
                         <div class="owner">
-                            👤 Shared by: @(item.User?.Username ?? "Swapster User")
+                            👤 Instructor: @(item.User?.Username ?? "Swapster User")
                         </div>
 
                         <a asp-controller="Request"
@@ -420,7 +268,7 @@
                            asp-route-skillId="@item.SkillId"
                            asp-route-receiverId="@item.UserId"
                            class="request-btn">
-                            Send Request
+                            Send Swap Request
                         </a>
 
                     </div>
@@ -430,35 +278,17 @@
     }
     else
     {
-        <div class="empty-state">
-            <div class="empty-icon">📭</div>
-            <h3>No skills available yet</h3>
-            <p>
-                Be the first to add a skill and start helping others learn.
-            </p>
-
-            <a asp-action="Create" class="add-skill-btn">
-                + Add Skill
-            </a>
-        </div>
+        <div class="empty-state"><h3>No matches found</h3></div>
     }
-
 </div>
 
 <script>
     function filterSkills() {
-        const input = document.getElementById("skillSearch");
-        const query = input.value.toLowerCase().trim();
+        const query = document.getElementById("skillSearch").value.toLowerCase().trim();
         const items = document.getElementsByClassName("skill-item");
-
         for (let i = 0; i < items.length; i++) {
             const text = items[i].innerText.toLowerCase();
-
-            if (text.includes(query)) {
-                items[i].classList.remove("hidden");
-            } else {
-                items[i].classList.add("hidden");
-            }
+            items[i].classList.toggle("hidden", !text.includes(query));
         }
     }
 </script>

@@ -1,0 +1,442 @@
+﻿@model Swapster.Models.AdminDashboardViewModel
+
+@{
+    ViewData["Title"] = "Admin Management Console";
+    ViewData["HideNavbar"] = true;
+    ViewData["FullWidth"] = true;
+    ViewData["BodyClass"] = "admin-dashboard-page";
+}
+
+<style>
+    * {
+        box-sizing: border-box;
+    }
+
+    body {
+        margin: 0;
+        font-family: 'Inter', 'Segoe UI', Arial, sans-serif;
+        background: #f6f8ff;
+        color: #111827;
+    }
+
+    .dashboard-layout {
+        min-height: 100vh;
+        display: flex;
+        background: radial-gradient(circle at top left, rgba(104, 124, 255, 0.12), transparent 35%), radial-gradient(circle at bottom right, rgba(255, 100, 170, 0.10), transparent 35%), #f6f8ff;
+    }
+
+    /* ================= SIDEBAR ================= */
+    .sidebar {
+        width: 260px;
+        min-height: 100vh;
+        background: linear-gradient(180deg, #0f172a, #1e1e38);
+        color: white;
+        padding: 26px 20px;
+        position: fixed;
+        top: 0;
+        left: 0;
+        z-index: 1000;
+        overflow-y: auto;
+        box-shadow: 18px 0 45px rgba(15, 23, 42, 0.2);
+    }
+
+    .sidebar-brand {
+        text-decoration: none;
+        display: inline-flex;
+        align-items: center;
+        gap: 0;
+        font-size: 26px;
+        font-weight: 900;
+        margin-bottom: 34px;
+        letter-spacing: -1px;
+    }
+
+        .sidebar-brand .brand-swap {
+            color: #ff64aa;
+        }
+
+        .sidebar-brand .brand-ster {
+            color: #6674ff;
+        }
+
+    .sidebar-badge {
+        font-size: 11px;
+        background: #d9573b;
+        color: white;
+        padding: 2px 8px;
+        border-radius: 8px;
+        margin-left: 8px;
+        text-transform: uppercase;
+        font-weight: 800;
+    }
+
+    .sidebar-menu {
+        display: grid;
+        gap: 8px;
+    }
+
+    .sidebar a.menu-link {
+        display: flex;
+        align-items: center;
+        gap: 11px;
+        color: #94a3b8;
+        padding: 13px 14px;
+        border-radius: 16px;
+        text-decoration: none;
+        font-weight: 600;
+        transition: 0.25s;
+    }
+
+        .sidebar a.menu-link:hover,
+        .sidebar a.active {
+            background: linear-gradient(135deg, #6674ff, #ff64aa);
+            color: white;
+            transform: translateX(4px);
+            box-shadow: 0 12px 25px rgba(102, 116, 255, 0.22);
+        }
+
+    .logout-form {
+        margin-top: 30px;
+    }
+
+    .logout-btn {
+        width: 100%;
+        border: 1px solid rgba(255,255,255,0.1);
+        background: rgba(255,255,255,0.05);
+        color: #f1f5f9;
+        padding: 12px 14px;
+        border-radius: 16px;
+        font-weight: 700;
+        transition: 0.25s;
+        cursor: pointer;
+    }
+
+        .logout-btn:hover {
+            background: rgba(217, 87, 59, 0.25);
+            border-color: #d9573b;
+        }
+
+    /* ================= MAIN CONTENT ================= */
+    .main {
+        margin-left: 260px;
+        width: calc(100% - 260px);
+        padding: 30px;
+    }
+
+    .topbar {
+        background: rgba(255, 255, 255, 0.85);
+        backdrop-filter: blur(18px);
+        border: 1px solid #eef0f7;
+        border-radius: 28px;
+        padding: 18px 24px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        box-shadow: 0 16px 35px rgba(35, 45, 90, 0.05);
+        margin-bottom: 28px;
+    }
+
+    .topbar-title h2 {
+        margin: 0;
+        font-size: 26px;
+        font-weight: 900;
+        letter-spacing: -0.5px;
+    }
+
+    .system-status {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        font-size: 14px;
+        font-weight: 650;
+        background: #ecfdf5;
+        color: #059669;
+        padding: 8px 16px;
+        border-radius: 20px;
+    }
+
+    .status-pulse {
+        width: 8px;
+        height: 8px;
+        background: #10b981;
+        border-radius: 50%;
+        animation: pulse 2s infinite;
+    }
+
+    @@keyframes pulse {
+        0% {
+            transform: scale(0.95);
+            box-shadow: 0 0 0 0 rgba(16, 185, 129, 0.7);
+        }
+
+        70% {
+            transform: scale(1);
+            box-shadow: 0 0 0 6px rgba(16, 185, 129, 0);
+        }
+
+        100% {
+            transform: scale(0.95);
+            box-shadow: 0 0 0 0 rgba(16, 185, 129, 0);
+        }
+    }
+
+    /* ================= STATS GRID ================= */
+    .stats-grid {
+        display: grid;
+        grid-template-columns: repeat(4, 1fr);
+        gap: 18px;
+        margin-bottom: 34px;
+    }
+
+    .stat-card {
+        background: white;
+        padding: 22px;
+        border-radius: 24px;
+        border: 1px solid #eef0f7;
+        box-shadow: 0 14px 30px rgba(35, 45, 90, 0.05);
+    }
+
+    .stat-icon {
+        width: 46px;
+        height: 46px;
+        border-radius: 14px;
+        display: grid;
+        place-items: center;
+        font-size: 20px;
+        margin-bottom: 14px;
+    }
+
+    .icon-users {
+        background: #eef2ff;
+        color: #6674ff;
+    }
+
+    .icon-swaps {
+        background: #fdf2f8;
+        color: #ff64aa;
+    }
+
+    .icon-skills {
+        background: #eff6ff;
+        color: #3b82f6;
+    }
+
+    .icon-reports {
+        background: #fef2f2;
+        color: #ef4444;
+    }
+
+    .stat-card h3 {
+        margin: 0;
+        font-size: 28px;
+        font-weight: 900;
+    }
+
+    .stat-card p {
+        margin: 4px 0 0;
+        color: #6b7280;
+        font-size: 13px;
+        font-weight: 600;
+    }
+
+    /* ================= ACTION QUICK LINK PANELS ================= */
+    .quick-actions-panel {
+        background: white;
+        border-radius: 26px;
+        border: 1px solid #eef0f7;
+        padding: 24px;
+        box-shadow: 0 16px 35px rgba(35, 45, 90, 0.05);
+    }
+
+    .panel-header h3 {
+        margin: 0 0 6px 0;
+        font-size: 20px;
+        font-weight: 900;
+        letter-spacing: -0.3px;
+    }
+
+    .panel-header p {
+        margin: 0 0 20px 0;
+        font-size: 14px;
+        color: #6b7280;
+    }
+
+    .actions-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+        gap: 16px;
+    }
+
+    .action-route-card {
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+        padding: 20px;
+        border: 1px solid #eef0f7;
+        background: #f8fafc;
+        border-radius: 20px;
+        text-decoration: none;
+        color: inherit;
+        transition: 0.25s;
+    }
+
+        .action-route-card:hover {
+            transform: translateY(-4px);
+            background: white;
+            border-color: #6674ff;
+            box-shadow: 0 12px 25px rgba(102, 116, 255, 0.1);
+        }
+
+    .card-meta h4 {
+        margin: 0 0 6px 0;
+        font-size: 16px;
+        font-weight: 800;
+        color: #111827;
+    }
+
+    .card-meta p {
+        margin: 0;
+        font-size: 13px;
+        color: #6b7280;
+        line-height: 1.5;
+    }
+
+    .card-arrow {
+        margin-top: 14px;
+        font-weight: 800;
+        color: #6674ff;
+        font-size: 14px;
+    }
+
+    /* ================= RESPONSIVE ================= */
+    @@media (max-width: 1024px) {
+        .stats-grid {
+            grid-template-columns: repeat(2, 1fr);
+        }
+    }
+
+    @@media (max-width: 768px) {
+        .dashboard-layout {
+            display: block;
+        }
+
+        .sidebar {
+            position: relative;
+            width: 100%;
+            min-height: auto;
+            border-radius: 0 0 24px 24px;
+        }
+
+        .main {
+            width: 100%;
+            margin-left: 0;
+            padding: 16px;
+        }
+
+        .stats-grid {
+            grid-template-columns: 1fr;
+        }
+    }
+</style>
+
+<div class="dashboard-layout">
+
+    <aside class="sidebar">
+        <a asp-controller="Home" asp-action="Index" class="sidebar-brand">
+            <span class="brand-swap">Swap</span><span class="brand-ster">ster</span>
+            <span class="sidebar-badge">Admin</span>
+        </a>
+
+        <div class="sidebar-menu">
+            <a href="/Admin/Dashboard" class="menu-link active"> Control Tower</a>
+            <a href="/Admin/Users" class="menu-link"> User Directory</a>
+            <a href="/Admin/Skills" class="menu-link"> Categories & Database</a>
+            <a href="/Admin/Moderation" class="menu-link"> Moderation Queue</a>
+            <a href="/Admin/BotLogs" class="menu-link"> Chatbot Training</a>
+        </div>
+
+        <form asp-controller="Account" asp-action="Logout" method="post" class="logout-form">
+            <button type="submit" class="logout-btn">System Exit</button>
+        </form>
+    </aside>
+
+    <main class="main">
+
+        <div class="topbar">
+            <div class="topbar-title">
+                <h2>Management Console</h2>
+                <p>Welcome back, @(Model?.AdminName ?? "Administrator") Toolset</p>
+            </div>
+            <div class="system-status">
+                <div class="status-pulse"></div>
+                System Operational
+            </div>
+        </div>
+
+        <section class="stats-grid">
+            <div class="stat-card">
+                <div class="stat-icon icon-users">👥</div>
+                <h3>@Model?.TotalUsers</h3>
+                <p>Global Registrations</p>
+            </div>
+            <div class="stat-card">
+                <div class="stat-icon icon-swaps">🤝</div>
+                <h3>@Model?.ActiveSwaps</h3>
+                <p>Live Skill Swaps</p>
+            </div>
+            <div class="stat-card">
+                <div class="stat-icon icon-skills">💡</div>
+                <h3>@Model?.TotalSkills</h3>
+                <p>Indexed Skills</p>
+            </div>
+            <div class="stat-card">
+                <h3>@Model?.PendingReportsCount</h3>
+                <p>Unresolved Incidents</p>
+            </div>
+        </section>
+
+        <section class="quick-actions-panel">
+            <div class="panel-header">
+                <h3> Platform Sub-Systems</h3>
+                <p>Select a core engine module to manage specific user interactions and entity states.</p>
+            </div>
+
+            <div class="actions-grid">
+
+                <a href="/Admin/Users" class="action-route-card">
+                    <div class="card-meta">
+                        <h4> User Directory</h4>
+                        <p>Manage access levels, handle account suspensions, and review registration criteria.</p>
+                    </div>
+                    <div class="card-arrow">Open Subsystem →</div>
+                </a>
+
+                <a href="/Admin/Skills" class="action-route-card">
+                    <div class="card-meta">
+                        <h4> Skill Repositories</h4>
+                        <p>Inject global categories, analyze hot skills metrics, and merge broken duplicate tags.</p>
+                    </div>
+                    <div class="card-arrow">Open Subsystem →</div>
+                </a>
+
+                <a href="/Admin/Moderation" class="action-route-card">
+                    <div class="card-meta">
+                        <h4> Moderation Queue</h4>
+                        <p>Process user reports, flag suspicious accounts, and inspect platform exceptions.</p>
+                    </div>
+                    <div class="card-arrow">Open Subsystem →</div>
+                </a>
+
+                <a href="/Admin/BotLogs" class="action-route-card">
+                    <div class="card-meta">
+                        <h4> Chatbot Core Insights</h4>
+                        <p>Review raw unanswered strings and engineer custom intents for the assistant logic.</p>
+                    </div>
+                    <div class="card-arrow">Open Subsystem →</div>
+                </a>
+
+            </div>
+        </section>
+
+    </main>
+</div>

@@ -14,34 +14,69 @@ namespace Swapster.Controllers
             _context = context;
         }
 
-        // List all skills
+        // List all offered skills
         public IActionResult Index()
         {
             var skills = _context.UserSkills.Include(s => s.User).ToList();
             return View(skills);
         }
 
-        // GET Create
+        // GET: Skill/Create
         public IActionResult Create()
         {
-            return View();
+            int? userId = HttpContext.Session.GetInt32("UserId");
+            if (userId == null)
+            {
+                return RedirectToAction("Login", "Account");
+            }
+
+            // Naya ViewModel initialize kar ke view ko bhej rahe hain
+            return View(new AddSkillViewModel());
         }
 
-        // POST Create
+        // POST: Skill/Create
         [HttpPost]
-        public IActionResult Create(UserSkill skill)
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Create(AddSkillViewModel model)
         {
             int? userId = HttpContext.Session.GetInt32("UserId");
 
             if (userId == null)
+            {
                 return RedirectToAction("Login", "Account");
+            }
 
-            skill.UserId = userId.Value;
+            if (ModelState.IsValid)
+            {
+                // 1. Mapping ViewModel Data to UserSkill (Offer)
+                var userSkill = new UserSkill
+                {
+                    SkillName = model.OfferedSkillName,
+                    ProficiencyLevel = model.ProficiencyLevel,
+                    Description = model.Description ?? string.Empty,
+                    UserId = userId.Value
+                };
+                _context.UserSkills.Add(userSkill);
 
-            _context.UserSkills.Add(skill);
-            _context.SaveChanges();
+                // 2. Mapping ViewModel Data to UserWantedSkill (Want)
+                var userWantedSkill = new UserWantedSkill
+                {
+                    SkillName = model.WantedSkillName,
+                    DesiredLevel = model.DesiredLevel,
+                    UserId = userId.Value,
+                    CreatedAt = DateTime.UtcNow
+                };
+                _context.UserWantedSkills.Add(userWantedSkill);
 
-            return RedirectToAction("Index");
+                // 3. Save both entries in a single transaction
+                await _context.SaveChangesAsync();
+
+                // Dashboard ya Index page par redirect karein jahan aap chahein
+                return RedirectToAction("Dashboard", "Home");
+            }
+
+            // Agar koi validation fail ho jaye toh form values ke sath wapas jaye
+            return View(model);
         }
     }
 }

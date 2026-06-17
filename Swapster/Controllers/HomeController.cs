@@ -2,7 +2,13 @@
 using Microsoft.EntityFrameworkCore;
 using Swapster.Data;
 using Swapster.Models;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Net.Http;
 using System.Text;
+using System.Threading.Tasks;
+using Microsoft.AspNetCore.Http;
 
 namespace Swapster.Controllers
 {
@@ -15,29 +21,96 @@ namespace Swapster.Controllers
             _context = context;
         }
 
-        // ================= LANDING PAGE =================
         public IActionResult Index()
         {
             return View();
         }
 
-        // ================= DASHBOARD PAGE =================
         public async Task<IActionResult> Dashboard()
         {
             string username = HttpContext.Session.GetString("Username") ?? "User";
+            int? currentUserId = HttpContext.Session.GetInt32("UserId");
+            List<UserSkill> recommendedSkillsList = new List<UserSkill>();
+
+            if (currentUserId.HasValue)
+            {
+                var currentUserWants = await _context.UserWantedSkills
+                    .Where(w => w.UserId == currentUserId.Value)
+                    .ToListAsync();
+
+                if (currentUserWants.Any())
+                {
+                    var allOtherSkills = await _context.UserSkills
+                        .Include(s => s.User)
+                        .Where(s => s.UserId != currentUserId.Value)
+                        .ToListAsync();
+
+                    var scoredSkills = allOtherSkills.Select(skill =>
+                    {
+                        var matchingWant = currentUserWants
+                            .FirstOrDefault(w => w.SkillName.Equals(skill.SkillName, StringComparison.OrdinalIgnoreCase));
+
+                        double score = 0;
+                        if (matchingWant != null)
+                        {
+                            double diff = matchingWant.DesiredLevel - skill.ProficiencyLevel;
+                            double sumOfSquares = Math.Pow(diff, 2);
+                            score = 1.0 / (1.0 + sumOfSquares);
+                        }
+
+                        return new { Skill = skill, MatchScore = score };
+                    })
+                    .Where(x => x.MatchScore > 0)
+                    .OrderByDescending(x => x.MatchScore)
+                    .Select(x => x.Skill)
+                    .Take(6)
+                    .ToList();
+
+                    recommendedSkillsList = scoredSkills;
+                }
+            }
+
+            if (!recommendedSkillsList.Any())
+            {
+                recommendedSkillsList = await _context.UserSkills
+                    .Include(s => s.User)
+                    .OrderByDescending(s => s.SkillId)
+                    .Take(6)
+                    .ToListAsync();
+            }
 
             var model = new DashboardViewModel
             {
                 UserName = username,
-
-                RecommendedSkills = await _context.UserSkills
-                    .Include(s => s.User)
-                    .OrderByDescending(s => s.SkillId)
-                    .Take(6)
-                    .ToListAsync()
+                RecommendedSkills = recommendedSkillsList
             };
 
             return View(model);
+        }
+
+        // ================= CORRECTED ADMIN DASHBOARD ROUTE =================
+        [HttpGet]
+        public IActionResult AdminDashboard()
+        {
+            // Gatekeeper security check
+            int? accessLevel = HttpContext.Session.GetInt32("AccessLevel");
+            if (accessLevel != 1)
+            {
+                return RedirectToAction("AdminLogin", "Account");
+            }
+
+            // Global stats safely aggregated out of entity spaces
+            var model = new AdminDashboardViewModel
+            {
+                AdminName = HttpContext.Session.GetString("Username") ?? "Administrator",
+                TotalUsers = _context.Users.Count(),
+                ActiveSwaps = 42, // Static mock placeholder until real Swaps tables map over
+                TotalSkills = _context.UserSkills.Count(),
+                PendingReportsCount = 0
+            };
+
+            // Yahan hum explicitly file ka naam de rahe hain
+            return View("AdminDashboardViewModel", model);
         }
 
         public IActionResult Settings()
@@ -72,10 +145,7 @@ namespace Swapster.Controllers
         {
             if (string.IsNullOrWhiteSpace(message))
             {
-                return Json(new
-                {
-                    answer = "Please type a message first."
-                });
+                return Json(new { answer = "Please type a message first." });
             }
 
             try
@@ -83,36 +153,23 @@ namespace Swapster.Controllers
                 using (var client = new HttpClient())
                 {
                     var payload = new { message = message };
-
                     var json = System.Text.Json.JsonSerializer.Serialize(payload);
-
-                    var content = new StringContent(
-                        json,
-                        Encoding.UTF8,
-                        "application/json"
-                    );
+                    var content = new StringContent(json, Encoding.UTF8, "application/json");
 
                     var response = await client.PostAsync("http://127.0.0.1:5000/chat", content);
 
                     if (!response.IsSuccessStatusCode)
                     {
-                        return Json(new
-                        {
-                            answer = "Swapster se response nahi aa raha. Flask server check karo."
-                        });
+                        return Json(new { answer = "Swapster is having connection issue." });
                     }
 
                     var result = await response.Content.ReadAsStringAsync();
-
                     return Content(result, "application/json");
                 }
             }
             catch
             {
-                return Json(new
-                {
-                    answer = "Swapster se connect nahi ho pa raha. Flask API run karo: http://127.0.0.1:5000/chat"
-                });
+                return Json(new { answer = "Swapster is having connection issue: http://127.0.0.1:5000/chat" });
             }
         }
     }

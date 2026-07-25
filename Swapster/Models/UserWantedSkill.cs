@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using System;
+using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Swapster.Models
@@ -8,20 +9,17 @@ namespace Swapster.Models
         [Key]
         public int WantedSkillId { get; set; }
 
-        [Required]
-        public string SkillName { get; set; } = string.Empty; // e.g., "JavaScript"
+        [Required, StringLength(50)]
+        public string SkillName { get; set; } = string.Empty;
 
-        // NEW: Kis level tak sikhna chahta hai (1 to 5)
-        [Required]
-        [Range(1, 5, ErrorMessage = "Rating must be between 1 and 5")]
+        [Required, Range(1, 5)]
         public int DesiredLevel { get; set; }
 
-        public DateTime CreatedAt { get; set; } = DateTime.UtcNow; // Standardized to UtcNow
+        public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
 
-        // Foreign Key
         public int UserId { get; set; }
 
         [ForeignKey("UserId")]
-        public virtual User? User { get; set; }
+        public User? User { get; set; }
     }
 }

@@ -5,43 +5,38 @@
     ViewData["HideNavbar"] = true;
 }
 
-<div class="container mt-5" style="max-width:500px;">
-    <h2 class="text-center">Complete Your Profile</h2>
+<div class="container mt-5" style="max-width: 500px;">
+    <div class="card shadow-sm p-4">
+        <h2 class="text-center mb-4">Complete Your Profile</h2>
 
-    <form asp-action="Setup" method="post">
+        <form asp-action="Setup" method="post" asp-antiforgery="true">
 
-        <!-- Experience -->
-        <div class="mb-3">
-            <label>Experience Level</label>
-            <select asp-for="ExperienceLevel" class="form-control" required>
-                <option value="">Select</option>
-                <option>Beginner</option>
-                <option>Intermediate</option>
-                <option>Expert</option>
-            </select>
-        </div>
+            <div class="mb-3">
+                <label class="form-label">Experience Level</label>
+                <select asp-for="ExperienceLevel" class="form-select" required>
+                    <option value="">Select your level</option>
+                    <option>Beginner</option>
+                    <option>Intermediate</option>
+                    <option>Expert</option>
+                </select>
+            </div>
 
-        <!-- Skills -->
-        <div class="mb-3">
-            <label>Skills (comma separated)</label>
-            <input asp-for="Skills" class="form-control" placeholder="e.g. HTML, C#, Design" />
-        </div>
+            <div class="mb-3">
+                <label class="form-label">Skills (comma separated)</label>
+                <input asp-for="Skills" class="form-control" placeholder="e.g. HTML, C#, Design" />
+            </div>
 
-        <!-- Interests -->
-        <div class="mb-3">
-            <label>Interests</label>
-            <input asp-for="Interests" class="form-control" placeholder="e.g. AI, Web Dev" />
-        </div>
+            <div class="mb-3">
+                <label class="form-label">Interests</label>
+                <input asp-for="Interests" class="form-control" placeholder="e.g. AI, Web Dev" />
+            </div>
 
-        <!-- Bio -->
-        <div class="mb-3">
-            <label>Short Bio</label>
-            <textarea asp-for="Bio" class="form-control"></textarea>
-        </div>
+            <div class="mb-3">
+                <label class="form-label">Short Bio</label>
+                <textarea asp-for="Bio" class="form-control" rows="3"></textarea>
+            </div>
 
-        <button class="btn btn-primary w-100">Save & Continue</button>
-
-
-
-    </form>
+            <button type="submit" class="btn btn-primary w-100">Save & Continue</button>
+        </form>
+    </div>
 </div>

@@ -1,0 +1,309 @@
+﻿.auth-page {
+    font-family: 'Inter', sans-serif;
+    background: #FDF8F3 !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    min-height: 100vh;
+}
+
+.auth-split {
+    display: flex;
+    min-height: 100vh;
+    width: 100%;
+}
+
+.auth-image-side {
+    flex: 1;
+    background-size: cover;
+    background-position: center;
+    position: relative;
+    display: none;
+}
+
+@media (min-width: 992px) {
+    .auth-image-side {
+        display: flex;
+        flex-direction: column;
+        justify-content: flex-end;
+        padding: 0 3rem 6rem 3rem;
+    }
+}
+
+.auth-image-overlay {
+    position: absolute;
+    inset: 0;
+    background: linear-gradient( to top, rgba(30,20,10,0.75) 0%, rgba(30,20,10,0.25) 40%, rgba(30,20,10,0.05) 70% );
+}
+
+.auth-image-content {
+    position: relative;
+    z-index: 2;
+    color: white;
+    margin-bottom: 2rem;
+}
+
+    .auth-image-content .tagline {
+        font-size: 0.9rem;
+        font-weight: 500;
+        text-transform: uppercase;
+        letter-spacing: 2px;
+        opacity: 0.8;
+        margin-bottom: 0.5rem;
+    }
+
+    .auth-image-content h1 {
+        font-size: 2.2rem;
+        font-weight: 800;
+        line-height: 1.2;
+        margin-bottom: 0.5rem;
+    }
+
+    .auth-image-content p {
+        font-size: 1rem;
+        opacity: 0.85;
+        max-width: 350px;
+        line-height: 1.5;
+    }
+
+.auth-form-side {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 2rem 1.5rem;
+    background: #FDF8F3;
+    min-height: 100vh;
+}
+
+.auth-form-wrapper {
+    width: 100%;
+    max-width: 400px;
+}
+
+    .auth-form-wrapper .brand-name {
+        font-size: 1.4rem;
+        font-weight: 800;
+        color: #D4654A;
+        text-decoration: none;
+        display: inline-block;
+        letter-spacing: -0.5px;
+    }
+
+        .auth-form-wrapper .brand-name:hover {
+            color: #C05540;
+        }
+
+    .auth-form-wrapper .form-heading {
+        font-size: 1.6rem;
+        font-weight: 700;
+        color: #2D2D2D;
+        margin-top: 1.75rem;
+        margin-bottom: 0.25rem;
+    }
+
+    .auth-form-wrapper .form-subtitle {
+        color: #999;
+        font-size: 0.9rem;
+        margin-bottom: 1.75rem;
+    }
+
+    .auth-form-wrapper label {
+        font-weight: 500;
+        color: #555;
+        font-size: 0.85rem;
+        margin-bottom: 0.3rem;
+        display: block;
+    }
+
+    .auth-form-wrapper .form-control, .auth-form-wrapper .form-select {
+        border: 1.5px solid #E5DDD4;
+        border-radius: 10px;
+        padding: 0.7rem 1rem;
+        font-size: 0.9rem;
+        background: #fff;
+        transition: all 0.2s ease;
+        color: #333;
+    }
+
+        .auth-form-wrapper .form-control::placeholder {
+            color: #C0B5A8;
+        }
+
+        .auth-form-wrapper .form-control:focus, .auth-form-wrapper .form-select:focus {
+            border-color: #D4654A;
+            box-shadow: 0 0 0 3px rgba(212,101,74,0.12);
+            outline: none;
+        }
+
+    .auth-form-wrapper .form-group {
+        margin-bottom: 1rem;
+    }
+
+.auth-btn-primary {
+    background: #D4654A;
+    color: #fff;
+    border: none;
+    border-radius: 10px;
+    padding: 0.75rem;
+    font-size: 0.95rem;
+    font-weight: 600;
+    width: 100%;
+    transition: all 0.2s ease;
+    letter-spacing: 0.5px;
+    margin-top: 0.25rem;
+}
+
+    .auth-btn-primary:hover {
+        background: #C05540;
+        transform: translateY(-1px);
+        box-shadow: 0 4px 12px rgba(212,101,74,0.3);
+    }
+
+.auth-btn-dark {
+    background: #2D2D2D;
+    color: #fff;
+    border-radius: 10px;
+    padding: 0.65rem;
+    font-size: 0.85rem;
+    width: 100%;
+    text-align: center;
+    text-decoration: none;
+}
+
+.auth-divider {
+    display: flex;
+    align-items: center;
+    margin: 1.25rem 0;
+    color: #BBB;
+    font-size: 0.8rem;
+}
+
+    .auth-divider::before, .auth-divider::after {
+        content: '';
+        flex: 1;
+        height: 1px;
+        background: #E5DDD4;
+    }
+
+    .auth-divider span {
+        padding: 0 0.75rem;
+    }
+
+.auth-link {
+    color: #D4654A;
+    text-decoration: none;
+    font-weight: 600;
+}
+
+.auth-footer-text {
+    text-align: center;
+    margin-top: 1.5rem;
+    color: #999;
+    font-size: 0.85rem;
+}
+
+@media (max-width: 991px) {
+    .auth-form-side {
+        min-height: auto;
+        padding: 2.5rem 1.5rem;
+    }
+}
+/* ================= GLOBAL PAGE LOADER ================= */
+
+#pageLoader {
+    position: fixed;
+    inset: 0;
+    z-index: 999999;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: radial-gradient(circle at top left, rgba(104, 124, 255, 0.22), transparent 35%), radial-gradient(circle at bottom right, rgba(255, 100, 170, 0.20), transparent 35%), #f6f8ff;
+    transition: opacity 0.45s ease, visibility 0.45s ease;
+}
+
+    #pageLoader.loader-hidden {
+        opacity: 0;
+        visibility: hidden;
+    }
+
+.loader-card {
+    width: 280px;
+    padding: 34px 28px;
+    background: rgba(255, 255, 255, 0.88);
+    border: 1px solid #eef0f7;
+    border-radius: 30px;
+    box-shadow: 0 24px 60px rgba(35, 45, 90, 0.16);
+    text-align: center;
+    backdrop-filter: blur(18px);
+}
+
+.loader-logo {
+    width: 76px;
+    height: 76px;
+    margin: 0 auto 18px;
+    border-radius: 24px;
+    display: grid;
+    place-items: center;
+    background: linear-gradient(135deg, #6674ff, #ff64aa);
+    color: white;
+    font-size: 38px;
+    font-weight: 900;
+    box-shadow: 0 16px 35px rgba(102, 116, 255, 0.32);
+    animation: loaderPulse 1.4s ease-in-out infinite;
+}
+
+.loader-brand {
+    font-size: 28px;
+    font-weight: 900;
+    color: #111827;
+    letter-spacing: -0.8px;
+}
+
+    .loader-brand span {
+        color: #6674ff;
+    }
+
+.loader-text {
+    margin-top: 8px;
+    color: #6b7280;
+    font-size: 14px;
+    font-weight: 600;
+}
+
+.loader-bar {
+    margin-top: 22px;
+    width: 100%;
+    height: 8px;
+    border-radius: 30px;
+    background: #eef1ff;
+    overflow: hidden;
+}
+
+    .loader-bar span {
+        display: block;
+        width: 45%;
+        height: 100%;
+        border-radius: 30px;
+        background: linear-gradient(135deg, #6674ff, #ff64aa);
+        animation: loaderMove 1.1s ease-in-out infinite;
+    }
+
+@keyframes loaderPulse {
+    0%, 100% {
+        transform: scale(1);
+    }
+
+    50% {
+        transform: scale(1.08);
+    }
+}
+
+@keyframes loaderMove {
+    0% {
+        transform: translateX(-120%);
+    }
+
+    100% {
+        transform: translateX(240%);
+    }
+}

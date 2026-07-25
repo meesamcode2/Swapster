@@ -13,8 +13,8 @@ namespace Swapster.Controllers
             _context = context;
         }
 
-        // ===================== SETUP PAGE =====================
-        public IActionResult Setup()
+        
+        public IActionResult Setup()
         {
             ViewData["HideNavbar"] = true;
 
@@ -23,9 +23,9 @@ namespace Swapster.Controllers
             if (userId == null)
                 return RedirectToAction("Login", "Account");
 
-            // ✅ prevent duplicate profile
-            var existingProfile = _context.UserProfiles
-                .FirstOrDefault(p => p.UserId == userId);
+            
+            var existingProfile = _context.UserProfiles
+        .FirstOrDefault(p => p.UserId == userId);
 
             if (existingProfile != null)
             {
@@ -35,8 +35,8 @@ namespace Swapster.Controllers
             return View();
         }
 
-        // ===================== SAVE PROFILE =====================
-        [HttpPost]
+        
+        [HttpPost]
         public IActionResult Setup(UserProfile profile)
         {
             int? userId = HttpContext.Session.GetInt32("UserId");
@@ -44,9 +44,9 @@ namespace Swapster.Controllers
             if (userId == null)
                 return RedirectToAction("Login", "Account");
 
-            // ✅ prevent duplicate submission
-            var existingProfile = _context.UserProfiles
-                .FirstOrDefault(p => p.UserId == userId);
+           
+            var existingProfile = _context.UserProfiles
+        .FirstOrDefault(p => p.UserId == userId);
 
             if (existingProfile != null)
             {
@@ -58,8 +58,8 @@ namespace Swapster.Controllers
             _context.UserProfiles.Add(profile);
             _context.SaveChanges();
 
-            // ✅ after setup → home
-            return RedirectToAction("Index", "Home");
+           
+            return RedirectToAction("Index", "Home");
         }
     }
 }

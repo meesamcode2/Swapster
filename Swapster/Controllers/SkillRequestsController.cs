@@ -1,6 +1,9 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Http;
+using Microsoft.EntityFrameworkCore;
 using Swapster.Data;
 using Swapster.Models;
+using System.Threading.Tasks;
 
 namespace Swapster.Controllers
 {
@@ -13,48 +16,67 @@ namespace Swapster.Controllers
             _context = context;
         }
 
-        // SEND REQUEST
-        public IActionResult Send(int receiverId, int skillId) // 👈 CHANGE
+        private int? GetCurrentUserId()
         {
-            int? senderId = HttpContext.Session.GetInt32("UserId");
+            return HttpContext.Session.GetInt32("UserId");
+        }
 
-            if (senderId == null)
-                return RedirectToAction("Login", "Account");
+        [HttpPost]
+        public async Task<IActionResult> Send(int receiverId, int skillId)
+        {
+            int? senderId = GetCurrentUserId();
+            if (senderId == null) return RedirectToAction("Login", "Account");
+
+            if (senderId.Value == receiverId) return RedirectToAction("Index", "Home");
+
+            bool requestExists = await _context.SkillRequests
+                .AnyAsync(r => r.SenderId == senderId.Value && r.ReceiverId == receiverId && r.SkillId == skillId && r.Status == "Pending");
+
+            if (requestExists) return RedirectToAction("Index", "Home");
 
             var request = new SkillRequest
             {
                 SenderId = senderId.Value,
                 ReceiverId = receiverId,
-                SkillId = skillId // 👈 FIXED
+                SkillId = skillId,
+                Status = "Pending"
             };
 
             _context.SkillRequests.Add(request);
-            _context.SaveChanges();
+            await _context.SaveChangesAsync();
 
             return RedirectToAction("Index", "Home");
         }
 
-        // ACCEPT
-        public IActionResult Accept(int id)
+        [HttpPost]
+        public async Task<IActionResult> Accept(int id)
         {
-            var req = _context.SkillRequests.Find(id);
-            if (req != null)
+            int? userId = GetCurrentUserId();
+            if (userId == null) return RedirectToAction("Login", "Account");
+
+            var req = await _context.SkillRequests.FindAsync(id);
+
+            if (req != null && req.ReceiverId == userId.Value)
             {
                 req.Status = "Accepted";
-                _context.SaveChanges();
+                await _context.SaveChangesAsync();
             }
 
             return RedirectToAction("Index", "Home");
         }
 
-        // REJECT
-        public IActionResult Reject(int id)
+        [HttpPost]
+        public async Task<IActionResult> Reject(int id)
         {
-            var req = _context.SkillRequests.Find(id);
-            if (req != null)
+            int? userId = GetCurrentUserId();
+            if (userId == null) return RedirectToAction("Login", "Account");
+
+            var req = await _context.SkillRequests.FindAsync(id);
+
+            if (req != null && req.ReceiverId == userId.Value)
             {
                 req.Status = "Rejected";
-                _context.SaveChanges();
+                await _context.SaveChangesAsync();
             }
 
             return RedirectToAction("Index", "Home");

@@ -1,24 +1,20 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Swapster.Data;
 using Swapster.Services;
+using System;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// ================= SERVICES =================
-
 builder.Services.AddControllersWithViews();
 
-// Database
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
     options.UseSqlServer(
         builder.Configuration.GetConnectionString("DefaultConnection")
     )
 );
 
-// Email Service
 builder.Services.AddScoped<EmailService>();
 
-// Session
 builder.Services.AddDistributedMemoryCache();
 
 builder.Services.AddSession(options =>
@@ -30,8 +26,6 @@ builder.Services.AddSession(options =>
 
 var app = builder.Build();
 
-// ================= PIPELINE =================
-
 if (!app.Environment.IsDevelopment())
 {
     app.UseExceptionHandler("/Home/Error");
@@ -39,13 +33,9 @@ if (!app.Environment.IsDevelopment())
 }
 
 app.UseHttpsRedirection();
-
 app.UseStaticFiles();
-
 app.UseRouting();
-
 app.UseSession();
-
 app.UseAuthorization();
 
 app.MapControllerRoute(

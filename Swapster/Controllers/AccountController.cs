@@ -22,7 +22,6 @@ namespace Swapster.Controllers
             _emailService = emailService;
         }
 
-        // ================= SAVE USER SESSION =================
         private void SetUserSession(User user)
         {
             HttpContext.Session.SetInt32("UserId", user.UserId);
@@ -31,7 +30,14 @@ namespace Swapster.Controllers
             HttpContext.Session.SetInt32("AccessLevel", user.AccessLevel);
         }
 
-        // ================= LOGIN GET =================
+        private User GetAuthenticatedUser()
+        {
+            int? userId = HttpContext.Session.GetInt32("UserId");
+            if (userId == null) return null;
+
+            return _context.Users.FirstOrDefault(x => x.UserId == userId.Value);
+        }
+
         [HttpGet]
         public IActionResult Login()
         {
@@ -40,7 +46,6 @@ namespace Swapster.Controllers
             return View();
         }
 
-        // ================= LOGIN POST =================
         [HttpPost]
         public IActionResult Login(string email, string password)
         {
@@ -61,11 +66,7 @@ namespace Swapster.Controllers
                 return View();
             }
 
-            var result = _passwordHasher.VerifyHashedPassword(
-                user,
-                user.PasswordHash,
-                password
-            );
+            var result = _passwordHasher.VerifyHashedPassword(user, user.PasswordHash, password);
 
             if (result == PasswordVerificationResult.Failed)
             {
@@ -74,11 +75,9 @@ namespace Swapster.Controllers
             }
 
             SetUserSession(user);
-
             return RedirectToAction("Dashboard", "Home");
         }
 
-        // ================= ADMIN LOGIN GET =================
         [HttpGet]
         public IActionResult AdminLogin()
         {
@@ -87,7 +86,6 @@ namespace Swapster.Controllers
             return View();
         }
 
-        // ================= ADMIN LOGIN POST =================
         [HttpPost]
         public IActionResult AdminLogin(string email, string password)
         {
@@ -108,11 +106,7 @@ namespace Swapster.Controllers
                 return View();
             }
 
-            var result = _passwordHasher.VerifyHashedPassword(
-                user,
-                user.PasswordHash,
-                password
-            );
+            var result = _passwordHasher.VerifyHashedPassword(user, user.PasswordHash, password);
 
             if (result == PasswordVerificationResult.Failed)
             {
@@ -120,7 +114,6 @@ namespace Swapster.Controllers
                 return View();
             }
 
-            // Admin AccessLevel = 1
             if (user.AccessLevel != 1)
             {
                 ViewBag.Error = "You are not authorized as admin";
@@ -128,17 +121,9 @@ namespace Swapster.Controllers
             }
 
             SetUserSession(user);
-
-            // FIX: Model name hatakar actual Action aur Controller ka naam likha hai
-            // Agar aapka method HomeController me "AdminDashboard" hai:
             return RedirectToAction("AdminDashboard", "Home");
-
-            // NOTE: Agar aapne Admin ke liye alag Controller banaya hai (AdminController), 
-            // toh upar wali line comment karke niche wali uncomment karlein:
-            // return RedirectToAction("Dashboard", "Admin");
         }
 
-        // ================= SIGNUP GET =================
         [HttpGet]
         public IActionResult Signup()
         {
@@ -147,7 +132,6 @@ namespace Swapster.Controllers
             return View();
         }
 
-        // ================= SIGNUP POST =================
         [HttpPost]
         public IActionResult Signup(User user, string password, string confirmPassword)
         {
@@ -160,9 +144,7 @@ namespace Swapster.Controllers
                 return View();
             }
 
-            if (string.IsNullOrWhiteSpace(user.Username) ||
-                string.IsNullOrWhiteSpace(user.Email) ||
-                string.IsNullOrWhiteSpace(password))
+            if (string.IsNullOrWhiteSpace(user.Username) || string.IsNullOrWhiteSpace(user.Email) || string.IsNullOrWhiteSpace(password))
             {
                 ViewBag.Error = "Please fill all required fields";
                 return View(user);
@@ -190,7 +172,6 @@ namespace Swapster.Controllers
             return RedirectToAction("Login", "Account");
         }
 
-        // ================= FORGOT PASSWORD GET =================
         [HttpGet]
         public IActionResult ForgotPassword()
         {
@@ -199,7 +180,6 @@ namespace Swapster.Controllers
             return View();
         }
 
-        // ================= FORGOT PASSWORD POST =================
         [HttpPost]
         public IActionResult ForgotPassword(string email)
         {
@@ -221,30 +201,21 @@ namespace Swapster.Controllers
             }
 
             string token = Guid.NewGuid().ToString();
-
             user.VerificationToken = token;
             user.TokenExpiry = DateTime.Now.AddMinutes(15);
-
             _context.SaveChanges();
 
-            string resetLink = Url.Action(
-                "ResetPassword",
-                "Account",
-                new { token = token },
-                Request.Scheme
-            );
+            string resetLink = Url.Action("ResetPassword", "Account", new { token = token }, Request.Scheme);
 
             string subject = "Reset Your Swapster Password";
-
             string body = $@"
                 <h2>Reset Your Password</h2>
                 <p>Hello {user.Username},</p>
                 <p>You requested to reset your Swapster password.</p>
                 <p>Click the button below to reset your password:</p>
                 <p>
-                    <a href='{resetLink}'
-                       style='background:#6674ff;color:white;padding:12px 18px;text-decoration:none;border-radius:6px;display:inline-block;'>
-                         Reset Password
+                    <a href='{resetLink}' style='background:#6674ff;color:white;padding:12px 18px;text-decoration:none;border-radius:6px;display:inline-block;'>
+                        Reset Password
                     </a>
                 </p>
                 <p>Or copy this link and open it in your browser:</p>
@@ -266,39 +237,22 @@ namespace Swapster.Controllers
             return View();
         }
 
-        // ================= CHANGE PASSWORD FROM SETTINGS =================
         [HttpGet]
         public IActionResult ChangePassword()
         {
             ViewData["HideNavbar"] = true;
             ViewData["BodyClass"] = "auth-page";
 
-            int? userId = HttpContext.Session.GetInt32("UserId");
-
-            if (userId == null)
-            {
-                return RedirectToAction("Login", "Account");
-            }
-
-            var user = _context.Users.FirstOrDefault(x => x.UserId == userId.Value);
-
+            var user = GetAuthenticatedUser();
             if (user == null)
             {
                 HttpContext.Session.Clear();
                 return RedirectToAction("Login", "Account");
             }
 
-            string token = Guid.NewGuid().ToString();
-
-            user.VerificationToken = token;
-            user.TokenExpiry = DateTime.Now.AddMinutes(15);
-
-            _context.SaveChanges();
-
-            return RedirectToAction("ResetPassword", "Account", new { token = token });
+            return View();
         }
 
-        // ================= RESET PASSWORD GET =================
         [HttpGet]
         public IActionResult ResetPassword(string token)
         {
@@ -310,10 +264,7 @@ namespace Swapster.Controllers
                 return Content("Invalid or expired token");
             }
 
-            var user = _context.Users.FirstOrDefault(x =>
-                x.VerificationToken == token &&
-                x.TokenExpiry > DateTime.Now
-            );
+            var user = _context.Users.FirstOrDefault(x => x.VerificationToken == token && x.TokenExpiry > DateTime.Now);
 
             if (user == null)
             {
@@ -324,7 +275,6 @@ namespace Swapster.Controllers
             return View();
         }
 
-        // ================= RESET PASSWORD POST =================
         [HttpPost]
         public IActionResult ResetPassword(string token, string newPassword)
         {
@@ -336,10 +286,7 @@ namespace Swapster.Controllers
                 return Content("Invalid request");
             }
 
-            var user = _context.Users.FirstOrDefault(x =>
-                x.VerificationToken == token &&
-                x.TokenExpiry > DateTime.Now
-            );
+            var user = _context.Users.FirstOrDefault(x => x.VerificationToken == token && x.TokenExpiry > DateTime.Now);
 
             if (user == null)
             {
@@ -347,28 +294,55 @@ namespace Swapster.Controllers
             }
 
             user.PasswordHash = _passwordHasher.HashPassword(user, newPassword);
-
             user.VerificationToken = null;
             user.TokenExpiry = null;
-
             _context.SaveChanges();
 
             SetUserSession(user);
-
             TempData["msg"] = "Password reset successful!";
 
             return RedirectToAction("Dashboard", "Home");
         }
 
-        // ================= LOGOUT =================
         [HttpPost]
-        public IActionResult Logout()
+        public IActionResult ChangePassword(string oldPassword, string newPassword, string confirmPassword)
         {
-            HttpContext.Session.Clear();
-            return RedirectToAction("Login", "Account");
+            ViewData["HideNavbar"] = true;
+            ViewData["BodyClass"] = "auth-page";
+
+            var user = GetAuthenticatedUser();
+            if (user == null)
+            {
+                HttpContext.Session.Clear();
+                return RedirectToAction("Login", "Account");
+            }
+
+            if (string.IsNullOrWhiteSpace(oldPassword) || string.IsNullOrWhiteSpace(newPassword) || string.IsNullOrWhiteSpace(confirmPassword))
+            {
+                ViewBag.Error = "All fields are required.";
+                return View();
+            }
+
+            if (newPassword != confirmPassword)
+            {
+                ViewBag.Error = "New password and Confirm password do not match.";
+                return View();
+            }
+
+            var result = _passwordHasher.VerifyHashedPassword(user, user.PasswordHash, oldPassword);
+            if (result == PasswordVerificationResult.Failed)
+            {
+                ViewBag.Error = "Incorrect current password.";
+                return View();
+            }
+
+            user.PasswordHash = _passwordHasher.HashPassword(user, newPassword);
+            _context.SaveChanges();
+
+            TempData["Success"] = "Password changed successfully!";
+            return RedirectToAction("MyAccount", "Account");
         }
 
-        // ================= MY ACCOUNT GET =================
         [HttpGet]
         public IActionResult MyAccount()
         {
@@ -376,15 +350,7 @@ namespace Swapster.Controllers
             ViewData["FullWidth"] = true;
             ViewData["BodyClass"] = "dashboard-page";
 
-            int? userId = HttpContext.Session.GetInt32("UserId");
-
-            if (userId == null)
-            {
-                return RedirectToAction("Login", "Account");
-            }
-
-            var user = _context.Users.FirstOrDefault(x => x.UserId == userId.Value);
-
+            var user = GetAuthenticatedUser();
             if (user == null)
             {
                 HttpContext.Session.Clear();
@@ -394,7 +360,6 @@ namespace Swapster.Controllers
             return View(user);
         }
 
-        // ================= UPDATE ACCOUNT POST =================
         [HttpPost]
         public IActionResult UpdateAccount(string username, string email)
         {
@@ -402,15 +367,7 @@ namespace Swapster.Controllers
             ViewData["FullWidth"] = true;
             ViewData["BodyClass"] = "dashboard-page";
 
-            int? userId = HttpContext.Session.GetInt32("UserId");
-
-            if (userId == null)
-            {
-                return RedirectToAction("Login", "Account");
-            }
-
-            var user = _context.Users.FirstOrDefault(x => x.UserId == userId.Value);
-
+            var user = GetAuthenticatedUser();
             if (user == null)
             {
                 HttpContext.Session.Clear();
@@ -423,10 +380,7 @@ namespace Swapster.Controllers
                 return RedirectToAction("MyAccount", "Account");
             }
 
-            bool emailExists = _context.Users.Any(x =>
-                x.Email == email &&
-                x.UserId != userId.Value
-            );
+            bool emailExists = _context.Users.Any(x => x.Email == email && x.UserId != user.UserId);
 
             if (emailExists)
             {
@@ -436,14 +390,19 @@ namespace Swapster.Controllers
 
             user.Username = username.Trim();
             user.Email = email.Trim();
-
             _context.SaveChanges();
 
             SetUserSession(user);
 
             TempData["Success"] = "Account updated successfully.";
-
             return RedirectToAction("MyAccount", "Account");
+        }
+
+        [HttpPost]
+        public IActionResult Logout()
+        {
+            HttpContext.Session.Clear();
+            return RedirectToAction("Login", "Account");
         }
     }
 }

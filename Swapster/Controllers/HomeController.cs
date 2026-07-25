@@ -88,28 +88,24 @@ namespace Swapster.Controllers
             return View(model);
         }
 
-        // ================= CORRECTED ADMIN DASHBOARD ROUTE =================
         [HttpGet]
         public IActionResult AdminDashboard()
         {
-            // Gatekeeper security check
             int? accessLevel = HttpContext.Session.GetInt32("AccessLevel");
             if (accessLevel != 1)
             {
                 return RedirectToAction("AdminLogin", "Account");
             }
 
-            // Global stats safely aggregated out of entity spaces
             var model = new AdminDashboardViewModel
             {
                 AdminName = HttpContext.Session.GetString("Username") ?? "Administrator",
                 TotalUsers = _context.Users.Count(),
-                ActiveSwaps = 42, // Static mock placeholder until real Swaps tables map over
+                ActiveSwaps = 42,
                 TotalSkills = _context.UserSkills.Count(),
                 PendingReportsCount = 0
             };
 
-            // Yahan hum explicitly file ka naam de rahe hain
             return View("AdminDashboardViewModel", model);
         }
 
@@ -121,25 +117,21 @@ namespace Swapster.Controllers
             return View();
         }
 
-        // ================= PRIVACY PAGE =================
         public IActionResult Privacy()
         {
             return View();
         }
 
-        // ================= TERMS PAGE =================
         public IActionResult Terms()
         {
             return View();
         }
 
-        // ================= CONTACT PAGE =================
         public IActionResult Contact()
         {
             return View();
         }
 
-        // ================= CHATBOT API =================
         [HttpPost]
         public async Task<IActionResult> Chat(string message)
         {

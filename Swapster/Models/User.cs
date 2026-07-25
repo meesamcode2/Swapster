@@ -1,4 +1,6 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using System;
+using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 
 namespace Swapster.Models
 {
@@ -10,19 +12,20 @@ namespace Swapster.Models
         [Required, StringLength(50)]
         public string Username { get; set; } = string.Empty;
 
-        [Required, StringLength(100)]
+        [Required, EmailAddress, StringLength(100)]
         public string Email { get; set; } = string.Empty;
+
+        [Required]
         public string PasswordHash { get; set; } = string.Empty;
-        public int AccessLevel { get; set; }
+
+        public int AccessLevel { get; set; } = 2; 
         public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
         public bool IsEmailVerified { get; set; } = false;
+
         public string? VerificationToken { get; set; }
-        public string? ResetPasswordToken { get; set; }
-        public DateTime? ResetPasswordExpiry { get; set; }
         public DateTime? TokenExpiry { get; set; }
 
-  
-        public virtual ICollection<UserSkill> UserSkills { get; set; } = new List<UserSkill>();
-        public virtual ICollection<UserWantedSkill> UserWantedSkills { get; set; } = new List<UserWantedSkill>();
+        public ICollection<UserSkill> UserSkills { get; set; } = new List<UserSkill>();
+        public ICollection<UserWantedSkill> UserWantedSkills { get; set; } = new List<UserWantedSkill>();
     }
 }

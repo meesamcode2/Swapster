@@ -18,7 +18,6 @@
 
   <ItemGroup>
     <Folder Include="Migrations\" />
-    <Folder Include="Views\Admin\" />
     <Folder Include="Views\Review\" />
     <Folder Include="Views\Swap\" />
   </ItemGroup>

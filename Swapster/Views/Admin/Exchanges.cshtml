@@ -1,0 +1,217 @@
+﻿@model IEnumerable<Swapster.Models.SkillRequest>
+
+@{
+    ViewData["Title"] = "Exchange Management";
+    ViewData["HideNavbar"] = true;
+    ViewData["FullWidth"] = true;
+}
+
+<style>
+    * {
+        box-sizing: border-box;
+    }
+
+    body {
+        margin: 0;
+        font-family: 'Inter', 'Segoe UI', Arial, sans-serif;
+        background: #f6f8ff;
+        color: #111827;
+    }
+
+    .admin-page {
+        min-height: 100vh;
+        padding: 35px;
+    }
+
+    .page-header {
+        max-width: 1400px;
+        margin: 0 auto 25px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        gap: 20px;
+    }
+
+    .page-title h1 {
+        margin: 0;
+        font-size: 30px;
+        font-weight: 900;
+    }
+
+    .page-title p {
+        margin: 6px 0 0;
+        color: #6b7280;
+    }
+
+    .back-btn {
+        background: #111827;
+        color: white;
+        text-decoration: none;
+        padding: 12px 18px;
+        border-radius: 14px;
+        font-weight: 800;
+    }
+
+    .content-card {
+        max-width: 1400px;
+        margin: auto;
+        background: white;
+        border: 1px solid #eef0f7;
+        border-radius: 24px;
+        padding: 22px;
+        box-shadow: 0 16px 35px rgba(35,45,90,.06);
+        overflow-x: auto;
+    }
+
+    .exchange-table {
+        width: 100%;
+        border-collapse: collapse;
+        min-width: 950px;
+    }
+
+        .exchange-table th {
+            text-align: left;
+            padding: 14px;
+            color: #6b7280;
+            font-size: 13px;
+            border-bottom: 1px solid #e5e7eb;
+        }
+
+        .exchange-table td {
+            padding: 15px 14px;
+            border-bottom: 1px solid #f1f5f9;
+            vertical-align: middle;
+        }
+
+    .name {
+        font-weight: 800;
+    }
+
+    .status {
+        display: inline-block;
+        padding: 6px 11px;
+        border-radius: 20px;
+        font-size: 12px;
+        font-weight: 800;
+    }
+
+    .pending {
+        background: #fff7ed;
+        color: #ea580c;
+    }
+
+    .accepted {
+        background: #ecfdf5;
+        color: #059669;
+    }
+
+    .rejected {
+        background: #fef2f2;
+        color: #dc2626;
+    }
+
+    .empty-state {
+        text-align: center;
+        padding: 45px;
+        color: #6b7280;
+    }
+</style>
+
+<div class="admin-page">
+
+    <div class="page-header">
+
+        <div class="page-title">
+            <h1> Exchange Management</h1>
+            <p>Review all skill exchange requests across Swapster.</p>
+        </div>
+
+        <a asp-controller="Home"
+           asp-action="AdminDashboard"
+           class="back-btn">
+            ← Dashboard
+        </a>
+
+    </div>
+
+    <div class="content-card">
+
+        @if (Model != null && Model.Any())
+        {
+            <table class="exchange-table">
+
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Sender</th>
+                        <th>Receiver</th>
+                        <th>Skill</th>
+                        <th>Status</th>
+                        <th>Created</th>
+                    </tr>
+                </thead>
+
+                <tbody>
+
+                    @foreach (var exchange in Model)
+                    {
+                        <tr>
+
+                            <td>
+                                @exchange.Id
+                            </td>
+
+                            <td class="name">
+                                @(exchange.Sender?.Username ?? "Unknown")
+                            </td>
+
+                            <td class="name">
+                                @(exchange.Receiver?.Username ?? "Unknown")
+                            </td>
+
+                            <td>
+                                @(exchange.Skill?.SkillName ?? "Unknown")
+                            </td>
+
+                            <td>
+                                @if (exchange.Status == "Accepted")
+                                {
+                                    <span class="status accepted">
+                                        Accepted
+                                    </span>
+                                }
+                                else if (exchange.Status == "Rejected")
+                                {
+                                    <span class="status rejected">
+                                        Rejected
+                                    </span>
+                                }
+                                else
+                                {
+                                    <span class="status pending">
+                                        Pending
+                                    </span>
+                                }
+                            </td>
+
+                            <td>
+                                @exchange.CreatedAt.ToString("dd MMM yyyy")
+                            </td>
+
+                        </tr>
+                    }
+
+                </tbody>
+
+            </table>
+        }
+        else
+        {
+            <div class="empty-state">
+                No skill exchange requests found.
+            </div>
+        }
+
+    </div>
+
+</div>

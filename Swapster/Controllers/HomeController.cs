@@ -100,10 +100,14 @@ namespace Swapster.Controllers
             var model = new AdminDashboardViewModel
             {
                 AdminName = HttpContext.Session.GetString("Username") ?? "Administrator",
+
                 TotalUsers = _context.Users.Count(),
-                ActiveSwaps = 42,
+
+                ActiveSwaps = _context.SkillRequests.Count(r => r.Status == "Accepted"),
+
                 TotalSkills = _context.UserSkills.Count(),
-                PendingReportsCount = 0
+
+                PendingRequests = _context.SkillRequests.Count(r => r.Status == "Pending")
             };
 
             return View("AdminDashboardViewModel", model);

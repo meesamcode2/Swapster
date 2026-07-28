@@ -14,7 +14,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("Swapster")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+9e4dbc6f8f6458f6fb9d224f0340808b2b68df4c")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+40fd6f17e9df7bb3356cef5d700ad2e88e30c286")]
 [assembly: System.Reflection.AssemblyProductAttribute("Swapster")]
 [assembly: System.Reflection.AssemblyTitleAttribute("Swapster")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]

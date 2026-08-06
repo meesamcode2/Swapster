@@ -1,10 +1,11 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Swapster.Data;
 using Swapster.Models;
 using System;
+using System.Linq;
 using System.Threading.Tasks;
-using Microsoft.AspNetCore.Http;
 
 namespace Swapster.Controllers
 {
@@ -12,62 +13,550 @@ namespace Swapster.Controllers
     {
         private readonly ApplicationDbContext _context;
 
-        public SkillController(ApplicationDbContext context)
+        public SkillController(
+            ApplicationDbContext context)
         {
             _context = context;
         }
+
+        // =====================================================
+        // CURRENT USER
+        // =====================================================
 
         private int? GetCurrentUserId()
         {
             return HttpContext.Session.GetInt32("UserId");
         }
 
+        // =====================================================
+        // EXPLORE ACTIVE OFFERED SKILLS
+        // =====================================================
+
+        [HttpGet]
         public async Task<IActionResult> Index()
         {
-            var skills = await _context.UserSkills.Include(s => s.User).ToListAsync();
+            var skills = await _context.UserSkills
+                .AsNoTracking()
+                .Include(skill => skill.User)
+                .Where(skill =>
+                    skill.IsActive &&
+                    !skill.IsDeleted &&
+                    skill.User != null &&
+                    !skill.User.IsBlocked)
+                .OrderByDescending(skill =>
+                    skill.SkillId)
+                .ToListAsync();
+
             return View(skills);
         }
 
-        public IActionResult Create()
-        {
-            if (GetCurrentUserId() == null) return RedirectToAction("Login", "Account");
+        // =====================================================
+        // SEARCH ACTIVE OFFERED SKILLS
+        // =====================================================
 
-            return View(new AddSkillViewModel());
+        [HttpGet]
+        public async Task<IActionResult> Search(
+            string? searchTerm)
+        {
+            string cleanedSearch =
+                searchTerm?.Trim() ?? string.Empty;
+
+            var query = _context.UserSkills
+                .AsNoTracking()
+                .Include(skill => skill.User)
+                .Where(skill =>
+                    skill.IsActive &&
+                    !skill.IsDeleted &&
+                    skill.User != null &&
+                    !skill.User.IsBlocked);
+
+            if (!string.IsNullOrWhiteSpace(cleanedSearch))
+            {
+                query = query.Where(skill =>
+                    skill.SkillName.Contains(cleanedSearch) ||
+                    (
+                        skill.Description != null &&
+                        skill.Description.Contains(cleanedSearch)
+                    ) ||
+                    (
+                        skill.User != null &&
+                        skill.User.Username.Contains(cleanedSearch)
+                    ));
+            }
+
+            var skills = await query
+                .OrderByDescending(skill =>
+                    skill.SkillId)
+                .ToListAsync();
+
+            ViewBag.SearchTerm = cleanedSearch;
+
+            return View(
+                "Index",
+                skills
+            );
         }
+
+        // =====================================================
+        // CREATE SKILL GET
+        // =====================================================
+
+        [HttpGet]
+        public async Task<IActionResult> Create()
+        {
+            int? userId =
+                GetCurrentUserId();
+
+            if (userId == null)
+            {
+                return RedirectToAction(
+                    "Login",
+                    "Account"
+                );
+            }
+
+            var user = await _context.Users
+                .AsNoTracking()
+                .FirstOrDefaultAsync(item =>
+                    item.UserId == userId.Value);
+
+            if (user == null)
+            {
+                HttpContext.Session.Clear();
+
+                return RedirectToAction(
+                    "Login",
+                    "Account"
+                );
+            }
+
+            if (user.IsBlocked)
+            {
+                HttpContext.Session.Clear();
+
+                TempData["Error"] =
+                    "Your account has been blocked by the administrator.";
+
+                return RedirectToAction(
+                    "Login",
+                    "Account"
+                );
+            }
+
+            if (!user.IsEmailVerified)
+            {
+                TempData["Error"] =
+                    "Please verify your email before adding skills.";
+
+                return RedirectToAction(
+                    "MyAccount",
+                    "Account"
+                );
+            }
+
+            return View(
+                new AddSkillViewModel()
+            );
+        }
+
+        // =====================================================
+        // CREATE OFFERED + WANTED SKILL
+        // =====================================================
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create(AddSkillViewModel model)
+        public async Task<IActionResult> Create(
+    AddSkillViewModel model,
+    string? returnUrl = null)
         {
-            int? userId = GetCurrentUserId();
-            if (userId == null) return RedirectToAction("Login", "Account");
+            int? userId =
+                GetCurrentUserId();
+
+            if (userId == null)
+            {
+                return RedirectToAction(
+                    "Login",
+                    "Account"
+                );
+            }
+
+            var currentUser = await _context.Users
+                .AsNoTracking()
+                .FirstOrDefaultAsync(user =>
+                    user.UserId == userId.Value);
+
+            if (currentUser == null)
+            {
+                HttpContext.Session.Clear();
+
+                return RedirectToAction(
+                    "Login",
+                    "Account"
+                );
+            }
+
+            // Blocked user skill publish nahi kar sakta
+            if (currentUser.IsBlocked)
+            {
+                HttpContext.Session.Clear();
+
+                TempData["Error"] =
+                    "Your account has been blocked by the administrator.";
+
+                return RedirectToAction(
+                    "Login",
+                    "Account"
+                );
+            }
+
+            // Email verification required
+            if (!currentUser.IsEmailVerified)
+            {
+                TempData["Error"] =
+                    "Please verify your email before publishing a skill swap entry.";
+
+                return RedirectToAction(
+                    "MyAccount",
+                    "Account"
+                );
+            }
+
+            string offeredSkillName =
+                model.OfferedSkillName?.Trim()
+                ?? string.Empty;
+
+            string wantedSkillName =
+                model.WantedSkillName?.Trim()
+                ?? string.Empty;
+
+            string description =
+                model.Description?.Trim()
+                ?? string.Empty;
+
+            // =====================================================
+            // VALIDATION
+            // =====================================================
+
+            if (string.IsNullOrWhiteSpace(offeredSkillName))
+            {
+                ModelState.AddModelError(
+                    nameof(model.OfferedSkillName),
+                    "Offered skill name is required."
+                );
+            }
+
+            if (string.IsNullOrWhiteSpace(wantedSkillName))
+            {
+                ModelState.AddModelError(
+                    nameof(model.WantedSkillName),
+                    "Wanted skill name is required."
+                );
+            }
+
+            if (model.ProficiencyLevel < 1 ||
+                model.ProficiencyLevel > 5)
+            {
+                ModelState.AddModelError(
+                    nameof(model.ProficiencyLevel),
+                    "Proficiency level must be between 1 and 5."
+                );
+            }
+
+            if (model.DesiredLevel < 1 ||
+                model.DesiredLevel > 5)
+            {
+                ModelState.AddModelError(
+                    nameof(model.DesiredLevel),
+                    "Desired level must be between 1 and 5."
+                );
+            }
 
             if (!ModelState.IsValid)
             {
-                return View(model);
+                return HandleInvalidCreateModel(
+                    model,
+                    returnUrl
+                );
             }
 
-            var userSkill = new UserSkill
-            {
-                SkillName = model.OfferedSkillName,
-                ProficiencyLevel = model.ProficiencyLevel,
-                Description = model.Description ?? string.Empty,
-                UserId = userId.Value
-            };
+            // =====================================================
+            // DUPLICATE OFFERED SKILL CHECK
+            // =====================================================
 
-            var userWantedSkill = new UserWantedSkill
-            {
-                SkillName = model.WantedSkillName,
-                DesiredLevel = model.DesiredLevel,
-                UserId = userId.Value,
-                CreatedAt = DateTime.UtcNow
-            };
+            bool offeredSkillExists =
+                await _context.UserSkills.AnyAsync(skill =>
+                    skill.UserId == userId.Value &&
+                    skill.IsActive &&
+                    !skill.IsDeleted &&
+                    skill.SkillName.ToLower() ==
+                    offeredSkillName.ToLower());
 
-            _context.UserSkills.Add(userSkill);
-            _context.UserWantedSkills.Add(userWantedSkill);
+            if (offeredSkillExists)
+            {
+                ModelState.AddModelError(
+                    nameof(model.OfferedSkillName),
+                    "You have already added this teaching skill."
+                );
+            }
+
+            // =====================================================
+            // DUPLICATE WANTED SKILL CHECK
+            // =====================================================
+
+            bool wantedSkillExists =
+                await _context.UserWantedSkills.AnyAsync(skill =>
+                    skill.UserId == userId.Value &&
+                    skill.IsActive &&
+                    !skill.IsDeleted &&
+                    skill.SkillName.ToLower() ==
+                    wantedSkillName.ToLower());
+
+            if (wantedSkillExists)
+            {
+                ModelState.AddModelError(
+                    nameof(model.WantedSkillName),
+                    "You have already added this learning goal."
+                );
+            }
+
+            if (!ModelState.IsValid)
+            {
+                return HandleInvalidCreateModel(
+                    model,
+                    returnUrl
+                );
+            }
+
+            // =====================================================
+            // CREATE OFFERED SKILL
+            // =====================================================
+
+            var userSkill =
+                new UserSkill
+                {
+                    SkillName =
+                        offeredSkillName,
+
+                    ProficiencyLevel =
+                        model.ProficiencyLevel,
+
+                    Description =
+                        description,
+
+                    UserId =
+                        userId.Value,
+
+                    IsActive =
+                        true,
+
+                    IsDeleted =
+                        false,
+
+                    AdminNote =
+                        null
+                };
+
+            // =====================================================
+            // CREATE WANTED SKILL
+            // =====================================================
+
+            var userWantedSkill =
+                new UserWantedSkill
+                {
+                    SkillName =
+                        wantedSkillName,
+
+                    DesiredLevel =
+                        model.DesiredLevel,
+
+                    UserId =
+                        userId.Value,
+
+                    CreatedAt =
+                        DateTime.UtcNow,
+
+                    IsActive =
+                        true,
+
+                    IsDeleted =
+                        false,
+
+                    AdminNote =
+                        null
+                };
+
+            _context.UserSkills.Add(
+                userSkill
+            );
+
+            _context.UserWantedSkills.Add(
+                userWantedSkill
+            );
+
             await _context.SaveChangesAsync();
 
-            return RedirectToAction("Dashboard", "Home");
+            TempData["Success"] =
+                "Skill swap entry published successfully.";
+
+            if (string.Equals(
+                returnUrl,
+                "MyAccount",
+                StringComparison.OrdinalIgnoreCase))
+            {
+                return RedirectToAction(
+                    "MyAccount",
+                    "Account"
+                );
+            }
+
+            return RedirectToAction(
+                "Dashboard",
+                "Home"
+            );
+        }
+
+        // =====================================================
+        // USER SOFT DELETE OFFERED SKILL
+        // =====================================================
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Delete(int id)
+        {
+            int? userId =
+                GetCurrentUserId();
+
+            if (userId == null)
+            {
+                return RedirectToAction(
+                    "Login",
+                    "Account"
+                );
+            }
+
+            var skill = await _context.UserSkills
+                .FirstOrDefaultAsync(item =>
+                    item.SkillId == id &&
+                    item.UserId == userId.Value &&
+                    !item.IsDeleted);
+
+            if (skill == null)
+            {
+                TempData["Error"] =
+                    "Teaching skill was not found.";
+
+                return RedirectToAction(
+                    "MyAccount",
+                    "Account"
+                );
+            }
+
+            // Soft delete preserves exchange history
+            skill.IsActive = false;
+            skill.IsDeleted = true;
+            skill.AdminNote =
+                "Removed by the skill owner.";
+
+            await _context.SaveChangesAsync();
+
+            TempData["Success"] =
+                "Teaching skill removed successfully.";
+
+            return RedirectToAction(
+                "MyAccount",
+                "Account"
+            );
+        }
+
+        // =====================================================
+        // USER SOFT DELETE WANTED SKILL
+        // =====================================================
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> DeleteWantedSkill(
+            int id)
+        {
+            int? userId =
+                GetCurrentUserId();
+
+            if (userId == null)
+            {
+                return RedirectToAction(
+                    "Login",
+                    "Account"
+                );
+            }
+
+            var wantedSkill =
+                await _context.UserWantedSkills
+                    .FirstOrDefaultAsync(item =>
+                        item.WantedSkillId == id &&
+                        item.UserId == userId.Value &&
+                        !item.IsDeleted);
+
+            if (wantedSkill == null)
+            {
+                TempData["Error"] =
+                    "Learning goal was not found.";
+
+                return RedirectToAction(
+                    "MyAccount",
+                    "Account"
+                );
+            }
+
+            wantedSkill.IsActive = false;
+            wantedSkill.IsDeleted = true;
+            wantedSkill.AdminNote =
+                "Removed by the skill owner.";
+
+            await _context.SaveChangesAsync();
+
+            TempData["Success"] =
+                "Learning goal removed successfully.";
+
+            return RedirectToAction(
+                "MyAccount",
+                "Account"
+            );
+        }
+
+        // =====================================================
+        // INVALID CREATE MODEL HELPER
+        // =====================================================
+
+        private IActionResult HandleInvalidCreateModel(
+            AddSkillViewModel model,
+            string? returnUrl)
+        {
+            if (string.Equals(
+                returnUrl,
+                "MyAccount",
+                StringComparison.OrdinalIgnoreCase))
+            {
+                string errorMessage =
+                    ModelState.Values
+                        .SelectMany(value =>
+                            value.Errors)
+                        .Select(error =>
+                            error.ErrorMessage)
+                        .FirstOrDefault()
+                    ?? "Please enter valid skill information.";
+
+                TempData["Error"] =
+                    errorMessage;
+
+                return RedirectToAction(
+                    "MyAccount",
+                    "Account"
+                );
+            }
+
+            return View(
+                "Create",
+                model
+            );
         }
     }
 }

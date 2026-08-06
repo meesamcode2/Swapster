@@ -13,5 +13,6 @@ namespace Swapster.Models
         public List<UserSkill> PostedSkills { get; set; } = new();
         public List<SkillRequest> SkillRequests { get; set; } = new();
         public List<UserSkill> RecommendedSkills { get; set; } = new();
+        public List<Post> CommunityPosts { get; set; } = new();
     }
 }

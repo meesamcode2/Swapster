@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Swapster.Data;
 using Swapster.Models;
@@ -8,7 +9,6 @@ using System.Linq;
 using System.Net.Http;
 using System.Text;
 using System.Threading.Tasks;
-using Microsoft.AspNetCore.Http;
 
 namespace Swapster.Controllers
 {
@@ -21,151 +21,339 @@ namespace Swapster.Controllers
             _context = context;
         }
 
+        // =====================================================
+        // LANDING PAGE
+        // =====================================================
+
         public IActionResult Index()
         {
             return View();
         }
 
+        // =====================================================
+        // USER DASHBOARD
+        // =====================================================
+
+        [HttpGet]
         public async Task<IActionResult> Dashboard()
         {
-            string username = HttpContext.Session.GetString("Username") ?? "User";
-            int? currentUserId = HttpContext.Session.GetInt32("UserId");
-            List<UserSkill> recommendedSkillsList = new List<UserSkill>();
+            string username =
+                HttpContext.Session.GetString("Username")
+                ?? "User";
+
+            int? currentUserId =
+                HttpContext.Session.GetInt32("UserId");
+
+            var recommendedSkillsList =
+                new List<UserSkill>();
+
+            // =================================================
+            // PERSONALIZED SKILL RECOMMENDATIONS
+            // =================================================
 
             if (currentUserId.HasValue)
             {
-                var currentUserWants = await _context.UserWantedSkills
-                    .Where(w => w.UserId == currentUserId.Value)
-                    .ToListAsync();
+                // Only active and non-deleted wanted skills
+                var currentUserWants =
+                    await _context.UserWantedSkills
+                        .AsNoTracking()
+                        .Where(wanted =>
+                            wanted.UserId == currentUserId.Value &&
+                            wanted.IsActive &&
+                            !wanted.IsDeleted)
+                        .ToListAsync();
 
                 if (currentUserWants.Any())
                 {
-                    var allOtherSkills = await _context.UserSkills
-                        .Include(s => s.User)
-                        .Where(s => s.UserId != currentUserId.Value)
-                        .ToListAsync();
+                    // Only active and non-deleted offered skills
+                    // belonging to other users
+                    var allOtherSkills =
+                        await _context.UserSkills
+                            .AsNoTracking()
+                            .Include(skill => skill.User)
+                            .Where(skill =>
+                                skill.UserId != currentUserId.Value &&
+                                skill.IsActive &&
+                                !skill.IsDeleted)
+                            .ToListAsync();
 
-                    var scoredSkills = allOtherSkills.Select(skill =>
-                    {
-                        var matchingWant = currentUserWants
-                            .FirstOrDefault(w => w.SkillName.Equals(skill.SkillName, StringComparison.OrdinalIgnoreCase));
+                    var scoredSkills =
+                        allOtherSkills
+                            .Select(skill =>
+                            {
+                                var matchingWant =
+                                    currentUserWants.FirstOrDefault(
+                                        wanted =>
+                                            string.Equals(
+                                                wanted.SkillName?.Trim(),
+                                                skill.SkillName?.Trim(),
+                                                StringComparison.OrdinalIgnoreCase
+                                            )
+                                    );
 
-                        double score = 0;
-                        if (matchingWant != null)
-                        {
-                            double diff = matchingWant.DesiredLevel - skill.ProficiencyLevel;
-                            double sumOfSquares = Math.Pow(diff, 2);
-                            score = 1.0 / (1.0 + sumOfSquares);
-                        }
+                                double score = 0;
 
-                        return new { Skill = skill, MatchScore = score };
-                    })
-                    .Where(x => x.MatchScore > 0)
-                    .OrderByDescending(x => x.MatchScore)
-                    .Select(x => x.Skill)
-                    .Take(6)
-                    .ToList();
+                                if (matchingWant != null)
+                                {
+                                    double difference =
+                                        matchingWant.DesiredLevel -
+                                        skill.ProficiencyLevel;
 
-                    recommendedSkillsList = scoredSkills;
+                                    double sumOfSquares =
+                                        Math.Pow(difference, 2);
+
+                                    score =
+                                        1.0 /
+                                        (1.0 + sumOfSquares);
+                                }
+
+                                return new
+                                {
+                                    Skill = skill,
+                                    MatchScore = score
+                                };
+                            })
+                            .Where(result =>
+                                result.MatchScore > 0)
+                            .OrderByDescending(result =>
+                                result.MatchScore)
+                            .ThenByDescending(result =>
+                                result.Skill.ProficiencyLevel)
+                            .Select(result =>
+                                result.Skill)
+                            .Take(6)
+                            .ToList();
+
+                    recommendedSkillsList =
+                        scoredSkills;
                 }
             }
 
+            // =================================================
+            // FALLBACK RECOMMENDATIONS
+            // =================================================
+
             if (!recommendedSkillsList.Any())
             {
-                recommendedSkillsList = await _context.UserSkills
-                    .Include(s => s.User)
-                    .OrderByDescending(s => s.SkillId)
-                    .Take(6)
-                    .ToListAsync();
+                recommendedSkillsList =
+                    await _context.UserSkills
+                        .AsNoTracking()
+                        .Include(skill => skill.User)
+                        .Where(skill =>
+                            skill.IsActive &&
+                            !skill.IsDeleted &&
+                            (
+                                !currentUserId.HasValue ||
+                                skill.UserId != currentUserId.Value
+                            ))
+                        .OrderByDescending(skill =>
+                            skill.SkillId)
+                        .Take(6)
+                        .ToListAsync();
             }
 
-            var model = new DashboardViewModel
-            {
-                UserName = username,
-                RecommendedSkills = recommendedSkillsList
-            };
+            // =================================================
+            // COMMUNITY POSTS
+            // =================================================
+
+            var communityPosts =
+                await _context.Posts
+                    .AsNoTracking()
+                    .Include(post => post.User)
+                    .OrderByDescending(post =>
+                        post.CreatedAt)
+                    .Take(15)
+                    .ToListAsync();
+
+            // =================================================
+            // DASHBOARD VIEW MODEL
+            // =================================================
+
+            var model =
+                new DashboardViewModel
+                {
+                    UserName =
+                        username,
+
+                    RecommendedSkills =
+                        recommendedSkillsList,
+
+                    CommunityPosts =
+                        communityPosts
+                };
 
             return View(model);
         }
 
+        // =====================================================
+        // ADMIN DASHBOARD
+        // =====================================================
+
         [HttpGet]
         public IActionResult AdminDashboard()
         {
-            int? accessLevel = HttpContext.Session.GetInt32("AccessLevel");
+            int? accessLevel =
+                HttpContext.Session.GetInt32("AccessLevel");
+
             if (accessLevel != 1)
             {
-                return RedirectToAction("AdminLogin", "Account");
+                return RedirectToAction(
+                    "AdminLogin",
+                    "Account"
+                );
             }
 
-            var model = new AdminDashboardViewModel
-            {
-                AdminName = HttpContext.Session.GetString("Username") ?? "Administrator",
+            var model =
+                new AdminDashboardViewModel
+                {
+                    AdminName =
+                        HttpContext.Session
+                            .GetString("Username")
+                        ?? "Administrator",
 
-                TotalUsers = _context.Users.Count(),
+                    TotalUsers =
+                        _context.Users.Count(),
 
-                ActiveSwaps = _context.SkillRequests.Count(r => r.Status == "Accepted"),
+                    // Only non-deleted skills are counted
+                    TotalSkills =
+                        _context.UserSkills.Count(skill =>
+                            !skill.IsDeleted),
 
-                TotalSkills = _context.UserSkills.Count(),
+                    ActiveSwaps =
+                        _context.SkillRequests.Count(request =>
+                            request.Status == "Accepted"),
 
-                PendingRequests = _context.SkillRequests.Count(r => r.Status == "Pending")
-            };
+                    CompletedSwaps =
+                        _context.SkillRequests.Count(request =>
+                            request.Status == "Completed"),
 
-            return View("AdminDashboardViewModel", model);
+                    PendingRequests =
+                        _context.SkillRequests.Count(request =>
+                            request.Status == "Pending")
+                };
+
+            return View(
+                "AdminDashboardViewModel",
+                model
+            );
         }
 
+        // =====================================================
+        // SETTINGS
+        // =====================================================
+
+        [HttpGet]
         public IActionResult Settings()
         {
-            ViewBag.Username = HttpContext.Session.GetString("Username") ?? "User";
-            ViewBag.Email = HttpContext.Session.GetString("Email") ?? "Not available";
+            ViewBag.Username =
+                HttpContext.Session.GetString("Username")
+                ?? "User";
+
+            ViewBag.Email =
+                HttpContext.Session.GetString("Email")
+                ?? "Not available";
 
             return View();
         }
 
+        // =====================================================
+        // STATIC PAGES
+        // =====================================================
+
+        [HttpGet]
         public IActionResult Privacy()
         {
             return View();
         }
 
+        [HttpGet]
         public IActionResult Terms()
         {
             return View();
         }
 
+        [HttpGet]
         public IActionResult Contact()
         {
             return View();
         }
 
+        // =====================================================
+        // AI CHATBOT
+        // =====================================================
+
         [HttpPost]
-        public async Task<IActionResult> Chat(string message)
+        public async Task<IActionResult> Chat(
+            string message)
         {
             if (string.IsNullOrWhiteSpace(message))
             {
-                return Json(new { answer = "Please type a message first." });
+                return Json(
+                    new
+                    {
+                        answer =
+                            "Please type a message first."
+                    }
+                );
             }
 
             try
             {
-                using (var client = new HttpClient())
-                {
-                    var payload = new { message = message };
-                    var json = System.Text.Json.JsonSerializer.Serialize(payload);
-                    var content = new StringContent(json, Encoding.UTF8, "application/json");
+                using var client =
+                    new HttpClient();
 
-                    var response = await client.PostAsync("http://127.0.0.1:5000/chat", content);
-
-                    if (!response.IsSuccessStatusCode)
+                var payload =
+                    new
                     {
-                        return Json(new { answer = "Swapster is having connection issue." });
-                    }
+                        message = message.Trim()
+                    };
 
-                    var result = await response.Content.ReadAsStringAsync();
-                    return Content(result, "application/json");
+                string json =
+                    System.Text.Json.JsonSerializer
+                        .Serialize(payload);
+
+                using var content =
+                    new StringContent(
+                        json,
+                        Encoding.UTF8,
+                        "application/json"
+                    );
+
+                var response =
+                    await client.PostAsync(
+                        "http://127.0.0.1:5000/chat",
+                        content
+                    );
+
+                if (!response.IsSuccessStatusCode)
+                {
+                    return Json(
+                        new
+                        {
+                            answer =
+                                "Swapster is having a connection issue."
+                        }
+                    );
                 }
+
+                string result =
+                    await response.Content
+                        .ReadAsStringAsync();
+
+                return Content(
+                    result,
+                    "application/json"
+                );
             }
             catch
             {
-                return Json(new { answer = "Swapster is having connection issue: http://127.0.0.1:5000/chat" });
+                return Json(
+                    new
+                    {
+                        answer =
+                            "Swapster is having a connection issue"
+                    }
+                );
             }
         }
     }

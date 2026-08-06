@@ -21,11 +21,12 @@ namespace Swapster.Models
         public int AccessLevel { get; set; } = 2; 
         public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
         public bool IsEmailVerified { get; set; } = false;
-
+        public string? EmailVerificationToken { get; set; }
+        public DateTime? EmailVerificationTokenExpiry { get; set; }
         public string? VerificationToken { get; set; }
         public DateTime? TokenExpiry { get; set; }
-
         public ICollection<UserSkill> UserSkills { get; set; } = new List<UserSkill>();
         public ICollection<UserWantedSkill> UserWantedSkills { get; set; } = new List<UserWantedSkill>();
+        public bool IsBlocked { get; set; } = false;
     }
 }

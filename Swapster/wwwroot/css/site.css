@@ -32,7 +32,7 @@
 .auth-image-overlay {
     position: absolute;
     inset: 0;
-    background: linear-gradient( to top, rgba(30,20,10,0.75) 0%, rgba(30,20,10,0.25) 40%, rgba(30,20,10,0.05) 70% );
+    background: linear-gradient( to top, rgba(30, 20, 10, 0.75) 0%, rgba(30, 20, 10, 0.25) 40%, rgba(30, 20, 10, 0.05) 70% );
 }
 
 .auth-image-content {
@@ -80,18 +80,32 @@
     max-width: 400px;
 }
 
+    /* ================= SWAPSTER BRAND ================= */
+
     .auth-form-wrapper .brand-name {
+        display: inline-block;
+        text-decoration: none;
         font-size: 1.4rem;
         font-weight: 800;
         color: #D4654A;
-        text-decoration: none;
-        display: inline-block;
         letter-spacing: -0.5px;
+        transition: color 0.2s ease;
     }
 
+        /* "ster" purple */
+        .auth-form-wrapper .brand-name span {
+            color: #6674ff;
+            transition: color 0.2s ease;
+        }
+
+        /* Keep both brand colours on hover */
         .auth-form-wrapper .brand-name:hover {
             color: #C05540;
         }
+
+            .auth-form-wrapper .brand-name:hover span {
+                color: #5664ef;
+            }
 
     .auth-form-wrapper .form-heading {
         font-size: 1.6rem;
@@ -108,14 +122,15 @@
     }
 
     .auth-form-wrapper label {
+        display: block;
         font-weight: 500;
         color: #555;
         font-size: 0.85rem;
         margin-bottom: 0.3rem;
-        display: block;
     }
 
-    .auth-form-wrapper .form-control, .auth-form-wrapper .form-select {
+    .auth-form-wrapper .form-control,
+    .auth-form-wrapper .form-select {
         border: 1.5px solid #E5DDD4;
         border-radius: 10px;
         padding: 0.7rem 1rem;
@@ -129,9 +144,10 @@
             color: #C0B5A8;
         }
 
-        .auth-form-wrapper .form-control:focus, .auth-form-wrapper .form-select:focus {
+        .auth-form-wrapper .form-control:focus,
+        .auth-form-wrapper .form-select:focus {
             border-color: #D4654A;
-            box-shadow: 0 0 0 3px rgba(212,101,74,0.12);
+            box-shadow: 0 0 0 3px rgba(212, 101, 74, 0.12);
             outline: none;
         }
 
@@ -140,35 +156,44 @@
     }
 
 .auth-btn-primary {
-    background: #D4654A;
-    color: #fff;
+    width: 100%;
+    margin-top: 0.25rem;
+    padding: 0.75rem;
     border: none;
     border-radius: 10px;
-    padding: 0.75rem;
+    background: #D4654A;
+    color: #fff;
     font-size: 0.95rem;
     font-weight: 600;
-    width: 100%;
-    transition: all 0.2s ease;
     letter-spacing: 0.5px;
-    margin-top: 0.25rem;
+    cursor: pointer;
+    transition: all 0.2s ease;
 }
 
     .auth-btn-primary:hover {
         background: #C05540;
         transform: translateY(-1px);
-        box-shadow: 0 4px 12px rgba(212,101,74,0.3);
+        box-shadow: 0 4px 12px rgba(212, 101, 74, 0.3);
     }
 
 .auth-btn-dark {
+    width: 100%;
+    display: block;
+    padding: 0.65rem;
+    border-radius: 10px;
     background: #2D2D2D;
     color: #fff;
-    border-radius: 10px;
-    padding: 0.65rem;
     font-size: 0.85rem;
-    width: 100%;
     text-align: center;
     text-decoration: none;
+    transition: all 0.2s ease;
 }
+
+    .auth-btn-dark:hover {
+        background: #1f1f1f;
+        color: white;
+        transform: translateY(-1px);
+    }
 
 .auth-divider {
     display: flex;
@@ -178,7 +203,8 @@
     font-size: 0.8rem;
 }
 
-    .auth-divider::before, .auth-divider::after {
+    .auth-divider::before,
+    .auth-divider::after {
         content: '';
         flex: 1;
         height: 1px;
@@ -193,11 +219,16 @@
     color: #D4654A;
     text-decoration: none;
     font-weight: 600;
+    transition: color 0.2s ease;
 }
 
+    .auth-link:hover {
+        color: #C05540;
+    }
+
 .auth-footer-text {
-    text-align: center;
     margin-top: 1.5rem;
+    text-align: center;
     color: #999;
     font-size: 0.85rem;
 }
@@ -208,6 +239,7 @@
         padding: 2.5rem 1.5rem;
     }
 }
+
 /* ================= GLOBAL PAGE LOADER ================= */
 
 #pageLoader {
@@ -217,7 +249,7 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    background: radial-gradient(circle at top left, rgba(104, 124, 255, 0.22), transparent 35%), radial-gradient(circle at bottom right, rgba(255, 100, 170, 0.20), transparent 35%), #f6f8ff;
+    background: radial-gradient( circle at top left, rgba(104, 124, 255, 0.22), transparent 35% ), radial-gradient( circle at bottom right, rgba(255, 100, 170, 0.20), transparent 35% ), #f6f8ff;
     transition: opacity 0.45s ease, visibility 0.45s ease;
 }
 
@@ -252,13 +284,15 @@
     animation: loaderPulse 1.4s ease-in-out infinite;
 }
 
+/* Swap orange-red */
 .loader-brand {
     font-size: 28px;
     font-weight: 900;
-    color: #111827;
+    color: #D4654A;
     letter-spacing: -0.8px;
 }
 
+    /* ster purple */
     .loader-brand span {
         color: #6674ff;
     }
@@ -271,9 +305,9 @@
 }
 
 .loader-bar {
-    margin-top: 22px;
     width: 100%;
     height: 8px;
+    margin-top: 22px;
     border-radius: 30px;
     background: #eef1ff;
     overflow: hidden;

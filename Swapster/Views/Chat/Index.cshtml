@@ -1,0 +1,111 @@
+﻿@model IEnumerable<Swapster.Models.User>
+
+@{
+    ViewData["Title"] = "Messages";
+    ViewData["HideNavbar"] = true;
+    ViewData["FullWidth"] = true;
+}
+
+<style>
+    body {
+        margin: 0;
+        background: #f6f8ff;
+        font-family: 'Inter', 'Segoe UI', Arial, sans-serif;
+    }
+
+    .messages-page {
+        max-width: 900px;
+        margin: 0 auto;
+        padding: 35px;
+    }
+
+    .page-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 25px;
+    }
+
+        .page-header h1 {
+            margin: 0;
+            font-size: 28px;
+            font-weight: 900;
+        }
+
+    .back-btn {
+        text-decoration: none;
+        background: #111827;
+        color: white;
+        padding: 10px 16px;
+        border-radius: 12px;
+        font-weight: 700;
+    }
+
+    .conversation-card {
+        display: block;
+        background: white;
+        border: 1px solid #e5e7eb;
+        border-radius: 16px;
+        padding: 18px;
+        margin-bottom: 12px;
+        text-decoration: none;
+        color: #111827;
+        transition: 0.2s;
+    }
+
+        .conversation-card:hover {
+            transform: translateY(-2px);
+            border-color: #6674ff;
+            box-shadow: 0 10px 24px rgba(102,116,255,.08);
+        }
+
+    .conversation-name {
+        font-size: 17px;
+        font-weight: 800;
+    }
+
+    .conversation-text {
+        margin-top: 4px;
+        color: #6b7280;
+        font-size: 13px;
+    }
+</style>
+
+<div class="messages-page">
+
+    <div class="page-header">
+        <h1>Messages</h1>
+
+        <a asp-controller="Home"
+           asp-action="Dashboard"
+           class="back-btn">
+            Back to Dashboard
+        </a>
+    </div>
+
+    @if (Model != null && Model.Any())
+    {
+        foreach (var user in Model)
+        {
+            <a asp-controller="Chat"
+               asp-action="Conversation"
+               asp-route-userId="@user.UserId"
+               class="conversation-card">
+
+                <div class="conversation-name">
+                    @user.Username
+                </div>
+
+                <div class="conversation-text">
+                    Open conversation
+                </div>
+
+            </a>
+        }
+    }
+    else
+    {
+        <p>No conversations yet.</p>
+    }
+
+</div>

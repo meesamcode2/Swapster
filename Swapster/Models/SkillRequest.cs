@@ -10,7 +10,8 @@ namespace Swapster.Models
         public int SkillId { get; set; }
         public string Status { get; set; } = "Pending";
         public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
-
+        public bool SenderConfirmedCompletion { get; set; } = false;
+        public bool ReceiverConfirmedCompletion { get; set; } = false;
         public User Sender { get; set; } = null!;
         public User Receiver { get; set; } = null!;
         public UserSkill Skill { get; set; } = null!;

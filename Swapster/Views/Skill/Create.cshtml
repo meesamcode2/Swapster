@@ -81,13 +81,13 @@
 
 <div class="container">
     <div class="swap-card">
-        <h2 class="main-title">🔄 Create a Skill Swap Entry</h2>
+        <h2 class="main-title"> Create a Skill Swap Entry</h2>
 
         <form asp-action="Create" method="post">
             @Html.AntiForgeryToken()
 
             <div class="row">
-                <h4 class="mb-3" style="font-weight: 800; color: #111827;">💪 What Can You Teach? (Your Offer)</h4>
+                <h4 class="mb-3" style="font-weight: 800; color: #111827;"> What Can You Teach? (Your Offer)</h4>
                 <div class="col-md-7 mb-3">
                     <label class="form-label">Skill Name</label>
                     <input asp-for="OfferedSkillName" class="form-control" placeholder="e.g., Python, C++, HTML" required />
@@ -108,12 +108,8 @@
                 </div>
             </div>
 
-            <div class="section-divider">
-                <span class="section-badge">AND</span>
-            </div>
-
             <div class="row">
-                <h4 class="mb-3" style="font-weight: 800; color: #111827;">🎯 What Do You Want to Learn? (Your Need)</h4>
+                <h4 class="mb-3" style="font-weight: 800; color: #111827;"> What Do You Want to Learn? (Your Need)</h4>
                 <div class="col-md-7 mb-3">
                     <label class="form-label">Skill Name</label>
                     <input asp-for="WantedSkillName" class="form-control" placeholder="e.g., JavaScript, Java, C" required />

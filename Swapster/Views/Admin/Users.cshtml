@@ -1,7 +1,7 @@
-﻿@model IEnumerable<Swapster.Models.User>
+﻿@model Swapster.Models.AdminUsersViewModel
 
 @{
-    ViewData["Title"] = "User Directory";
+    ViewData["Title"] = "User Management";
     ViewData["HideNavbar"] = true;
     ViewData["FullWidth"] = true;
 }
@@ -21,7 +21,7 @@
     .admin-page {
         min-height: 100vh;
         padding: 35px;
-        background: radial-gradient(circle at top left, rgba(102,116,255,.10), transparent 35%), #f6f8ff;
+        background: radial-gradient( circle at top left, rgba(102,116,255,.10), transparent 35% ), #f6f8ff;
     }
 
     .page-header {
@@ -59,6 +59,117 @@
             color: white;
         }
 
+    .alert-success,
+    .alert-error {
+        max-width: 1400px;
+        margin: 0 auto 18px;
+        padding: 14px 16px;
+        border-radius: 14px;
+        font-size: 13px;
+        font-weight: 750;
+    }
+
+    .alert-success {
+        background: #ecfdf5;
+        color: #047857;
+        border: 1px solid #a7f3d0;
+    }
+
+    .alert-error {
+        background: #fef2f2;
+        color: #b91c1c;
+        border: 1px solid #fecaca;
+    }
+
+    .stats-grid {
+        max-width: 1400px;
+        margin: 0 auto 22px;
+        display: grid;
+        grid-template-columns: repeat(4, 1fr);
+        gap: 16px;
+    }
+
+    .stat-card {
+        background: white;
+        border: 1px solid #eef0f7;
+        border-radius: 20px;
+        padding: 20px;
+        box-shadow: 0 12px 28px rgba(35,45,90,.05);
+    }
+
+        .stat-card h3 {
+            margin: 0;
+            font-size: 27px;
+            font-weight: 900;
+        }
+
+        .stat-card p {
+            margin: 5px 0 0;
+            color: #6b7280;
+            font-size: 13px;
+        }
+
+    .filter-card {
+        max-width: 1400px;
+        margin: 0 auto 20px;
+        background: white;
+        border: 1px solid #eef0f7;
+        border-radius: 20px;
+        padding: 18px;
+        box-shadow: 0 12px 28px rgba(35,45,90,.05);
+    }
+
+    .filter-form {
+        display: grid;
+        grid-template-columns: minmax(250px, 1fr) 180px 180px auto auto;
+        gap: 12px;
+        align-items: center;
+    }
+
+    .filter-control {
+        width: 100%;
+        height: 44px;
+        border: 1px solid #dfe3ea;
+        border-radius: 12px;
+        padding: 0 14px;
+        background: #f8fafc;
+        font-family: inherit;
+        outline: none;
+    }
+
+        .filter-control:focus {
+            background: white;
+            border-color: #6674ff;
+            box-shadow: 0 0 0 3px rgba(102,116,255,.10);
+        }
+
+    .search-btn,
+    .reset-btn {
+        min-height: 44px;
+        border-radius: 12px;
+        padding: 0 17px;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        font-family: inherit;
+        font-size: 13px;
+        font-weight: 800;
+        text-decoration: none;
+        cursor: pointer;
+    }
+
+    .search-btn {
+        border: none;
+        background: #6674ff;
+        color: white;
+    }
+
+    .reset-btn {
+        border: 1px solid #e5e7eb;
+        background: white;
+        color: #374151;
+    }
+
     .content-card {
         max-width: 1400px;
         margin: auto;
@@ -73,33 +184,41 @@
     .users-table {
         width: 100%;
         border-collapse: collapse;
-        min-width: 800px;
+        min-width: 1150px;
     }
 
         .users-table th {
             text-align: left;
             padding: 14px;
             color: #6b7280;
-            font-size: 13px;
+            font-size: 12px;
             border-bottom: 1px solid #e5e7eb;
+            white-space: nowrap;
         }
 
         .users-table td {
             padding: 16px 14px;
             border-bottom: 1px solid #f1f5f9;
             vertical-align: middle;
+            font-size: 13px;
         }
 
     .username {
-        font-weight: 800;
+        font-weight: 850;
+    }
+
+    .small-id {
+        color: #9ca3af;
+        font-size: 12px;
     }
 
     .badge {
         display: inline-block;
-        padding: 6px 11px;
+        padding: 6px 10px;
         border-radius: 20px;
-        font-size: 12px;
+        font-size: 11px;
         font-weight: 800;
+        white-space: nowrap;
     }
 
     .admin-badge {
@@ -118,14 +237,113 @@
     }
 
     .not-verified {
+        background: #fff7ed;
+        color: #ea580c;
+    }
+
+    .active-status {
+        background: #ecfdf5;
+        color: #059669;
+    }
+
+    .blocked-status {
         background: #fef2f2;
         color: #dc2626;
+    }
+
+    .activity-cell {
+        color: #4b5563;
+        line-height: 1.7;
+        white-space: nowrap;
+    }
+
+    .action-group {
+        display: flex;
+        align-items: center;
+        gap: 7px;
+        flex-wrap: wrap;
+    }
+
+        .action-group form {
+            margin: 0;
+        }
+
+    .action-btn {
+        border: none;
+        border-radius: 10px;
+        padding: 8px 11px;
+        font-family: inherit;
+        font-size: 11px;
+        font-weight: 800;
+        text-decoration: none;
+        cursor: pointer;
+        white-space: nowrap;
+    }
+
+    .view-btn {
+        background: #111827;
+        color: white;
+    }
+
+        .view-btn:hover {
+            color: white;
+            background: #1f2937;
+        }
+
+    .block-btn {
+        background: #fef2f2;
+        color: #dc2626;
+    }
+
+    .unblock-btn {
+        background: #ecfdf5;
+        color: #059669;
+    }
+
+    .role-btn {
+        background: #eef2ff;
+        color: #4f46e5;
+    }
+
+    .disabled-text {
+        color: #9ca3af;
+        font-size: 11px;
+        font-weight: 700;
     }
 
     .empty-state {
         text-align: center;
         padding: 45px;
         color: #6b7280;
+    }
+
+    @@media (max-width: 1000px) {
+        .stats-grid {
+            grid-template-columns: repeat(2, 1fr);
+        }
+
+        .filter-form {
+            grid-template-columns: 1fr 1fr;
+        }
+    }
+
+    @@media (max-width: 600px) {
+        .admin-page {
+            padding: 20px 14px;
+        }
+
+        .page-header {
+            flex-direction: column;
+            align-items: flex-start;
+        }
+
+        .stats-grid {
+            grid-template-columns: 1fr;
+        }
+
+        .filter-form {
+            grid-template-columns: 1fr;
+        }
     }
 </style>
 
@@ -134,47 +352,164 @@
     <div class="page-header">
 
         <div class="page-title">
-            <h1>👥 User Directory</h1>
-            <p>View all registered Swapster accounts.</p>
+            <h1>User Management</h1>
+
+            <p>
+                Search accounts, review activity, manage roles
+                and control platform access.
+            </p>
         </div>
 
-        <a asp-controller="Home"
-           asp-action="AdminDashboard"
+        <a asp-controller="Admin"
+           asp-action="Dashboard"
            class="back-btn">
             ← Dashboard
         </a>
 
     </div>
 
+    @if (TempData["Success"] != null)
+    {
+        <div class="alert-success">
+            @TempData["Success"]
+        </div>
+    }
+
+    @if (TempData["Error"] != null)
+    {
+        <div class="alert-error">
+            @TempData["Error"]
+        </div>
+    }
+
+    <section class="stats-grid">
+
+        <div class="stat-card">
+            <h3>@Model.TotalUsers</h3>
+            <p>Total registered users</p>
+        </div>
+
+        <div class="stat-card">
+            <h3>@Model.ActiveUsers</h3>
+            <p>Active accounts</p>
+        </div>
+
+        <div class="stat-card">
+            <h3>@Model.BlockedUsers</h3>
+            <p>Blocked accounts</p>
+        </div>
+
+        <div class="stat-card">
+            <h3>@Model.AdminUsers</h3>
+            <p>Administrators</p>
+        </div>
+
+    </section>
+
+    <section class="filter-card">
+
+        <form asp-controller="Admin"
+              asp-action="Users"
+              method="get"
+              class="filter-form">
+
+            <input type="text"
+                   name="searchTerm"
+                   value="@Model.SearchTerm"
+                   class="filter-control"
+                   placeholder="Search by username or email..." />
+
+            <select name="roleFilter"
+                    class="filter-control">
+
+                <option value="all"
+                        selected="@(Model.RoleFilter == "all")">
+                    All roles
+                </option>
+
+                <option value="admin"
+                        selected="@(Model.RoleFilter == "admin")">
+                    Admins
+                </option>
+
+                <option value="user"
+                        selected="@(Model.RoleFilter == "user")">
+                    Regular users
+                </option>
+
+            </select>
+
+            <select name="statusFilter"
+                    class="filter-control">
+
+                <option value="all"
+                        selected="@(Model.StatusFilter == "all")">
+                    All statuses
+                </option>
+
+                <option value="active"
+                        selected="@(Model.StatusFilter == "active")">
+                    Active
+                </option>
+
+                <option value="blocked"
+                        selected="@(Model.StatusFilter == "blocked")">
+                    Blocked
+                </option>
+
+            </select>
+
+            <button type="submit"
+                    class="search-btn">
+                Search
+            </button>
+
+            <a asp-controller="Admin"
+               asp-action="Users"
+               class="reset-btn">
+                Reset
+            </a>
+
+        </form>
+
+    </section>
+
     <div class="content-card">
 
-        @if (Model != null && Model.Any())
+        @if (Model.Users != null && Model.Users.Any())
         {
             <table class="users-table">
 
                 <thead>
                     <tr>
-                        <th>ID</th>
-                        <th>Username</th>
+                        <th>User</th>
                         <th>Email</th>
                         <th>Role</th>
                         <th>Email Status</th>
+                        <th>Account Status</th>
+                        <th>Activity</th>
                         <th>Joined</th>
+                        <th>Actions</th>
                     </tr>
                 </thead>
 
                 <tbody>
 
-                    @foreach (var user in Model)
+                    @foreach (var user in Model.Users)
                     {
+                        bool isCurrentAdmin =
+                        user.UserId == Model.CurrentAdminId;
+
                         <tr>
 
                             <td>
-                                @user.UserId
-                            </td>
+                                <div class="username">
+                                    @user.Username
+                                </div>
 
-                            <td class="username">
-                                @user.Username
+                                <div class="small-id">
+                                    ID: @user.UserId
+                                </div>
                             </td>
 
                             <td>
@@ -212,7 +547,107 @@
                             </td>
 
                             <td>
+                                @if (user.IsBlocked)
+                                {
+                                    <span class="badge blocked-status">
+                                        Blocked
+                                    </span>
+                                }
+                                else
+                                {
+                                    <span class="badge active-status">
+                                        Active
+                                    </span>
+                                }
+                            </td>
+
+                            <td class="activity-cell">
+                                Offered: @user.OfferedSkillsCount
+                                <br />
+                                Wanted: @user.WantedSkillsCount
+                                <br />
+                                Completed: @user.CompletedExchangesCount
+                            </td>
+
+                            <td>
                                 @user.CreatedAt.ToString("dd MMM yyyy")
+                            </td>
+
+                            <td>
+
+                                <div class="action-group">
+
+                                    <a asp-controller="Admin"
+                                       asp-action="UserDetails"
+                                       asp-route-id="@user.UserId"
+                                       class="action-btn view-btn">
+                                        View
+                                    </a>
+
+                                    @if (isCurrentAdmin)
+                                    {
+                                        <span class="disabled-text">
+                                            Current account
+                                        </span>
+                                    }
+                                    else
+                                    {
+                                        @if (user.AccessLevel != 1)
+                                        {
+                                            <form asp-controller="Admin"
+                                                  asp-action="ToggleBlock"
+                                                  method="post">
+
+                                                @Html.AntiForgeryToken()
+
+                                                <input type="hidden"
+                                                       name="id"
+                                                       value="@user.UserId" />
+
+                                                <input type="hidden"
+                                                       name="returnToDetails"
+                                                       value="false" />
+
+                                                <button type="submit"
+                                                        class="action-btn @(user.IsBlocked ? "unblock-btn" : "block-btn")">
+
+                                                    @(user.IsBlocked
+                                                                                        ? "Unblock"
+                                                                                        : "Block")
+
+                                </button>
+
+                                            </form>
+                                                        }
+
+                            <form asp-controller="Admin"
+                                  asp-action="ChangeRole"
+                                  method="post">
+
+                                @Html.AntiForgeryToken()
+
+                                <input type="hidden"
+                                       name="id"
+                                       value="@user.UserId" />
+
+                                <input type="hidden"
+                                       name="returnToDetails"
+                                       value="false" />
+
+                                <button type="submit"
+                                        class="action-btn role-btn">
+
+                                    @(user.AccessLevel == 1
+                                                                        ? "Make User"
+                                                                        : "Make Admin")
+
+                                </button>
+
+                                        </form>
+                                                        }
+
+                                </div>
+
                             </td>
 
                         </tr>
@@ -225,7 +660,7 @@
         else
         {
             <div class="empty-state">
-                No registered users found.
+                No users matched your search or filters.
             </div>
         }
 

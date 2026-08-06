@@ -1,0 +1,439 @@
+﻿@model Swapster.Models.AdminSkillDetailsViewModel
+
+@{
+    ViewData["Title"] = "Skill Details";
+    ViewData["HideNavbar"] = true;
+    ViewData["FullWidth"] = true;
+}
+
+<style>
+    body {
+        margin: 0;
+        font-family: 'Inter', 'Segoe UI', Arial, sans-serif;
+        background: #f6f8ff;
+        color: #111827;
+    }
+
+    .page {
+        min-height: 100vh;
+        padding: 35px 20px;
+    }
+
+    .container {
+        max-width: 1100px;
+        margin: auto;
+    }
+
+    .header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        gap: 15px;
+        margin-bottom: 22px;
+    }
+
+        .header h1 {
+            margin: 0;
+            font-size: 29px;
+            font-weight: 900;
+        }
+
+        .header p {
+            margin: 6px 0 0;
+            color: #6b7280;
+        }
+
+    .back-btn {
+        background: #111827;
+        color: white;
+        padding: 11px 17px;
+        border-radius: 13px;
+        text-decoration: none;
+        font-weight: 800;
+    }
+
+    .card {
+        background: white;
+        border: 1px solid #eef0f7;
+        border-radius: 22px;
+        padding: 23px;
+        margin-bottom: 18px;
+        box-shadow: 0 14px 32px rgba(35,45,90,.06);
+    }
+
+    .skill-header {
+        display: flex;
+        justify-content: space-between;
+        gap: 20px;
+    }
+
+        .skill-header h2 {
+            margin: 0;
+            font-size: 25px;
+            font-weight: 900;
+        }
+
+        .skill-header p {
+            margin: 8px 0 0;
+            color: #6b7280;
+            line-height: 1.6;
+        }
+
+    .badge {
+        display: inline-block;
+        padding: 6px 11px;
+        border-radius: 20px;
+        font-size: 11px;
+        font-weight: 800;
+    }
+
+    .active {
+        background: #ecfdf5;
+        color: #059669;
+    }
+
+    .inactive {
+        background: #fff7ed;
+        color: #ea580c;
+    }
+
+    .deleted {
+        background: #fef2f2;
+        color: #dc2626;
+    }
+
+    .level {
+        background: #eef2ff;
+        color: #4f46e5;
+    }
+
+    .details-grid,
+    .stats-grid {
+        display: grid;
+        gap: 14px;
+    }
+
+    .details-grid {
+        grid-template-columns: repeat(3, 1fr);
+    }
+
+    .stats-grid {
+        grid-template-columns: repeat(5, 1fr);
+        margin-bottom: 18px;
+    }
+
+    .detail-box,
+    .stat-box {
+        background: #f8fafc;
+        border: 1px solid #eef0f7;
+        border-radius: 15px;
+        padding: 15px;
+    }
+
+        .detail-box span,
+        .stat-box span {
+            display: block;
+            color: #6b7280;
+            font-size: 11px;
+            margin-bottom: 5px;
+        }
+
+        .detail-box strong,
+        .stat-box strong {
+            font-size: 15px;
+        }
+
+    .actions {
+        display: flex;
+        gap: 8px;
+        flex-wrap: wrap;
+        margin-top: 20px;
+    }
+
+    .action-btn {
+        border: none;
+        border-radius: 11px;
+        padding: 10px 14px;
+        font-size: 12px;
+        font-weight: 800;
+        text-decoration: none;
+        cursor: pointer;
+    }
+
+    .edit-btn {
+        background: #eef2ff;
+        color: #4f46e5;
+    }
+
+    .status-btn {
+        background: #fff7ed;
+        color: #ea580c;
+    }
+
+    .delete-btn {
+        background: #fef2f2;
+        color: #dc2626;
+    }
+
+    .exchange-table {
+        width: 100%;
+        border-collapse: collapse;
+        min-width: 700px;
+    }
+
+    .table-wrapper {
+        overflow-x: auto;
+    }
+
+    .exchange-table th,
+    .exchange-table td {
+        text-align: left;
+        padding: 12px;
+        border-bottom: 1px solid #eef0f7;
+        font-size: 12px;
+    }
+
+    .note {
+        background: #fff7ed;
+        color: #9a3412;
+        border: 1px solid #fed7aa;
+        border-radius: 13px;
+        padding: 13px;
+        margin-top: 16px;
+    }
+
+    @@media (max-width: 800px) {
+        .details-grid,
+        .stats-grid {
+            grid-template-columns: 1fr;
+        }
+
+        .header,
+        .skill-header {
+            flex-direction: column;
+            align-items: flex-start;
+        }
+    }
+</style>
+
+<div class="page">
+
+    <div class="container">
+
+        <div class="header">
+
+            <div>
+                <h1>Skill Details</h1>
+                <p>Review skill information and related activity.</p>
+            </div>
+
+            <a asp-controller="Admin"
+               asp-action="Skills"
+               class="back-btn">
+                ← Skill Management
+            </a>
+
+        </div>
+
+        <section class="card">
+
+            <div class="skill-header">
+
+                <div>
+                    <h2>@Model.SkillName</h2>
+
+                    @if (!string.IsNullOrWhiteSpace(Model.Description))
+                    {
+                        <p>@Model.Description</p>
+                    }
+                </div>
+
+                <div>
+                    @if (Model.IsDeleted)
+                    {
+                        <span class="badge deleted">Deleted</span>
+                    }
+                    else if (Model.IsActive)
+                    {
+                        <span class="badge active">Active</span>
+                    }
+                    else
+                    {
+                        <span class="badge inactive">Inactive</span>
+                    }
+
+                    <span class="badge level">
+                        Level @Model.Level / 5
+                    </span>
+                </div>
+
+            </div>
+
+            <div class="details-grid"
+                 style="margin-top:20px;">
+
+                <div class="detail-box">
+                    <span>Skill Type</span>
+                    <strong>@Model.SkillType</strong>
+                </div>
+
+                <div class="detail-box">
+                    <span>Owner</span>
+                    <strong>@Model.Username</strong>
+                </div>
+
+                <div class="detail-box">
+                    <span>Email</span>
+                    <strong>@Model.Email</strong>
+                </div>
+
+            </div>
+
+            @if (!string.IsNullOrWhiteSpace(Model.AdminNote))
+            {
+                <div class="note">
+                    <strong>Admin Note:</strong>
+                    @Model.AdminNote
+                </div>
+            }
+
+            @if (!Model.IsDeleted)
+            {
+                <div class="actions">
+
+                    <a asp-controller="Admin"
+                       asp-action="EditSkill"
+                       asp-route-type="@Model.SkillType"
+                       asp-route-id="@Model.SkillId"
+                       class="action-btn edit-btn">
+                        Edit Skill
+                    </a>
+
+                    <form asp-controller="Admin"
+                          asp-action="ToggleSkillStatus"
+                          method="post">
+
+                        @Html.AntiForgeryToken()
+
+                        <input type="hidden"
+                               name="type"
+                               value="@Model.SkillType" />
+
+                        <input type="hidden"
+                               name="id"
+                               value="@Model.SkillId" />
+
+                        <button type="submit"
+                                class="action-btn status-btn">
+
+                            @(Model.IsActive
+                                                    ? "Deactivate"
+                                                    : "Activate")
+
+                    </button>
+
+                    </form>
+
+                    <a asp-controller="Admin"
+                       asp-action="DeleteSkill"
+                       asp-route-type="@Model.SkillType"
+                       asp-route-id="@Model.SkillId"
+                       class="action-btn delete-btn">
+                        Delete Skill
+                    </a>
+
+                </div>
+                        }
+
+        </section>
+
+        @if (Model.SkillType == "offered")
+        {
+            <section class="stats-grid">
+
+                <div class="stat-box">
+                    <span>Total Requests</span>
+                    <strong>@Model.TotalRequests</strong>
+                </div>
+
+                <div class="stat-box">
+                    <span>Pending</span>
+                    <strong>@Model.PendingRequests</strong>
+                </div>
+
+                <div class="stat-box">
+                    <span>Accepted</span>
+                    <strong>@Model.AcceptedRequests</strong>
+                </div>
+
+                <div class="stat-box">
+                    <span>Rejected</span>
+                    <strong>@Model.RejectedRequests</strong>
+                </div>
+
+                <div class="stat-box">
+                    <span>Completed</span>
+                    <strong>@Model.CompletedRequests</strong>
+                </div>
+
+            </section>
+
+            <section class="card">
+
+                <h3>Related Exchange Requests</h3>
+
+                @if (Model.Exchanges.Any())
+                {
+                    <div class="table-wrapper">
+
+                        <table class="exchange-table">
+
+                            <thead>
+                                <tr>
+                                    <th>Sender</th>
+                                    <th>Receiver</th>
+                                    <th>Status</th>
+                                    <th>Date</th>
+                                </tr>
+                            </thead>
+
+                            <tbody>
+
+                                @foreach (var exchange in Model.Exchanges)
+                                {
+                                    <tr>
+                                        <td>
+                                            @(exchange.Sender?.Username ?? "Unknown")
+                                        </td>
+
+                                        <td>
+                                            @(exchange.Receiver?.Username ?? "Unknown")
+                                        </td>
+
+                                        <td>@exchange.Status</td>
+
+                                        <td>
+                                            @exchange.CreatedAt
+                                            .ToLocalTime()
+                                            .ToString("dd MMM yyyy")
+                                        </td>
+                                    </tr>
+                                }
+
+                            </tbody>
+
+                        </table>
+
+                    </div>
+                }
+                else
+                {
+                    <p>No exchange requests found for this skill.</p>
+                }
+
+            </section>
+        }
+
+    </div>
+
+</div>

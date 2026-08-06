@@ -15,6 +15,8 @@ namespace Swapster.Data
         public DbSet<SkillRequest> SkillRequests { get; set; } = null!;
         public DbSet<UserWantedSkill> UserWantedSkills { get; set; } = null!;
         public DbSet<UserProfile> UserProfiles { get; set; } = null!;
+        public DbSet<Message> Messages { get; set; } = null!;
+        public DbSet<Post> Posts { get; set; } = null!;
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -37,6 +39,17 @@ namespace Swapster.Data
                 .WithMany()
                 .HasForeignKey(sr => sr.SkillId)
                 .OnDelete(DeleteBehavior.Cascade);
+            modelBuilder.Entity<Message>()
+                .HasOne(m => m.Sender)
+                .WithMany()
+                .HasForeignKey(m => m.SenderId)
+    .           OnDelete(DeleteBehavior.Restrict);
+
+            modelBuilder.Entity<Message>()
+               .HasOne(m => m.Receiver)
+               .WithMany()
+               .HasForeignKey(m => m.ReceiverId)
+               .OnDelete(DeleteBehavior.Restrict);
         }
     }
 }

@@ -22,7 +22,7 @@
     .dashboard-layout {
         min-height: 100vh;
         display: flex;
-        background: radial-gradient(circle at top left, rgba(102, 116, 255, 0.08), transparent 35%), radial-gradient(circle at bottom right, rgba(255, 100, 170, 0.06), transparent 35%), #f4f6fb;
+        background: #f4f6fb;
     }
 
     /* ================= SIDEBAR ================= */
@@ -89,7 +89,7 @@
 
         .sidebar a.menu-link:hover,
         .sidebar a.active {
-            background: rgba(255, 255, 255, 0.10);
+            background: rgba(255,255,255,0.10);
             color: white;
             transform: translateX(3px);
         }
@@ -111,8 +111,8 @@
     }
 
         .logout-btn:hover {
-            background: rgba(239, 68, 68, 0.18);
-            border-color: rgba(239, 68, 68, 0.45);
+            background: rgba(239,68,68,0.18);
+            border-color: rgba(239,68,68,0.45);
         }
 
     /* ================= MAIN ================= */
@@ -131,7 +131,7 @@
         display: flex;
         justify-content: space-between;
         align-items: center;
-        box-shadow: 0 10px 28px rgba(15, 23, 42, 0.05);
+        box-shadow: 0 10px 28px rgba(15,23,42,0.05);
         margin-bottom: 28px;
     }
 
@@ -139,7 +139,6 @@
         margin: 0;
         font-size: 26px;
         font-weight: 900;
-        letter-spacing: -0.4px;
     }
 
     .topbar-title p {
@@ -171,17 +170,17 @@
 
     .stats-grid {
         display: grid;
-        grid-template-columns: repeat(4, 1fr);
-        gap: 18px;
+        grid-template-columns: repeat(5, 1fr);
+        gap: 16px;
         margin-bottom: 28px;
     }
 
     .stat-card {
         background: white;
-        padding: 24px;
+        padding: 22px;
         border-radius: 18px;
         border: 1px solid #e5e7eb;
-        box-shadow: 0 10px 28px rgba(15, 23, 42, 0.05);
+        box-shadow: 0 10px 28px rgba(15,23,42,0.05);
         min-height: 145px;
         display: flex;
         flex-direction: column;
@@ -189,8 +188,8 @@
     }
 
     .stat-label {
-        font-size: 13px;
-        font-weight: 700;
+        font-size: 12px;
+        font-weight: 800;
         color: #64748b;
         text-transform: uppercase;
         letter-spacing: .5px;
@@ -199,7 +198,7 @@
 
     .stat-card h3 {
         margin: 0;
-        font-size: 32px;
+        font-size: 31px;
         font-weight: 900;
         color: #111827;
     }
@@ -207,18 +206,19 @@
     .stat-card p {
         margin: 7px 0 0;
         color: #6b7280;
-        font-size: 13px;
+        font-size: 12px;
         font-weight: 600;
+        line-height: 1.5;
     }
 
-    /* ================= QUICK ACTIONS ================= */
+    /* ================= ACTIONS ================= */
 
     .quick-actions-panel {
         background: white;
         border-radius: 20px;
         border: 1px solid #e5e7eb;
         padding: 24px;
-        box-shadow: 0 10px 28px rgba(15, 23, 42, 0.05);
+        box-shadow: 0 10px 28px rgba(15,23,42,0.05);
     }
 
     .panel-header {
@@ -261,7 +261,7 @@
             transform: translateY(-3px);
             background: white;
             border-color: #6674ff;
-            box-shadow: 0 10px 24px rgba(102, 116, 255, 0.10);
+            box-shadow: 0 10px 24px rgba(102,116,255,0.10);
         }
 
     .card-meta h4 {
@@ -285,9 +285,13 @@
         font-size: 13px;
     }
 
-    /* ================= RESPONSIVE ================= */
+    @@media (max-width: 1200px) {
+        .stats-grid {
+            grid-template-columns: repeat(3, 1fr);
+        }
+    }
 
-    @@media (max-width: 1100px) {
+    @@media (max-width: 900px) {
         .stats-grid {
             grid-template-columns: repeat(2, 1fr);
         }
@@ -336,7 +340,10 @@
 
             <span class="brand-swap">Swap</span>
             <span class="brand-ster">ster</span>
-            <span class="sidebar-badge">Admin</span>
+
+            <span class="sidebar-badge">
+                Admin
+            </span>
 
         </a>
 
@@ -373,7 +380,8 @@
               method="post"
               class="logout-form">
 
-            <button type="submit" class="logout-btn">
+            <button type="submit"
+                    class="logout-btn">
                 Sign Out
             </button>
 
@@ -387,16 +395,23 @@
         <div class="topbar">
 
             <div class="topbar-title">
+
                 <h2>Admin Dashboard</h2>
+
                 <p>
-                    Welcome back, @(Model?.AdminName ?? "Administrator").
-                    Manage users, skills and exchange activity from one place.
+                    Welcome back,
+                    @(Model?.AdminName ?? "Administrator").
+                    Monitor Swapster platform activity.
                 </p>
+
             </div>
 
             <div class="system-status">
+
                 <div class="status-pulse"></div>
+
                 System Operational
+
             </div>
 
         </div>
@@ -405,27 +420,87 @@
         <section class="stats-grid">
 
             <div class="stat-card">
-                <div class="stat-label">Users</div>
-                <h3>@Model?.TotalUsers</h3>
-                <p>Total registered accounts</p>
+
+                <div class="stat-label">
+                    Users
+                </div>
+
+                <h3>
+                    @Model?.TotalUsers
+                </h3>
+
+                <p>
+                    Total registered accounts
+                </p>
+
             </div>
 
-            <div class="stat-card">
-                <div class="stat-label">Accepted Exchanges</div>
-                <h3>@Model?.ActiveSwaps</h3>
-                <p>Successful skill exchange requests</p>
-            </div>
 
             <div class="stat-card">
-                <div class="stat-label">Skills</div>
-                <h3>@Model?.TotalSkills</h3>
-                <p>Total skills available on the platform</p>
+
+                <div class="stat-label">
+                    Skills
+                </div>
+
+                <h3>
+                    @Model?.TotalSkills
+                </h3>
+
+                <p>
+                    Total offered skills
+                </p>
+
             </div>
 
+
             <div class="stat-card">
-                <div class="stat-label">Pending Requests</div>
-                <h3>@Model?.PendingRequests</h3>
-                <p>Exchange requests awaiting response</p>
+
+                <div class="stat-label">
+                    Active Exchanges
+                </div>
+
+                <h3>
+                    @Model?.ActiveSwaps
+                </h3>
+
+                <p>
+                    Accepted exchanges currently in progress
+                </p>
+
+            </div>
+
+
+            <div class="stat-card">
+
+                <div class="stat-label">
+                    Completed Exchanges
+                </div>
+
+                <h3>
+                    @Model?.CompletedSwaps
+                </h3>
+
+                <p>
+                    Exchanges confirmed complete by both users
+                </p>
+
+            </div>
+
+
+            <div class="stat-card">
+
+                <div class="stat-label">
+                    Pending Requests
+                </div>
+
+                <h3>
+                    @Model?.PendingRequests
+                </h3>
+
+                <p>
+                    Exchange requests awaiting response
+                </p>
+
             </div>
 
         </section>
@@ -434,10 +509,15 @@
         <section class="quick-actions-panel">
 
             <div class="panel-header">
-                <h3>Management Sections</h3>
+
+                <h3>
+                    Management Sections
+                </h3>
+
                 <p>
                     Access the main administrative areas of the Swapster platform.
                 </p>
+
             </div>
 
 
@@ -448,11 +528,16 @@
                    class="action-route-card">
 
                     <div class="card-meta">
-                        <h4>User Management</h4>
+
+                        <h4>
+                            User Management
+                        </h4>
+
                         <p>
-                            Review registered users, account information,
-                            access levels and user activity.
+                            Review registered users, account information
+                            and access levels.
                         </p>
+
                     </div>
 
                     <div class="card-arrow">
@@ -467,11 +552,16 @@
                    class="action-route-card">
 
                     <div class="card-meta">
-                        <h4>Skill Management</h4>
+
+                        <h4>
+                            Skill Management
+                        </h4>
+
                         <p>
                             Review offered and wanted skills,
                             proficiency levels and associated users.
                         </p>
+
                     </div>
 
                     <div class="card-arrow">
@@ -486,11 +576,16 @@
                    class="action-route-card">
 
                     <div class="card-meta">
-                        <h4>Exchange Management</h4>
+
+                        <h4>
+                            Exchange Management
+                        </h4>
+
                         <p>
-                            Monitor pending, accepted and rejected
-                            skill exchange requests across the platform.
+                            Monitor pending, active, rejected and completed
+                            skill exchanges.
                         </p>
+
                     </div>
 
                     <div class="card-arrow">

@@ -1,0 +1,199 @@
+﻿@model Swapster.Models.AdminEditSkillViewModel
+
+@{
+    ViewData["Title"] = "Edit Skill";
+    ViewData["HideNavbar"] = true;
+    ViewData["FullWidth"] = true;
+}
+
+<style>
+    body {
+        margin: 0;
+        font-family: 'Inter', 'Segoe UI', Arial, sans-serif;
+        background: #f6f8ff;
+    }
+
+    .page {
+        min-height: 100vh;
+        padding: 40px 20px;
+    }
+
+    .form-card {
+        max-width: 600px;
+        margin: auto;
+        background: white;
+        border: 1px solid #eef0f7;
+        border-radius: 24px;
+        padding: 28px;
+        box-shadow: 0 16px 38px rgba(35,45,90,.08);
+    }
+
+        .form-card h1 {
+            margin: 0;
+            font-size: 27px;
+            font-weight: 900;
+        }
+
+        .form-card p {
+            color: #6b7280;
+            margin-bottom: 24px;
+        }
+
+    .form-group {
+        margin-bottom: 17px;
+    }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 7px;
+            font-size: 13px;
+            font-weight: 800;
+        }
+
+    .form-control {
+        width: 100%;
+        border: 1px solid #dfe3ea;
+        border-radius: 13px;
+        padding: 12px 14px;
+        font-family: inherit;
+        font-size: 14px;
+        outline: none;
+        box-sizing: border-box;
+    }
+
+    textarea.form-control {
+        min-height: 110px;
+        resize: vertical;
+    }
+
+    .validation {
+        display: block;
+        color: #dc2626;
+        margin-top: 5px;
+        font-size: 12px;
+    }
+
+    .actions {
+        display: flex;
+        gap: 10px;
+        margin-top: 22px;
+    }
+
+    .save-btn,
+    .cancel-btn {
+        padding: 11px 18px;
+        border-radius: 12px;
+        font-size: 13px;
+        font-weight: 800;
+        text-decoration: none;
+    }
+
+    .save-btn {
+        border: none;
+        background: #6674ff;
+        color: white;
+        cursor: pointer;
+    }
+
+    .cancel-btn {
+        background: #f3f4f6;
+        color: #374151;
+    }
+</style>
+
+<div class="page">
+
+    <div class="form-card">
+
+        <h1>Edit Skill</h1>
+
+        <p>
+            Update the skill information for moderation purposes.
+        </p>
+
+        <form asp-controller="Admin"
+              asp-action="EditSkill"
+              method="post">
+
+            @Html.AntiForgeryToken()
+
+            <input type="hidden"
+                   asp-for="SkillType" />
+
+            <input type="hidden"
+                   asp-for="SkillId" />
+
+            <div class="form-group">
+
+                <label asp-for="SkillName">
+                    Skill Name
+                </label>
+
+                <input asp-for="SkillName"
+                       class="form-control" />
+
+                <span asp-validation-for="SkillName"
+                      class="validation"></span>
+
+            </div>
+
+            @if (Model.SkillType == "offered")
+            {
+                <div class="form-group">
+
+                    <label asp-for="Description">
+                        Description
+                    </label>
+
+                    <textarea asp-for="Description"
+                              class="form-control"></textarea>
+
+                </div>
+            }
+
+            <div class="form-group">
+
+                <label asp-for="Level">
+                    @(Model.SkillType == "offered"
+                                        ? "Proficiency Level"
+                                        : "Desired Level")
+                </label>
+
+                <select asp-for="Level"
+                        class="form-control">
+
+                    <option value="1">Level 1</option>
+                    <option value="2">Level 2</option>
+                    <option value="3">Level 3</option>
+                    <option value="4">Level 4</option>
+                    <option value="5">Level 5</option>
+
+                </select>
+
+                <span asp-validation-for="Level"
+                      class="validation"></span>
+
+            </div>
+
+            <div class="actions">
+
+                <button type="submit"
+                        class="save-btn">
+                    Save Changes
+                </button>
+
+                <a asp-controller="Admin"
+                   asp-action="SkillDetails"
+                   asp-route-type="@Model.SkillType"
+                   asp-route-id="@Model.SkillId"
+                   class="cancel-btn">
+                    Cancel
+                </a>
+
+            </div>
+
+        </form>
+
+    </div>
+
+</div>

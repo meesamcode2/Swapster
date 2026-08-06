@@ -21,5 +21,10 @@ namespace Swapster.Models
 
         [ForeignKey("UserId")]
         public User? User { get; set; }
+        public bool IsActive { get; set; } = true;
+
+        public bool IsDeleted { get; set; } = false;
+
+        public string? AdminNote { get; set; }
     }
 }

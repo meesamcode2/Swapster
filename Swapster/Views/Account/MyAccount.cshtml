@@ -8,10 +8,13 @@
 }
 
 <style>
-    /* Main Layout */
+    * {
+        box-sizing: border-box;
+    }
+
     body {
         margin: 0;
-        font-family: 'Inter', sans-serif;
+        font-family: 'Inter', 'Segoe UI', Arial, sans-serif;
         background: #f6f8ff;
         color: #111827;
     }
@@ -19,10 +22,11 @@
     .dashboard-layout {
         min-height: 100vh;
         display: flex;
-        background: radial-gradient(circle at top left, rgba(104, 124, 255, 0.16), transparent 35%), radial-gradient(circle at bottom right, rgba(255, 100, 170, 0.14), transparent 35%), #f6f8ff;
+        background: radial-gradient( circle at top left, rgba(104, 124, 255, 0.16), transparent 35% ), radial-gradient( circle at bottom right, rgba(255, 100, 170, 0.14), transparent 35% ), #f6f8ff;
     }
 
-    /* Sidebar */
+    /* ================= SIDEBAR ================= */
+
     .sidebar {
         width: 260px;
         min-height: 100vh;
@@ -30,16 +34,21 @@
         color: white;
         padding: 26px 20px;
         position: fixed;
+        top: 0;
         left: 0;
+        z-index: 1000;
+        overflow-y: auto;
+        box-shadow: 18px 0 45px rgba(17, 24, 39, 0.18);
     }
 
     .sidebar-brand {
         text-decoration: none;
-        display: flex;
+        display: inline-flex;
         align-items: center;
-        font-size: 28px;
+        font-size: 30px;
         font-weight: 900;
-        margin-bottom: 30px;
+        margin-bottom: 32px;
+        letter-spacing: -1px;
     }
 
     .brand-swap {
@@ -52,7 +61,7 @@
 
     .sidebar-menu {
         display: grid;
-        gap: 10px;
+        gap: 9px;
     }
 
     .menu-link {
@@ -60,29 +69,42 @@
         align-items: center;
         gap: 10px;
         color: #d1d5db;
-        padding: 12px;
-        border-radius: 12px;
+        padding: 13px 14px;
+        border-radius: 16px;
         text-decoration: none;
-        font-weight: 600;
+        font-weight: 650;
+        transition: 0.25s;
     }
 
+        .menu-link:hover,
         .menu-link.active {
             background: linear-gradient(135deg, #6674ff, #ff64aa);
             color: white;
+            transform: translateX(4px);
         }
+
+    .logout-form {
+        margin-top: 20px;
+    }
 
     .logout-btn {
         width: 100%;
-        margin-top: 20px;
-        padding: 10px;
-        border-radius: 12px;
-        border: none;
-        background: rgba(255,255,255,0.1);
+        border: 1px solid rgba(255, 255, 255, 0.15);
+        background: rgba(255, 255, 255, 0.08);
         color: white;
+        padding: 12px 14px;
+        border-radius: 16px;
+        font-weight: 750;
         cursor: pointer;
+        transition: 0.25s;
     }
 
-    /* Main Content */
+        .logout-btn:hover {
+            background: rgba(255, 100, 170, 0.22);
+        }
+
+    /* ================= MAIN ================= */
+
     .main {
         margin-left: 260px;
         width: calc(100% - 260px);
@@ -90,160 +112,799 @@
     }
 
     .topbar {
-        background: rgba(255, 255, 255, 0.8);
-        backdrop-filter: blur(10px);
-        padding: 20px;
-        border-radius: 20px;
-        margin-bottom: 25px;
+        background: rgba(255, 255, 255, 0.88);
+        backdrop-filter: blur(18px);
+        border: 1px solid #eef0f7;
+        padding: 22px 24px;
+        border-radius: 26px;
+        margin-bottom: 26px;
+        box-shadow: 0 16px 35px rgba(35, 45, 90, 0.08);
     }
+
+        .topbar h2 {
+            margin: 0;
+            font-size: 30px;
+            font-weight: 900;
+        }
+
+        .topbar p {
+            margin: 7px 0 0;
+            color: #6b7280;
+        }
 
     .account-hero {
         background: linear-gradient(135deg, #6674ff, #ff64aa);
         color: white;
-        padding: 30px;
-        border-radius: 25px;
-        margin-bottom: 25px;
+        padding: 32px;
+        border-radius: 30px;
+        margin-bottom: 26px;
+        box-shadow: 0 24px 55px rgba(102, 116, 255, 0.24);
     }
+
+        .account-hero h1 {
+            margin: 0;
+            font-size: 38px;
+            font-weight: 900;
+        }
+
+        .account-hero p {
+            margin: 10px 0 0;
+            line-height: 1.6;
+            opacity: 0.95;
+        }
+
+    /* ================= ALERTS ================= */
+
+    .alert-success {
+        background: #ecfdf5;
+        color: #047857;
+        border: 1px solid #a7f3d0;
+        padding: 14px 16px;
+        border-radius: 14px;
+        margin-bottom: 20px;
+        font-weight: 700;
+    }
+
+    .alert-error {
+        background: #fef2f2;
+        color: #b91c1c;
+        border: 1px solid #fecaca;
+        padding: 14px 16px;
+        border-radius: 14px;
+        margin-bottom: 20px;
+        font-weight: 700;
+    }
+
+    .verification-alert {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        gap: 18px;
+        background: #fff7ed;
+        color: #9a3412;
+        border: 1px solid #fed7aa;
+        padding: 18px 20px;
+        border-radius: 18px;
+        margin-bottom: 24px;
+        box-shadow: 0 12px 28px rgba(154, 52, 18, 0.08);
+    }
+
+        .verification-alert h3 {
+            margin: 0 0 6px;
+            font-size: 17px;
+            font-weight: 900;
+        }
+
+        .verification-alert p {
+            margin: 0;
+            line-height: 1.55;
+            font-size: 13px;
+            font-weight: 600;
+        }
+
+    .verification-form {
+        margin: 0;
+        flex-shrink: 0;
+    }
+
+    .verification-btn {
+        border: none;
+        background: linear-gradient(135deg, #6674ff, #ff64aa);
+        color: white;
+        padding: 11px 16px;
+        border-radius: 12px;
+        font-family: inherit;
+        font-size: 12px;
+        font-weight: 850;
+        cursor: pointer;
+        white-space: nowrap;
+        box-shadow: 0 10px 20px rgba(102, 116, 255, 0.22);
+        transition: 0.2s;
+    }
+
+        .verification-btn:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 13px 25px rgba(102, 116, 255, 0.3);
+        }
+
+    /* ================= ADD SWAP FORM ================= */
+
+    .swap-card {
+        background: white;
+        border-radius: 28px;
+        padding: 30px;
+        box-shadow: 0 20px 45px rgba(35, 45, 90, 0.08);
+        border: 1px solid #eef0f7;
+        margin-bottom: 26px;
+    }
+
+    .main-title {
+        margin: 0 0 28px;
+        font-size: 28px;
+        font-weight: 950;
+        text-align: center;
+        background: linear-gradient(135deg, #6674ff, #ff64aa);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+    }
+
+    .form-section-title {
+        margin: 0 0 18px;
+        font-size: 20px;
+        font-weight: 900;
+        color: #111827;
+    }
+
+    .form-row {
+        display: grid;
+        grid-template-columns: 1.4fr 1fr;
+        gap: 16px;
+    }
+
+    .form-group {
+        margin-bottom: 17px;
+    }
+
+    .form-label {
+        display: block;
+        font-weight: 750;
+        color: #374151;
+        margin-bottom: 8px;
+        font-size: 14px;
+    }
+
+    .form-control,
+    .form-select {
+        width: 100%;
+        border-radius: 13px;
+        border: 1px solid #e5e7eb;
+        padding: 12px 15px;
+        font-family: inherit;
+        font-size: 14px;
+        background: white;
+        transition: 0.2s;
+    }
+
+        .form-control:focus,
+        .form-select:focus {
+            border-color: #6674ff;
+            box-shadow: 0 0 0 4px rgba(102, 116, 255, 0.13);
+            outline: none;
+        }
+
+    textarea.form-control {
+        min-height: 105px;
+        resize: vertical;
+    }
+
+    .section-divider {
+        border-top: 2px dashed #e5e7eb;
+        margin: 30px 0;
+        position: relative;
+    }
+
+    .section-badge {
+        position: absolute;
+        top: -13px;
+        left: 50%;
+        transform: translateX(-50%);
+        background: #f6f8ff;
+        padding: 3px 16px;
+        border-radius: 20px;
+        font-weight: 850;
+        font-size: 13px;
+        color: #6674ff;
+    }
+
+    .submit-btn {
+        width: 100%;
+        margin-top: 8px;
+        border: none;
+        background: linear-gradient(135deg, #6674ff, #ff64aa);
+        color: white;
+        font-weight: 850;
+        padding: 15px 20px;
+        border-radius: 35px;
+        cursor: pointer;
+        box-shadow: 0 12px 24px rgba(102, 116, 255, 0.25);
+        transition: 0.25s;
+    }
+
+        .submit-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 16px 32px rgba(102, 116, 255, 0.32);
+        }
+
+    /* ================= EXISTING SKILLS ================= */
 
     .account-grid {
         display: grid;
-        grid-template-columns: 1fr 1fr;
-        gap: 20px;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 22px;
     }
 
     .account-card {
         background: white;
-        padding: 20px;
-        border-radius: 20px;
-        box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+        padding: 24px;
+        border-radius: 24px;
+        border: 1px solid #eef0f7;
+        box-shadow: 0 16px 35px rgba(35, 45, 90, 0.07);
     }
 
-    .form-control {
-        width: 100%;
-        padding: 10px;
-        margin: 8px 0;
-        border-radius: 10px;
-        border: 1px solid #ddd;
+        .account-card h3 {
+            margin: 0 0 7px;
+            font-size: 21px;
+            font-weight: 900;
+        }
+
+    .card-subtitle {
+        margin: 0 0 20px;
+        color: #6b7280;
+        font-size: 13px;
+        line-height: 1.6;
     }
 
-    .primary-btn {
-        background: #6674ff;
-        color: white;
-        border: none;
-        padding: 10px 15px;
-        border-radius: 10px;
-        cursor: pointer;
-    }
-
-    .remove-btn {
-        background: #fee2e2;
-        color: #b91c1c;
-        border: none;
-        padding: 5px 10px;
-        border-radius: 8px;
-        cursor: pointer;
+    .skill-list {
+        display: grid;
+        gap: 12px;
     }
 
     .skill-item-box {
         display: flex;
         justify-content: space-between;
         align-items: center;
-        padding: 10px;
-        background: #f9fafb;
-        margin-top: 10px;
-        border-radius: 10px;
-    }
-
-    .recommend-section {
-        background: white;
-        padding: 20px;
-        border-radius: 20px;
-        margin-top: 25px;
-    }
-
-    .recommend-grid {
-        display: grid;
-        grid-template-columns: repeat(2, 1fr);
-        gap: 15px;
-        margin-top: 15px;
-    }
-
-    .recommend-card {
-        border: 1px solid #eee;
+        gap: 14px;
         padding: 15px;
-        border-radius: 15px;
+        background: #f9fafb;
+        border: 1px solid #eef0f7;
+        border-radius: 16px;
+    }
+
+        .skill-item-box strong {
+            display: block;
+            margin-bottom: 4px;
+            color: #111827;
+        }
+
+        .skill-item-box p {
+            margin: 4px 0 0;
+            color: #6b7280;
+            font-size: 13px;
+            line-height: 1.5;
+        }
+
+    .skill-level {
+        display: inline-block;
+        margin-top: 7px;
+        padding: 5px 9px;
+        border-radius: 20px;
+        background: #eef2ff;
+        color: #4f46e5;
+        font-size: 11px;
+        font-weight: 800;
+    }
+
+    .remove-btn {
+        background: #fee2e2;
+        color: #b91c1c;
+        border: none;
+        padding: 8px 11px;
+        border-radius: 10px;
+        cursor: pointer;
+        font-weight: 750;
+        flex-shrink: 0;
+    }
+
+        .remove-btn:hover {
+            background: #fecaca;
+        }
+
+    .empty-message {
+        padding: 24px;
+        text-align: center;
+        color: #6b7280;
+        background: #f9fafb;
+        border: 1px dashed #d1d5db;
+        border-radius: 16px;
+        font-size: 14px;
+    }
+
+    @@media (max-width: 950px) {
+        .account-grid {
+            grid-template-columns: 1fr;
+        }
+    }
+
+    @@media (max-width: 768px) {
+        .dashboard-layout {
+            display: block;
+        }
+
+        .sidebar {
+            position: relative;
+            width: 100%;
+            min-height: auto;
+        }
+
+        .main {
+            margin-left: 0;
+            width: 100%;
+            padding: 20px;
+        }
+
+        .form-row {
+            grid-template-columns: 1fr;
+            gap: 0;
+        }
+
+        .account-hero h1 {
+            font-size: 30px;
+        }
+
+        .swap-card {
+            padding: 22px;
+        }
+
+        .skill-item-box {
+            align-items: flex-start;
+        }
+
+        .verification-alert {
+            flex-direction: column;
+            align-items: flex-start;
+        }
+
+        .verification-form,
+        .verification-btn {
+            width: 100%;
+        }
     }
 </style>
 
 <div class="dashboard-layout">
+
+    <!-- ================= SIDEBAR ================= -->
+
     <aside class="sidebar">
-        <a href="/Home/Dashboard" class="sidebar-brand"><span class="brand-swap">Swap</span><span class="brand-ster">ster</span></a>
+
+        <a asp-controller="Home"
+           asp-action="Dashboard"
+           class="sidebar-brand">
+
+            <span class="brand-swap">Swap</span>
+            <span class="brand-ster">ster</span>
+        </a>
+
         <div class="sidebar-menu">
-            <a href="/Home/Dashboard" class="menu-link">📊 Dashboard</a>
-            <a href="/Skill/Index" class="menu-link">🔍 Explore Skills</a>
-            <a href="/Account/MyAccount" class="menu-link active">👤 My Account</a>
+
+            <a asp-controller="Home"
+               asp-action="Dashboard"
+               class="menu-link">
+                Dashboard
+            </a>
+
+            <a asp-controller="Skill"
+               asp-action="Index"
+               class="menu-link">
+                Explore Skills
+            </a>
+
+            <a asp-controller="SkillRequest"
+               asp-action="MyExchanges"
+               class="menu-link">
+                My Exchanges
+            </a>
+
+            <a asp-controller="Account"
+               asp-action="MyAccount"
+               class="menu-link active">
+                My Account
+            </a>
+
+            <a asp-controller="Home"
+               asp-action="Settings"
+               class="menu-link">
+                Settings
+            </a>
+
         </div>
-        <form asp-controller="Account" asp-action="Logout" method="post"><button type="submit" class="logout-btn">Logout</button></form>
+
+        <form asp-controller="Account"
+              asp-action="Logout"
+              method="post"
+              class="logout-form">
+
+            @Html.AntiForgeryToken()
+
+            <button type="submit" class="logout-btn">
+                Logout
+            </button>
+
+        </form>
+
     </aside>
 
+    <!-- ================= MAIN CONTENT ================= -->
+
     <main class="main">
+
         <div class="topbar">
             <h2>My Account</h2>
             <p>Manage your profile and skill preferences.</p>
         </div>
 
-        <section class="account-hero">
-            <h1>Hello, @(Model.Username) 👋</h1>
-            <p>Add skills you can teach and skills you want to learn.</p>
-        </section>
+        <!-- SUCCESS MESSAGE -->
+        @if (TempData["Success"] != null)
+        {
+            <div class="alert-success">
+                @TempData["Success"]
+            </div>
+        }
+
+        <!-- ERROR MESSAGE -->
+        @if (TempData["Error"] != null)
+        {
+            <div class="alert-error">
+                @TempData["Error"]
+            </div>
+        }
+
+        <!-- ================= EMAIL VERIFICATION ================= -->
+        @if (!(ViewBag.IsEmailVerified is bool isVerified && isVerified))
+        {
+            <div class="verification-alert">
+
+                <div>
+                    <h3>Email Verification Required</h3>
+
+                    <p>
+                        Verify your email address before publishing a skill swap entry.
+                        You can still view and remove your existing skills.
+                    </p>
+                </div>
+
+                <form asp-controller="Account"
+                      asp-action="ResendVerification"
+                      method="post"
+                      class="verification-form">
+
+                    @Html.AntiForgeryToken()
+
+                    <button type="submit"
+                            class="verification-btn">
+                        Resend Verification Email
+                    </button>
+
+                </form>
+
+            </div>
+        }
+
+        <!-- ================= CREATE SKILL SWAP ================= -->
+        @if (ViewBag.IsEmailVerified is bool verified && verified)
+        {
+            <section class="swap-card">
+
+                <h2 class="main-title">
+                    Create a Skill Swap Entry
+                </h2>
+
+                <form asp-controller="Skill"
+                      asp-action="Create"
+                      method="post">
+
+                    @Html.AntiForgeryToken()
+
+                    <!-- Tells controller to return to My Account -->
+
+                    <input type="hidden"
+                           name="returnUrl"
+                           value="MyAccount" />
+
+                    <!-- OFFERED SKILL -->
+
+                    <div>
+
+                        <h3 class="form-section-title">
+                            What Can You Teach? (Your Offer)
+                        </h3>
+
+                        <div class="form-row">
+
+                            <div class="form-group">
+
+                                <label class="form-label">
+                                    Skill Name
+                                </label>
+
+                                <input type="text"
+                                       name="OfferedSkillName"
+                                       class="form-control"
+                                       placeholder="e.g., Python, C++, HTML"
+                                       required />
+
+                            </div>
+
+                            <div class="form-group">
+
+                                <label class="form-label">
+                                    Your Expertise Level
+                                </label>
+
+                                <select name="ProficiencyLevel"
+                                        class="form-select"
+                                        required>
+
+                                    <option value="1">
+                                        ⭐ Level 1 (Beginner)
+                                    </option>
+
+                                    <option value="2">
+                                        ⭐⭐ Level 2 (Elementary)
+                                    </option>
+
+                                    <option value="3" selected>
+                                        ⭐⭐⭐ Level 3 (Intermediate)
+                                    </option>
+
+                                    <option value="4">
+                                        ⭐⭐⭐⭐ Level 4 (Advanced)
+                                    </option>
+
+                                    <option value="5">
+                                        ⭐⭐⭐⭐⭐ Level 5 (Expert)
+                                    </option>
+
+                                </select>
+
+                            </div>
+
+                        </div>
+
+                        <div class="form-group">
+
+                            <label class="form-label">
+                                Brief Description
+                            </label>
+
+                            <textarea name="Description"
+                                  class="form-control"
+                                  rows="3"
+                                  placeholder="Tell others what you can help them learn..."></textarea>
+
+                        </div>
+
+                    </div>
+                    <!-- WANTED SKILL -->
+
+                    <div>
+
+                        <h3 class="form-section-title">
+                            What Do You Want to Learn? (Your Need)
+                        </h3>
+
+                        <div class="form-row">
+
+                            <div class="form-group">
+
+                                <label class="form-label">
+                                    Skill Name
+                                </label>
+
+                                <input type="text"
+                                       name="WantedSkillName"
+                                       class="form-control"
+                                       placeholder="e.g., JavaScript, Java, C++"
+                                       required />
+
+                            </div>
+
+                            <div class="form-group">
+
+                                <label class="form-label">
+                                    Target Level to Achieve
+                                </label>
+
+                                <select name="DesiredLevel"
+                                        class="form-select"
+                                        required>
+
+                                    <option value="1">
+                                        ⭐ Level 1 (Basics)
+                                    </option>
+
+                                    <option value="2">
+                                        ⭐⭐ Level 2 (Elementary)
+                                    </option>
+
+                                    <option value="3" selected>
+                                        ⭐⭐⭐ Level 3 (Intermediate)
+                                    </option>
+
+                                    <option value="4">
+                                        ⭐⭐⭐⭐ Level 4 (Advanced)
+                                    </option>
+
+                                    <option value="5">
+                                        ⭐⭐⭐⭐⭐ Level 5 (Mastery)
+                                    </option>
+
+                                </select>
+
+                            </div>
+
+                        </div>
+
+                    </div>
+
+                    <button type="submit" class="submit-btn">
+                        Publish Swap Entry
+                    </button>
+
+                </form>
+
+            </section>
+        }
+
+        <!-- ================= EXISTING SKILLS ================= -->
 
         <section class="account-grid">
-            <div class="account-card">
-                <h3>🧑‍🏫 Skills I Can Teach</h3>
-                <form asp-controller="Account" asp-action="AddMySkill" method="post" asp-antiforgery="true">
-                    <input type="text" name="skillName" class="form-control" placeholder="Skill Name" required />
-                    <textarea name="description" class="form-control" placeholder="Description"></textarea>
-                    <button type="submit" class="primary-btn">+ Add Skill</button>
-                </form>
-                <div class="skill-list">
-                    @if (Model.MySkills != null)
-                    {
-                        @foreach (var skill in Model.MySkills)
-                        {
-                            <div class="skill-item-box">
-                                <div><b>@skill.SkillName</b><p>@skill.Description</p></div>
-                                <form asp-controller="Account" asp-action="RemoveMySkill" method="post" asp-antiforgery="true">
-                                    <input type="hidden" name="skillId" value="@skill.SkillId" />
-                                    <button type="submit" class="remove-btn">Remove</button>
-                                </form>
-                            </div>
-                        }
-                    }
-                </div>
-            </div>
+
+            <!-- OFFERED SKILLS -->
 
             <div class="account-card">
-                <h3>🎯 Skills I Want To Learn</h3>
-                <form asp-controller="Account" asp-action="AddWantedSkill" method="post" asp-antiforgery="true">
-                    <input type="text" name="skillName" class="form-control" placeholder="Skill Name" required />
-                    <button type="submit" class="primary-btn">+ Add Goal</button>
-                </form>
+
+                <h3>Skills I Can Teach</h3>
+
+                <p class="card-subtitle">
+                    Skills you have published for other users.
+                </p>
+
                 <div class="skill-list">
-                    @if (Model.WantedSkills != null)
+
+                    @if (Model.MySkills != null &&
+                                        Model.MySkills.Count > 0)
                     {
-                        @foreach (var wanted in Model.WantedSkills)
+                        foreach (var skill in Model.MySkills)
                         {
                             <div class="skill-item-box">
-                                <div><b>@wanted.SkillName</b></div>
-                                <form asp-controller="Account" asp-action="RemoveWantedSkill" method="post" asp-antiforgery="true">
-                                    <input type="hidden" name="wantedSkillId" value="@wanted.WantedSkillId" />
-                                    <button type="submit" class="remove-btn">Remove</button>
+
+                                <div>
+
+                                    <strong>
+                                        @skill.SkillName
+                                    </strong>
+
+                                    @if (!string.IsNullOrWhiteSpace(skill.Description))
+                                    {
+                                        <p>
+                                            @skill.Description
+                                        </p>
+                                    }
+
+                                    <span class="skill-level">
+                                        Level @skill.ProficiencyLevel
+                                    </span>
+
+                                </div>
+
+                                <form asp-controller="Skill"
+                                      asp-action="Delete"
+                                      method="post">
+
+                                    @Html.AntiForgeryToken()
+
+                                    <input type="hidden"
+                                           name="id"
+                                           value="@skill.SkillId" />
+
+                                    <button type="submit"
+                                            class="remove-btn"
+                                            onclick="return confirm('Are you sure you want to remove this teaching skill?');">
+                                        Remove
+                                    </button>
+
                                 </form>
+
                             </div>
                         }
                     }
+                    else
+                    {
+                        <div class="empty-message">
+                            You have not added any teaching skill yet.
+                        </div>
+                    }
+
                 </div>
+
             </div>
+
+            <!-- WANTED SKILLS -->
+
+            <div class="account-card">
+
+                <h3> Skills I Want To Learn</h3>
+
+                <p class="card-subtitle">
+                    Skills you are currently interested in learning.
+                </p>
+
+                <div class="skill-list">
+
+                    @if (Model.WantedSkills != null &&
+                                        Model.WantedSkills.Count > 0)
+                    {
+                        foreach (var wanted in Model.WantedSkills)
+                        {
+                            <div class="skill-item-box">
+
+                                <div>
+
+                                    <strong>
+                                        @wanted.SkillName
+                                    </strong>
+
+                                    <span class="skill-level">
+                                        Desired Level @wanted.DesiredLevel
+                                    </span>
+
+                                </div>
+
+                                <form asp-controller="Skill"
+                                      asp-action="DeleteWantedSkill"
+                                      method="post">
+
+                                    @Html.AntiForgeryToken()
+
+                                    <input type="hidden"
+                                           name="id"
+                                           value="@wanted.WantedSkillId" />
+
+                                    <button type="submit"
+                                            class="remove-btn"
+                                            onclick="return confirm('Are you sure you want to remove this learning goal?');">
+                                        Remove
+                                    </button>
+
+                                </form>
+
+                            </div>
+                        }
+                    }
+                    else
+                    {
+                        <div class="empty-message">
+                            You have not added any learning goal yet.
+                        </div>
+                    }
+
+                </div>
+
+            </div>
+
         </section>
+
     </main>
+
 </div>

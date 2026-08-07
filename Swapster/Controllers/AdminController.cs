@@ -133,6 +133,15 @@ namespace Swapster.Controllers
                 .OrderBy(user => user.UserId)
                 .ToListAsync();
 
+            // Used by the Admin Users view so self-deactivated accounts
+            // can be shown as "Deactivated" with a "Reactivate" action,
+            // while admin-blocked accounts still show "Blocked/Unblock".
+            ViewBag.DeactivatedUserIds =
+                filteredUsers
+                    .Where(user => user.IsDeactivated)
+                    .Select(user => user.UserId)
+                    .ToHashSet();
+
             var userIds = filteredUsers
                 .Select(user => user.UserId)
                 .ToList();
@@ -411,12 +420,24 @@ namespace Swapster.Controllers
             user.IsBlocked =
                 !user.IsBlocked;
 
+            // If the user deactivated their own account,
+            // unblocking from Admin also reactivates the account.
+            if (!user.IsBlocked &&
+                user.IsDeactivated)
+            {
+                user.IsDeactivated =
+                    false;
+
+                user.DeactivatedAt =
+                    null;
+            }
+
             await _context.SaveChangesAsync();
 
             TempData["Success"] =
                 user.IsBlocked
                     ? $"{user.Username} has been blocked."
-                    : $"{user.Username} has been unblocked.";
+                    : $"{user.Username} has been reactivated and unblocked.";
 
             return RedirectAfterUserAction(
                 user.UserId,
@@ -494,8 +515,10 @@ namespace Swapster.Controllers
             {
                 user.AccessLevel = 1;
 
-                // Admin account cannot remain blocked
+                // Admin account cannot remain blocked or deactivated.
                 user.IsBlocked = false;
+                user.IsDeactivated = false;
+                user.DeactivatedAt = null;
 
                 TempData["Success"] =
                     $"{user.Username} has been promoted to administrator.";

@@ -1,9 +1,14 @@
 ﻿@model Swapster.Models.AdminUsersViewModel
+@using System.Collections.Generic
 
 @{
     ViewData["Title"] = "User Management";
     ViewData["HideNavbar"] = true;
     ViewData["FullWidth"] = true;
+
+    var deactivatedUserIds =
+        ViewBag.DeactivatedUserIds as HashSet<int>
+        ?? new HashSet<int>();
 }
 
 <style>
@@ -251,6 +256,11 @@
         color: #dc2626;
     }
 
+    .deactivated-status {
+        background: #fff7ed;
+        color: #c2410c;
+    }
+
     .activity-cell {
         color: #4b5563;
         line-height: 1.7;
@@ -298,6 +308,11 @@
     .unblock-btn {
         background: #ecfdf5;
         color: #059669;
+    }
+
+    .reactivate-btn {
+        background: #eef2ff;
+        color: #4f46e5;
     }
 
     .role-btn {
@@ -396,7 +411,7 @@
 
         <div class="stat-card">
             <h3>@Model.BlockedUsers</h3>
-            <p>Blocked accounts</p>
+            <p>Restricted accounts</p>
         </div>
 
         <div class="stat-card">
@@ -454,7 +469,7 @@
 
                 <option value="blocked"
                         selected="@(Model.StatusFilter == "blocked")">
-                    Blocked
+                    Blocked / Deactivated
                 </option>
 
             </select>
@@ -499,6 +514,9 @@
                     {
                         bool isCurrentAdmin =
                         user.UserId == Model.CurrentAdminId;
+
+                        bool isDeactivated =
+                        deactivatedUserIds.Contains(user.UserId);
 
                         <tr>
 
@@ -547,7 +565,13 @@
                             </td>
 
                             <td>
-                                @if (user.IsBlocked)
+                                @if (isDeactivated)
+                                {
+                                    <span class="badge deactivated-status">
+                                        Deactivated
+                                    </span>
+                                }
+                                else if (user.IsBlocked)
                                 {
                                     <span class="badge blocked-status">
                                         Blocked
@@ -609,9 +633,15 @@
                                                        value="false" />
 
                                                 <button type="submit"
-                                                        class="action-btn @(user.IsBlocked ? "unblock-btn" : "block-btn")">
+                                                        class="action-btn @(isDeactivated
+                                                                                                                    ? "reactivate-btn"
+                                                                                                                    : user.IsBlocked
+                                                                                                                        ? "unblock-btn"
+                                                                                                                        : "block-btn")">
 
-                                                    @(user.IsBlocked
+                                                    @(isDeactivated
+                                                                                        ? "Reactivate"
+                                                                                        : user.IsBlocked
                                                                                         ? "Unblock"
                                                                                         : "Block")
 

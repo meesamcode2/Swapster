@@ -28,6 +28,37 @@ namespace Swapster.Controllers
             return HttpContext.Session.GetInt32("UserId");
         }
 
+        private async Task<User?> GetAuthenticatedUserAsync()
+        {
+            int? userId =
+                GetCurrentUserId();
+
+            if (userId == null)
+            {
+                return null;
+            }
+
+            var user =
+                await _context.Users
+                    .FirstOrDefaultAsync(item =>
+                        item.UserId == userId.Value);
+
+            if (user == null)
+            {
+                HttpContext.Session.Clear();
+                return null;
+            }
+
+            if (user.IsBlocked ||
+                user.IsDeactivated)
+            {
+                HttpContext.Session.Clear();
+                return null;
+            }
+
+            return user;
+        }
+
         // =====================================================
         // EXPLORE ACTIVE OFFERED SKILLS
         // =====================================================
@@ -35,17 +66,19 @@ namespace Swapster.Controllers
         [HttpGet]
         public async Task<IActionResult> Index()
         {
-            var skills = await _context.UserSkills
-                .AsNoTracking()
-                .Include(skill => skill.User)
-                .Where(skill =>
-                    skill.IsActive &&
-                    !skill.IsDeleted &&
-                    skill.User != null &&
-                    !skill.User.IsBlocked)
-                .OrderByDescending(skill =>
-                    skill.SkillId)
-                .ToListAsync();
+            var skills =
+                await _context.UserSkills
+                    .AsNoTracking()
+                    .Include(skill => skill.User)
+                    .Where(skill =>
+                        skill.IsActive &&
+                        !skill.IsDeleted &&
+                        skill.User != null &&
+                        !skill.User.IsBlocked &&
+                        !skill.User.IsDeactivated)
+                    .OrderByDescending(skill =>
+                        skill.SkillId)
+                    .ToListAsync();
 
             return View(skills);
         }
@@ -61,35 +94,49 @@ namespace Swapster.Controllers
             string cleanedSearch =
                 searchTerm?.Trim() ?? string.Empty;
 
-            var query = _context.UserSkills
-                .AsNoTracking()
-                .Include(skill => skill.User)
-                .Where(skill =>
-                    skill.IsActive &&
-                    !skill.IsDeleted &&
-                    skill.User != null &&
-                    !skill.User.IsBlocked);
-
-            if (!string.IsNullOrWhiteSpace(cleanedSearch))
-            {
-                query = query.Where(skill =>
-                    skill.SkillName.Contains(cleanedSearch) ||
-                    (
-                        skill.Description != null &&
-                        skill.Description.Contains(cleanedSearch)
-                    ) ||
-                    (
+            var query =
+                _context.UserSkills
+                    .AsNoTracking()
+                    .Include(skill => skill.User)
+                    .Where(skill =>
+                        skill.IsActive &&
+                        !skill.IsDeleted &&
                         skill.User != null &&
-                        skill.User.Username.Contains(cleanedSearch)
-                    ));
+                        !skill.User.IsBlocked &&
+                        !skill.User.IsDeactivated);
+
+            if (!string.IsNullOrWhiteSpace(
+                    cleanedSearch))
+            {
+                query =
+                    query.Where(skill =>
+                        skill.SkillName.Contains(
+                            cleanedSearch
+                        )
+                        ||
+                        (
+                            skill.Description != null &&
+                            skill.Description.Contains(
+                                cleanedSearch
+                            )
+                        )
+                        ||
+                        (
+                            skill.User != null &&
+                            skill.User.Username.Contains(
+                                cleanedSearch
+                            )
+                        ));
             }
 
-            var skills = await query
-                .OrderByDescending(skill =>
-                    skill.SkillId)
-                .ToListAsync();
+            var skills =
+                await query
+                    .OrderByDescending(skill =>
+                        skill.SkillId)
+                    .ToListAsync();
 
-            ViewBag.SearchTerm = cleanedSearch;
+            ViewBag.SearchTerm =
+                cleanedSearch;
 
             return View(
                 "Index",
@@ -104,39 +151,11 @@ namespace Swapster.Controllers
         [HttpGet]
         public async Task<IActionResult> Create()
         {
-            int? userId =
-                GetCurrentUserId();
-
-            if (userId == null)
-            {
-                return RedirectToAction(
-                    "Login",
-                    "Account"
-                );
-            }
-
-            var user = await _context.Users
-                .AsNoTracking()
-                .FirstOrDefaultAsync(item =>
-                    item.UserId == userId.Value);
+            var user =
+                await GetAuthenticatedUserAsync();
 
             if (user == null)
             {
-                HttpContext.Session.Clear();
-
-                return RedirectToAction(
-                    "Login",
-                    "Account"
-                );
-            }
-
-            if (user.IsBlocked)
-            {
-                HttpContext.Session.Clear();
-
-                TempData["Error"] =
-                    "Your account has been blocked by the administrator.";
-
                 return RedirectToAction(
                     "Login",
                     "Account"
@@ -166,50 +185,20 @@ namespace Swapster.Controllers
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create(
-    AddSkillViewModel model,
-    string? returnUrl = null)
+            AddSkillViewModel model,
+            string? returnUrl = null)
         {
-            int? userId =
-                GetCurrentUserId();
-
-            if (userId == null)
-            {
-                return RedirectToAction(
-                    "Login",
-                    "Account"
-                );
-            }
-
-            var currentUser = await _context.Users
-                .AsNoTracking()
-                .FirstOrDefaultAsync(user =>
-                    user.UserId == userId.Value);
+            var currentUser =
+                await GetAuthenticatedUserAsync();
 
             if (currentUser == null)
             {
-                HttpContext.Session.Clear();
-
                 return RedirectToAction(
                     "Login",
                     "Account"
                 );
             }
 
-            // Blocked user skill publish nahi kar sakta
-            if (currentUser.IsBlocked)
-            {
-                HttpContext.Session.Clear();
-
-                TempData["Error"] =
-                    "Your account has been blocked by the administrator.";
-
-                return RedirectToAction(
-                    "Login",
-                    "Account"
-                );
-            }
-
-            // Email verification required
             if (!currentUser.IsEmailVerified)
             {
                 TempData["Error"] =
@@ -233,11 +222,12 @@ namespace Swapster.Controllers
                 model.Description?.Trim()
                 ?? string.Empty;
 
-            // =====================================================
+            // =================================================
             // VALIDATION
-            // =====================================================
+            // =================================================
 
-            if (string.IsNullOrWhiteSpace(offeredSkillName))
+            if (string.IsNullOrWhiteSpace(
+                    offeredSkillName))
             {
                 ModelState.AddModelError(
                     nameof(model.OfferedSkillName),
@@ -245,7 +235,8 @@ namespace Swapster.Controllers
                 );
             }
 
-            if (string.IsNullOrWhiteSpace(wantedSkillName))
+            if (string.IsNullOrWhiteSpace(
+                    wantedSkillName))
             {
                 ModelState.AddModelError(
                     nameof(model.WantedSkillName),
@@ -279,17 +270,21 @@ namespace Swapster.Controllers
                 );
             }
 
-            // =====================================================
-            // DUPLICATE OFFERED SKILL CHECK
-            // =====================================================
+            int userId =
+                currentUser.UserId;
+
+            // =================================================
+            // DUPLICATE ACTIVE OFFERED SKILL CHECK
+            // =================================================
 
             bool offeredSkillExists =
-                await _context.UserSkills.AnyAsync(skill =>
-                    skill.UserId == userId.Value &&
-                    skill.IsActive &&
-                    !skill.IsDeleted &&
-                    skill.SkillName.ToLower() ==
-                    offeredSkillName.ToLower());
+                await _context.UserSkills
+                    .AnyAsync(skill =>
+                        skill.UserId == userId &&
+                        skill.IsActive &&
+                        !skill.IsDeleted &&
+                        skill.SkillName.ToLower() ==
+                        offeredSkillName.ToLower());
 
             if (offeredSkillExists)
             {
@@ -299,17 +294,18 @@ namespace Swapster.Controllers
                 );
             }
 
-            // =====================================================
-            // DUPLICATE WANTED SKILL CHECK
-            // =====================================================
+            // =================================================
+            // DUPLICATE ACTIVE WANTED SKILL CHECK
+            // =================================================
 
             bool wantedSkillExists =
-                await _context.UserWantedSkills.AnyAsync(skill =>
-                    skill.UserId == userId.Value &&
-                    skill.IsActive &&
-                    !skill.IsDeleted &&
-                    skill.SkillName.ToLower() ==
-                    wantedSkillName.ToLower());
+                await _context.UserWantedSkills
+                    .AnyAsync(skill =>
+                        skill.UserId == userId &&
+                        skill.IsActive &&
+                        !skill.IsDeleted &&
+                        skill.SkillName.ToLower() ==
+                        wantedSkillName.ToLower());
 
             if (wantedSkillExists)
             {
@@ -327,9 +323,9 @@ namespace Swapster.Controllers
                 );
             }
 
-            // =====================================================
+            // =================================================
             // CREATE OFFERED SKILL
-            // =====================================================
+            // =================================================
 
             var userSkill =
                 new UserSkill
@@ -344,7 +340,7 @@ namespace Swapster.Controllers
                         description,
 
                     UserId =
-                        userId.Value,
+                        userId,
 
                     IsActive =
                         true,
@@ -356,9 +352,9 @@ namespace Swapster.Controllers
                         null
                 };
 
-            // =====================================================
+            // =================================================
             // CREATE WANTED SKILL
-            // =====================================================
+            // =================================================
 
             var userWantedSkill =
                 new UserWantedSkill
@@ -370,7 +366,7 @@ namespace Swapster.Controllers
                         model.DesiredLevel,
 
                     UserId =
-                        userId.Value,
+                        userId,
 
                     CreatedAt =
                         DateTime.UtcNow,
@@ -399,9 +395,9 @@ namespace Swapster.Controllers
                 "Skill swap entry published successfully.";
 
             if (string.Equals(
-                returnUrl,
-                "MyAccount",
-                StringComparison.OrdinalIgnoreCase))
+                    returnUrl,
+                    "MyAccount",
+                    StringComparison.OrdinalIgnoreCase))
             {
                 return RedirectToAction(
                     "MyAccount",
@@ -421,12 +417,13 @@ namespace Swapster.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Delete(int id)
+        public async Task<IActionResult> Delete(
+            int id)
         {
-            int? userId =
-                GetCurrentUserId();
+            var user =
+                await GetAuthenticatedUserAsync();
 
-            if (userId == null)
+            if (user == null)
             {
                 return RedirectToAction(
                     "Login",
@@ -434,11 +431,12 @@ namespace Swapster.Controllers
                 );
             }
 
-            var skill = await _context.UserSkills
-                .FirstOrDefaultAsync(item =>
-                    item.SkillId == id &&
-                    item.UserId == userId.Value &&
-                    !item.IsDeleted);
+            var skill =
+                await _context.UserSkills
+                    .FirstOrDefaultAsync(item =>
+                        item.SkillId == id &&
+                        item.UserId == user.UserId &&
+                        !item.IsDeleted);
 
             if (skill == null)
             {
@@ -451,9 +449,12 @@ namespace Swapster.Controllers
                 );
             }
 
-            // Soft delete preserves exchange history
-            skill.IsActive = false;
-            skill.IsDeleted = true;
+            skill.IsActive =
+                false;
+
+            skill.IsDeleted =
+                true;
+
             skill.AdminNote =
                 "Removed by the skill owner.";
 
@@ -477,10 +478,10 @@ namespace Swapster.Controllers
         public async Task<IActionResult> DeleteWantedSkill(
             int id)
         {
-            int? userId =
-                GetCurrentUserId();
+            var user =
+                await GetAuthenticatedUserAsync();
 
-            if (userId == null)
+            if (user == null)
             {
                 return RedirectToAction(
                     "Login",
@@ -492,7 +493,7 @@ namespace Swapster.Controllers
                 await _context.UserWantedSkills
                     .FirstOrDefaultAsync(item =>
                         item.WantedSkillId == id &&
-                        item.UserId == userId.Value &&
+                        item.UserId == user.UserId &&
                         !item.IsDeleted);
 
             if (wantedSkill == null)
@@ -506,8 +507,12 @@ namespace Swapster.Controllers
                 );
             }
 
-            wantedSkill.IsActive = false;
-            wantedSkill.IsDeleted = true;
+            wantedSkill.IsActive =
+                false;
+
+            wantedSkill.IsDeleted =
+                true;
+
             wantedSkill.AdminNote =
                 "Removed by the skill owner.";
 
@@ -531,9 +536,9 @@ namespace Swapster.Controllers
             string? returnUrl)
         {
             if (string.Equals(
-                returnUrl,
-                "MyAccount",
-                StringComparison.OrdinalIgnoreCase))
+                    returnUrl,
+                    "MyAccount",
+                    StringComparison.OrdinalIgnoreCase))
             {
                 string errorMessage =
                     ModelState.Values

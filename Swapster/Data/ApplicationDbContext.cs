@@ -5,7 +5,8 @@ namespace Swapster.Data
 {
     public class ApplicationDbContext : DbContext
     {
-        public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options)
+        public ApplicationDbContext(
+            DbContextOptions<ApplicationDbContext> options)
             : base(options)
         {
         }
@@ -18,38 +19,108 @@ namespace Swapster.Data
         public DbSet<Message> Messages { get; set; } = null!;
         public DbSet<Post> Posts { get; set; } = null!;
 
-        protected override void OnModelCreating(ModelBuilder modelBuilder)
+        public DbSet<PostLike> PostLikes { get; set; } = null!;
+        public DbSet<PostComment> PostComments { get; set; } = null!;
+        public DbSet<PostShare> PostShares { get; set; } = null!;
+
+        protected override void OnModelCreating(
+            ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);
 
+            // =====================================================
+            // SKILL REQUEST RELATIONSHIPS
+            // =====================================================
+
             modelBuilder.Entity<SkillRequest>()
-                .HasOne(sr => sr.Sender)
+                .HasOne(request => request.Sender)
                 .WithMany()
-                .HasForeignKey(sr => sr.SenderId)
+                .HasForeignKey(request => request.SenderId)
                 .OnDelete(DeleteBehavior.Restrict);
 
             modelBuilder.Entity<SkillRequest>()
-                .HasOne(sr => sr.Receiver)
+                .HasOne(request => request.Receiver)
                 .WithMany()
-                .HasForeignKey(sr => sr.ReceiverId)
+                .HasForeignKey(request => request.ReceiverId)
                 .OnDelete(DeleteBehavior.Restrict);
 
             modelBuilder.Entity<SkillRequest>()
-                .HasOne(sr => sr.Skill)
+                .HasOne(request => request.Skill)
                 .WithMany()
-                .HasForeignKey(sr => sr.SkillId)
+                .HasForeignKey(request => request.SkillId)
                 .OnDelete(DeleteBehavior.Cascade);
-            modelBuilder.Entity<Message>()
-                .HasOne(m => m.Sender)
-                .WithMany()
-                .HasForeignKey(m => m.SenderId)
-    .           OnDelete(DeleteBehavior.Restrict);
+
+            // =====================================================
+            // MESSAGE RELATIONSHIPS
+            // =====================================================
 
             modelBuilder.Entity<Message>()
-               .HasOne(m => m.Receiver)
-               .WithMany()
-               .HasForeignKey(m => m.ReceiverId)
-               .OnDelete(DeleteBehavior.Restrict);
+                .HasOne(message => message.Sender)
+                .WithMany()
+                .HasForeignKey(message => message.SenderId)
+                .OnDelete(DeleteBehavior.Restrict);
+
+            modelBuilder.Entity<Message>()
+                .HasOne(message => message.Receiver)
+                .WithMany()
+                .HasForeignKey(message => message.ReceiverId)
+                .OnDelete(DeleteBehavior.Restrict);
+
+            // =====================================================
+            // COMMUNITY POST RELATIONSHIPS
+            // =====================================================
+
+            modelBuilder.Entity<Post>()
+                .HasOne(post => post.User)
+                .WithMany()
+                .HasForeignKey(post => post.UserId)
+                .OnDelete(DeleteBehavior.Restrict);
+
+            // One user can like one post only once.
+            modelBuilder.Entity<PostLike>()
+                .HasIndex(like =>
+                    new
+                    {
+                        like.PostId,
+                        like.UserId
+                    })
+                .IsUnique();
+
+            modelBuilder.Entity<PostLike>()
+                .HasOne(like => like.Post)
+                .WithMany(post => post.Likes)
+                .HasForeignKey(like => like.PostId)
+                .OnDelete(DeleteBehavior.Cascade);
+
+            modelBuilder.Entity<PostLike>()
+                .HasOne(like => like.User)
+                .WithMany()
+                .HasForeignKey(like => like.UserId)
+                .OnDelete(DeleteBehavior.Restrict);
+
+            modelBuilder.Entity<PostComment>()
+                .HasOne(comment => comment.Post)
+                .WithMany(post => post.Comments)
+                .HasForeignKey(comment => comment.PostId)
+                .OnDelete(DeleteBehavior.Cascade);
+
+            modelBuilder.Entity<PostComment>()
+                .HasOne(comment => comment.User)
+                .WithMany()
+                .HasForeignKey(comment => comment.UserId)
+                .OnDelete(DeleteBehavior.Restrict);
+
+            modelBuilder.Entity<PostShare>()
+                .HasOne(share => share.Post)
+                .WithMany(post => post.Shares)
+                .HasForeignKey(share => share.PostId)
+                .OnDelete(DeleteBehavior.Cascade);
+
+            modelBuilder.Entity<PostShare>()
+                .HasOne(share => share.User)
+                .WithMany()
+                .HasForeignKey(share => share.UserId)
+                .OnDelete(DeleteBehavior.Restrict);
         }
     }
 }

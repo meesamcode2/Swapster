@@ -1,7 +1,15 @@
 ﻿@model Swapster.Models.DashboardViewModel
+@using Microsoft.AspNetCore.Http
+@using System.Linq
 
 @{
-    ViewData["Title"] = "Home"; ViewData["HideNavbar"] = true; ViewData["FullWidth"] = true; ViewData["BodyClass"] = "dashboard-page";
+    ViewData["Title"] = "Home";
+    ViewData["HideNavbar"] = true;
+    ViewData["FullWidth"] = true;
+    ViewData["BodyClass"] = "dashboard-page";
+
+    int currentUserId =
+        Context.Session.GetInt32("UserId") ?? 0;
 }
 
 <style>
@@ -243,6 +251,26 @@
             transform: translateY(-1px);
         }
 
+    .dashboard-alert {
+        margin-bottom: 16px;
+        padding: 12px 15px;
+        border-radius: 13px;
+        font-size: 12px;
+        font-weight: 750;
+    }
+
+    .dashboard-alert-success {
+        background: #ecfdf5;
+        color: #047857;
+        border: 1px solid #a7f3d0;
+    }
+
+    .dashboard-alert-error {
+        background: #fef2f2;
+        color: #b91c1c;
+        border: 1px solid #fecaca;
+    }
+
     /* ================= MAIN SOCIAL LAYOUT ================= */
 
     .social-layout {
@@ -330,6 +358,80 @@
         align-items: center;
         justify-content: space-between;
         gap: 12px;
+        flex-wrap: wrap;
+    }
+
+    .composer-media {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        flex-wrap: wrap;
+    }
+
+    .image-picker {
+        position: relative;
+        overflow: hidden;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        min-height: 38px;
+        padding: 0 14px;
+        border-radius: 20px;
+        border: 1px solid #dfe3ea;
+        background: white;
+        color: #4f46e5;
+        font-size: 12px;
+        font-weight: 800;
+        cursor: pointer;
+    }
+
+        .image-picker input {
+            position: absolute;
+            inset: 0;
+            opacity: 0;
+            cursor: pointer;
+        }
+
+    .image-preview-wrap {
+        display: none;
+        margin-top: 12px;
+        position: relative;
+    }
+
+    .image-preview {
+        width: 100%;
+        max-height: 360px;
+        object-fit: cover;
+        border-radius: 16px;
+        border: 1px solid #e5e7eb;
+    }
+
+    .remove-preview-btn {
+        position: absolute;
+        top: 10px;
+        right: 10px;
+        border: none;
+        width: 32px;
+        height: 32px;
+        border-radius: 50%;
+        background: rgba(17, 24, 39, 0.82);
+        color: white;
+        font-weight: 900;
+        cursor: pointer;
+    }
+
+    .video-preview-wrap {
+        display: none;
+        margin-top: 12px;
+        position: relative;
+    }
+
+    .video-preview {
+        width: 100%;
+        max-height: 420px;
+        border-radius: 16px;
+        border: 1px solid #e5e7eb;
+        background: #111827;
     }
 
     .composer-hint {
@@ -373,9 +475,9 @@
         background: white;
         border: 1px solid #e5e7eb;
         border-radius: 16px;
-        padding: 18px;
-        margin-bottom: 12px;
-        box-shadow: 0 4px 15px rgba(15, 23, 42, 0.035);
+        padding: 18px 18px 14px;
+        margin-bottom: 16px;
+        box-shadow: 0 4px 14px rgba(15, 23, 42, 0.035);
     }
 
     .feed-user-row {
@@ -398,29 +500,176 @@
     .feed-content {
         margin-top: 14px;
         color: #1f2937;
-        font-size: 14px;
-        line-height: 1.65;
-        white-space: pre-wrap;
+        font-size: 15px;
+        line-height: 1.55;
+        white-space: pre-line;
+        overflow-wrap: anywhere;
+    }
+
+    .feed-post-image {
+        width: 100%;
+        max-height: 560px;
+        object-fit: cover;
+        display: block;
+        margin-top: 14px;
+        border-radius: 14px;
+        border: 1px solid #eef0f7;
+        background: #f8fafc;
+    }
+
+    .feed-post-video {
+        width: 100%;
+        max-height: 560px;
+        display: block;
+        margin-top: 14px;
+        border-radius: 14px;
+        border: 1px solid #eef0f7;
+        background: #111827;
+    }
+
+    .feed-counts {
+        margin-top: 14px;
+        padding: 0 2px 10px;
+        display: flex;
+        align-items: center;
+        gap: 16px;
+        color: #6b7280;
+        font-size: 12px;
+        font-weight: 650;
     }
 
     .feed-actions {
-        margin-top: 15px;
-        padding-top: 11px;
-        border-top: 1px solid #f1f5f9;
-        display: flex;
+        padding: 8px 0;
+        border-top: 1px solid #eef0f3;
+        border-bottom: 1px solid #eef0f3;
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
         align-items: center;
-        gap: 8px;
+        gap: 6px;
     }
 
     .feed-action {
+        width: 100%;
         border: none;
         background: transparent;
-        color: #6b7280;
-        font-size: 12px;
+        color: #4b5563;
+        font-size: 13px;
         font-weight: 750;
-        padding: 7px 10px;
+        padding: 9px 10px;
         border-radius: 8px;
-        cursor: default;
+        cursor: pointer;
+        transition: 0.2s;
+        text-align: center;
+    }
+
+        .feed-action:hover {
+            background: #f3f4f6;
+            color: #111827;
+        }
+
+        .feed-action.liked {
+            color: #4f46e5;
+            background: #eef2ff;
+        }
+
+    .feed-action-form {
+        margin: 0;
+        width: 100%;
+    }
+
+    .comments-panel {
+        display: none;
+        margin-top: 12px;
+        padding-top: 2px;
+    }
+
+        .comments-panel.open {
+            display: block;
+        }
+
+    .comment-form {
+        display: flex;
+        align-items: center;
+        gap: 9px;
+        margin-bottom: 12px;
+    }
+
+    .comment-input {
+        flex: 1;
+        min-width: 0;
+        height: 42px;
+        border: 1px solid #d7dce3;
+        border-radius: 22px;
+        padding: 0 15px;
+        outline: none;
+        background: #f8fafc;
+        font-family: inherit;
+        font-size: 13px;
+        color: #111827;
+    }
+
+        .comment-input:focus {
+            border-color: #6674ff;
+            box-shadow: 0 0 0 3px rgba(102,116,255,.08);
+        }
+
+    .comment-submit {
+        height: 42px;
+        border: none;
+        border-radius: 22px;
+        padding: 0 17px;
+        background: #111827;
+        color: white;
+        font-size: 12px;
+        font-weight: 800;
+        cursor: pointer;
+    }
+
+    .comment-item {
+        padding: 8px 0 4px;
+        border-bottom: none;
+    }
+
+        .comment-item:last-child {
+            border-bottom: none;
+        }
+
+    .comment-meta {
+        display: flex;
+        align-items: baseline;
+        gap: 8px;
+        margin-bottom: 3px;
+    }
+
+    .comment-user {
+        font-size: 13px;
+        font-weight: 850;
+        color: #111827;
+    }
+
+    .comment-time {
+        font-size: 11px;
+        color: #9ca3af;
+    }
+
+    .comment-text {
+        display: inline-block;
+        max-width: 92%;
+        padding: 8px 11px;
+        border-radius: 12px;
+        background: #f3f4f6;
+        font-size: 13px;
+        line-height: 1.45;
+        color: #374151;
+        white-space: pre-line;
+        overflow-wrap: anywhere;
+    }
+
+    .share-status {
+        margin-left: auto;
+        font-size: 11px;
+        color: #059669;
+        font-weight: 750;
     }
 
     .feed-empty {
@@ -499,33 +748,6 @@
 
         .side-link:hover {
             color: #4f5bea;
-        }
-
-    .side-card h4 {
-        margin: 0 0 12px;
-        font-size: 15px;
-        font-weight: 900;
-    }
-
-    .quick-row {
-        display: flex;
-        justify-content: space-between;
-        gap: 10px;
-        padding: 9px 0;
-        border-bottom: 1px solid #f1f5f9;
-        font-size: 12px;
-    }
-
-        .quick-row:last-child {
-            border-bottom: none;
-        }
-
-        .quick-row span {
-            color: #6b7280;
-        }
-
-        .quick-row strong {
-            color: #111827;
         }
 
     /* ================= SKILLS ================= */
@@ -703,6 +925,158 @@
         background: #e0e7ff;
         color: #4338ca;
         transform: translateY(-1px);
+    }
+
+
+    /* ================= SHARE TO CHAT ================= */
+
+    .share-modal {
+        position: fixed;
+        inset: 0;
+        z-index: 12000;
+        display: none;
+        align-items: center;
+        justify-content: center;
+        padding: 20px;
+        background: rgba(17, 24, 39, 0.48);
+        backdrop-filter: blur(3px);
+    }
+
+        .share-modal.open {
+            display: flex;
+        }
+
+    .share-dialog {
+        width: min(460px, 100%);
+        max-height: 75vh;
+        overflow: hidden;
+        background: white;
+        border-radius: 20px;
+        box-shadow: 0 24px 70px rgba(17, 24, 39, 0.25);
+        display: flex;
+        flex-direction: column;
+    }
+
+    .share-dialog-header {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 12px;
+        padding: 18px 20px;
+        border-bottom: 1px solid #e5e7eb;
+    }
+
+        .share-dialog-header h3 {
+            margin: 0;
+            font-size: 18px;
+            font-weight: 900;
+            color: #111827;
+        }
+
+    .share-close-btn {
+        width: 34px;
+        height: 34px;
+        border: none;
+        border-radius: 50%;
+        background: #f3f4f6;
+        color: #374151;
+        font-size: 20px;
+        line-height: 1;
+        cursor: pointer;
+    }
+
+    .share-dialog-subtitle {
+        margin: 0;
+        padding: 13px 20px;
+        color: #6b7280;
+        font-size: 12px;
+        border-bottom: 1px solid #f1f5f9;
+    }
+
+    .share-recipient-list {
+        overflow-y: auto;
+        padding: 8px 12px 14px;
+    }
+
+    .share-recipient {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        padding: 10px 8px;
+        border-radius: 12px;
+    }
+
+        .share-recipient:hover {
+            background: #f8fafc;
+        }
+
+    .share-recipient-avatar {
+        width: 42px;
+        height: 42px;
+        flex: 0 0 42px;
+        border-radius: 50%;
+        display: grid;
+        place-items: center;
+        background: linear-gradient(135deg, #6674ff, #ff64aa);
+        color: white;
+        font-size: 14px;
+        font-weight: 900;
+    }
+
+    .share-recipient-name {
+        flex: 1;
+        min-width: 0;
+        color: #111827;
+        font-size: 14px;
+        font-weight: 800;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+    }
+
+    .share-send-btn {
+        border: none;
+        border-radius: 20px;
+        padding: 8px 15px;
+        background: #6674ff;
+        color: white;
+        font-size: 12px;
+        font-weight: 800;
+        cursor: pointer;
+        transition: 0.2s;
+    }
+
+        .share-send-btn:hover:not(:disabled) {
+            background: #5664ef;
+            transform: translateY(-1px);
+        }
+
+        .share-send-btn:disabled {
+            background: #d1d5db;
+            color: #6b7280;
+            cursor: default;
+        }
+
+    .share-empty,
+    .share-loading,
+    .share-error {
+        padding: 28px 18px;
+        text-align: center;
+        color: #6b7280;
+        font-size: 13px;
+        line-height: 1.6;
+    }
+
+    .share-error {
+        color: #b91c1c;
+    }
+
+    .share-open-messages {
+        display: inline-block;
+        margin-top: 10px;
+        color: #6674ff;
+        font-weight: 800;
+        text-decoration: none;
     }
 
     /* ================= CHATBOT ================= */
@@ -986,10 +1360,23 @@
 
         </div>
 
+        @if (TempData["Success"] != null)
+        {
+            <div class="dashboard-alert dashboard-alert-success">
+                @TempData["Success"]
+            </div>
+        }
+
+        @if (TempData["Error"] != null)
+        {
+            <div class="dashboard-alert dashboard-alert-error">
+                @TempData["Error"]
+            </div>
+        }
+
 
         <!-- SMALL INTRO -->
-
-               <!-- SOCIAL AREA -->
+        <!-- SOCIAL AREA -->
 
         <section class="social-layout">
 
@@ -1024,21 +1411,74 @@
 
                     <form asp-controller="Community"
                           asp-action="Create"
-                          method="post">
+                          method="post"
+                          enctype="multipart/form-data"
+                          onsubmit="return validateCommunityPost(this);">
 
                         @Html.AntiForgeryToken()
 
                         <textarea name="content"
                                   class="composer-input"
                                   maxlength="2000"
-                                  placeholder="Start a post..."
-                                  required></textarea>
+                                  placeholder="Start a post..."></textarea>
+
+                        <div class="image-preview-wrap"
+                             id="postImagePreviewWrap">
+
+                            <img id="postImagePreview"
+                                 class="image-preview"
+                                 alt="Selected post image preview" />
+
+                            <button type="button"
+                                    class="remove-preview-btn"
+                                    onclick="clearPostImage()">
+                                ×
+                            </button>
+
+                        </div>
+
+                        <div class="video-preview-wrap"
+                             id="postVideoPreviewWrap">
+
+                            <video id="postVideoPreview"
+                                   class="video-preview"
+                                   controls
+                                   preload="metadata"></video>
+
+                            <button type="button"
+                                    class="remove-preview-btn"
+                                    onclick="clearPostVideo()">
+                                ×
+                            </button>
+
+                        </div>
 
                         <div class="composer-footer">
 
-                            <span class="composer-hint">
-                                Share learning goals, achievements or skills.
-                            </span>
+                            <div class="composer-media">
+
+                                <label class="image-picker">
+                                     Add Picture
+
+                                    <input type="file"
+                                           id="postImageInput"
+                                           name="image"
+                                           accept="image/jpeg,image/png,image/webp"
+                                           onchange="previewPostImage(this)" />
+                                </label>
+
+                                 <label class="image-picker">
+                                     Add Video
+
+                                    <input type="file"
+                                           id="postVideoInput"
+                                           name="video"
+                                           accept="video/mp4,video/webm,video/ogg"
+                                           onchange="previewPostVideo(this)" />
+                                </label>
+
+
+                            </div>
 
                             <button type="submit"
                                     class="post-btn">
@@ -1064,7 +1504,22 @@
                 {
                     foreach (var post in Model.CommunityPosts)
                     {
-                        <article class="feed-post">
+                        bool hasLiked =
+                        post.Likes.Any(like =>
+                        like.UserId == currentUserId);
+
+                        var visibleComments =
+                        post.Comments
+                        .Where(comment =>
+                        comment.User != null &&
+                        !comment.User.IsBlocked &&
+                        !comment.User.IsDeactivated)
+                        .OrderBy(comment =>
+                        comment.CreatedAt)
+                        .ToList();
+
+                        <article class="feed-post"
+                                 id="post-@post.PostId">
 
                             <div class="feed-user-row">
 
@@ -1079,37 +1534,140 @@
                                     </div>
 
                                     <div class="feed-time">
-                                        @(post.CreatedAt
-                                                                        .ToLocalTime()
-                                                                        .ToString("dd MMM yyyy, hh:mm tt"))
-                            </div>
+                                        @(post.CreatedAt.ToLocalTime().ToString("dd MMM yyyy, hh:mm tt"))
+                                    </div>
 
                                 </div>
 
                             </div>
 
+                            @if (!string.IsNullOrWhiteSpace(post.Content))
+                            {
+                                <div class="feed-content">@post.Content</div>
+                            }
 
-                            <div class="feed-content">
-                                @post.Content
-                            </div>
+                            @if (!string.IsNullOrWhiteSpace(post.ImagePath))
+                            {
+                                <img src="@post.ImagePath"
+                                     class="feed-post-image"
+                                     alt="Community post image" />
+                            }
 
+                            @if (!string.IsNullOrWhiteSpace(post.VideoPath))
+                            {
+                                <video class="feed-post-video"
+                                       controls
+                                       preload="metadata">
+                                    <source src="@post.VideoPath" />
+                                    Your browser does not support video playback.
+                                </video>
+                            }
+
+                            
 
                             <div class="feed-actions">
 
-                                <button type="button"
-                                        class="feed-action">
-                                    Like
-                                </button>
+                                <form asp-controller="Community"
+                                      asp-action="ToggleLike"
+                                      method="post"
+                                      class="feed-action-form">
+
+                                    @Html.AntiForgeryToken()
+
+                                    <input type="hidden"
+                                           name="postId"
+                                           value="@post.PostId" />
+
+                                    <button type="submit"
+                                            class="feed-action @(hasLiked ? "liked" : "")">
+                                        @(hasLiked ? "👍 Liked" : "👍 Like")
+                                    </button>
+
+                                </form>
 
                                 <button type="button"
-                                        class="feed-action">
-                                    Comment
+                                        class="feed-action"
+                                        onclick="toggleComments(@post.PostId)">
+                                    💬 Comment
                                 </button>
+
+                                <form id="share-form-@post.PostId"
+                                      class="feed-action-form">
+
+                                    @Html.AntiForgeryToken()
+
+                                    <button type="button"
+                                            class="feed-action"
+                                            onclick="openShareModal(@post.PostId)">
+                                        ↗ Share
+                                    </button>
+
+                                </form>
+
+                            </div>
+
+                            <div class="comments-panel"
+                                 id="comments-@post.PostId">
+
+                                <form asp-controller="Community"
+                                      asp-action="AddComment"
+                                      method="post"
+                                      class="comment-form">
+
+                                    @Html.AntiForgeryToken()
+
+                                    <input type="hidden"
+                                           name="postId"
+                                           value="@post.PostId" />
+
+                                    <input type="text"
+                                           name="comment"
+                                           maxlength="1000"
+                                           class="comment-input"
+                                           placeholder="Write a comment..."
+                                           required />
+
+                                    <button type="submit"
+                                            class="comment-submit">
+                                        Comment
+                                    </button>
+
+                                </form>
+
+                                @if (visibleComments.Any())
+                                {
+                                    foreach (var comment in visibleComments)
+                                    {
+                                        <div class="comment-item">
+
+                                            <div class="comment-meta">
+
+                                                <span class="comment-user">
+                                                    @(comment.User?.Username ?? "User")
+                                                </span>
+
+                                                <span class="comment-time">
+                                                    @(comment.CreatedAt.ToLocalTime().ToString("dd MMM yyyy, hh:mm tt"))
+                                                </span>
+
+                                            </div>
+
+                                            <div class="comment-text">@comment.Content</div>
+
+                                        </div>
+                                    }
+                                }
+                                else
+                                {
+                                    <div class="comment-text">
+                                        No comments yet.
+                                    </div>
+                                }
 
                             </div>
 
                         </article>
-                                }
+                    }
                 }
                 else
                 {
@@ -1169,35 +1727,6 @@
 
                 </div>
 
-
-                <!-- QUICK CARD -->
-
-                <div class="side-card">
-
-                    <h4>Quick Overview</h4>
-
-                    <div class="quick-row">
-                        <span>Community</span>
-                        <strong>Active</strong>
-                    </div>
-
-                    <div class="quick-row">
-                        <span>Skill Matching</span>
-                        <strong>Enabled</strong>
-                    </div>
-
-                    <div class="quick-row">
-                        <span>AI Assistant</span>
-                        <strong>Available</strong>
-                    </div>
-
-                    <a asp-controller="Home"
-                       asp-action="Settings"
-                       class="side-link">
-                        Account Settings
-                    </a>
-
-                </div>
 
             </aside>
 
@@ -1352,6 +1881,50 @@
 
 </div>
 
+
+<!-- ================= SHARE TO CHAT MODAL ================= -->
+
+<div id="shareModal"
+     class="share-modal"
+     onclick="handleShareBackdrop(event)">
+
+    <div class="share-dialog"
+         role="dialog"
+         aria-modal="true"
+         aria-labelledby="shareDialogTitle">
+
+        <div class="share-dialog-header">
+
+            <h3 id="shareDialogTitle">
+                Share post
+            </h3>
+
+            <button type="button"
+                    class="share-close-btn"
+                    onclick="closeShareModal()"
+                    aria-label="Close">
+                ×
+            </button>
+
+        </div>
+
+        <p class="share-dialog-subtitle">
+            Send this post to someone from your Messages.
+        </p>
+
+        <div id="shareRecipientList"
+             class="share-recipient-list">
+
+            <div class="share-loading">
+                Loading conversations...
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
 <!-- ================= CHATBOT ================= -->
 
 <div id="chatButton"
@@ -1385,6 +1958,589 @@
 <!-- ================= SCRIPTS ================= -->
 
 <script>
+
+    function previewPostImage(input) {
+
+        const file =
+            input.files && input.files[0];
+
+        const wrap =
+            document.getElementById(
+                "postImagePreviewWrap"
+            );
+
+        const preview =
+            document.getElementById(
+                "postImagePreview"
+            );
+
+        if (!file) {
+            clearPostImage();
+            return;
+        }
+
+        if (file.size > 5 * 1024 * 1024) {
+            alert("Image size cannot exceed 5 MB.");
+            clearPostImage();
+            return;
+        }
+
+        const allowedTypes = [
+            "image/jpeg",
+            "image/png",
+            "image/webp"
+        ];
+
+        if (!allowedTypes.includes(file.type)) {
+            alert("Only JPG, PNG and WEBP images are allowed.");
+            clearPostImage();
+            return;
+        }
+
+        preview.src =
+            URL.createObjectURL(file);
+
+        wrap.style.display =
+            "block";
+    }
+
+
+    function clearPostImage() {
+
+        const input =
+            document.getElementById(
+                "postImageInput"
+            );
+
+        const wrap =
+            document.getElementById(
+                "postImagePreviewWrap"
+            );
+
+        const preview =
+            document.getElementById(
+                "postImagePreview"
+            );
+
+        if (input) {
+            input.value = "";
+        }
+
+        if (preview) {
+            preview.removeAttribute("src");
+        }
+
+        if (wrap) {
+            wrap.style.display = "none";
+        }
+    }
+
+
+    function previewPostVideo(input) {
+
+        const file =
+            input.files && input.files[0];
+
+        const wrap =
+            document.getElementById(
+                "postVideoPreviewWrap"
+            );
+
+        const preview =
+            document.getElementById(
+                "postVideoPreview"
+            );
+
+        if (!file) {
+            clearPostVideo();
+            return;
+        }
+
+        if (file.size > 50 * 1024 * 1024) {
+            alert("Video size cannot exceed 50 MB.");
+            clearPostVideo();
+            return;
+        }
+
+        const allowedTypes = [
+            "video/mp4",
+            "video/webm",
+            "video/ogg"
+        ];
+
+        if (!allowedTypes.includes(file.type)) {
+            alert("Only MP4, WEBM and OGG videos are allowed.");
+            clearPostVideo();
+            return;
+        }
+
+        preview.src =
+            URL.createObjectURL(file);
+
+        wrap.style.display =
+            "block";
+
+        preview.load();
+    }
+
+
+    function clearPostVideo() {
+
+        const input =
+            document.getElementById(
+                "postVideoInput"
+            );
+
+        const wrap =
+            document.getElementById(
+                "postVideoPreviewWrap"
+            );
+
+        const preview =
+            document.getElementById(
+                "postVideoPreview"
+            );
+
+        if (input) {
+            input.value = "";
+        }
+
+        if (preview) {
+            preview.pause();
+            preview.removeAttribute("src");
+            preview.load();
+        }
+
+        if (wrap) {
+            wrap.style.display = "none";
+        }
+    }
+
+
+    function validateCommunityPost(form) {
+
+        const text =
+            form.querySelector(
+                'textarea[name="content"]'
+            ).value.trim();
+
+        const imageInput =
+            form.querySelector(
+                'input[name="image"]'
+            );
+
+        const videoInput =
+            form.querySelector(
+                'input[name="video"]'
+            );
+
+        const hasImage =
+            imageInput.files &&
+            imageInput.files.length > 0;
+
+        const hasVideo =
+            videoInput.files &&
+            videoInput.files.length > 0;
+
+        if (!text &&
+            !hasImage &&
+            !hasVideo) {
+            alert(
+                "Write something or choose an image/video before posting."
+            );
+
+            return false;
+        }
+
+        return true;
+    }
+
+
+    function toggleComments(postId) {
+
+        const panel =
+            document.getElementById(
+                "comments-" + postId
+            );
+
+        if (!panel) {
+            return;
+        }
+
+        panel.classList.toggle(
+            "open"
+        );
+
+        if (panel.classList.contains(
+                "open"
+            )) {
+            const input =
+                panel.querySelector(
+                    ".comment-input"
+                );
+
+            if (input) {
+                input.focus();
+            }
+        }
+    }
+
+    let currentSharePostId = null;
+
+
+    async function openShareModal(postId) {
+
+        currentSharePostId = postId;
+
+        const modal =
+            document.getElementById(
+                "shareModal"
+            );
+
+        const list =
+            document.getElementById(
+                "shareRecipientList"
+            );
+
+        if (!modal || !list) {
+            return;
+        }
+
+        modal.classList.add("open");
+
+        document.body.style.overflow =
+            "hidden";
+
+        list.innerHTML = "";
+
+        const loading =
+            document.createElement("div");
+
+        loading.className =
+            "share-loading";
+
+        loading.textContent =
+            "Loading conversations...";
+
+        list.appendChild(loading);
+
+        try {
+
+            const response =
+                await fetch(
+                    "/PostShare/Recipients?postId=" +
+                    encodeURIComponent(postId),
+                    {
+                        method: "GET",
+                        headers: {
+                            "X-Requested-With":
+                                "XMLHttpRequest"
+                        }
+                    }
+                );
+
+            if (!response.ok) {
+                throw new Error(
+                    "Could not load conversations."
+                );
+            }
+
+            const data =
+                await response.json();
+
+            list.innerHTML = "";
+
+            const recipients =
+                Array.isArray(data?.recipients)
+                    ? data.recipients
+                    : [];
+
+            if (recipients.length === 0) {
+
+                const empty =
+                    document.createElement(
+                        "div"
+                    );
+
+                empty.className =
+                    "share-empty";
+
+                empty.textContent =
+                    "No existing conversations found. Start a chat first, then you can share posts here.";
+
+                const link =
+                    document.createElement(
+                        "a"
+                    );
+
+                link.href =
+                    "/Chat";
+
+                link.className =
+                    "share-open-messages";
+
+                link.textContent =
+                    "Open Messages";
+
+                empty.appendChild(
+                    document.createElement("br")
+                );
+
+                empty.appendChild(link);
+
+                list.appendChild(empty);
+
+                return;
+            }
+
+            recipients.forEach(
+                recipient => {
+
+                    const row =
+                        document.createElement(
+                            "div"
+                        );
+
+                    row.className =
+                        "share-recipient";
+
+                    const avatar =
+                        document.createElement(
+                            "div"
+                        );
+
+                    avatar.className =
+                        "share-recipient-avatar";
+
+                    const username =
+                        recipient?.username ||
+                        "User";
+
+                    avatar.textContent =
+                        username
+                            .substring(0, 1)
+                            .toUpperCase();
+
+                    const name =
+                        document.createElement(
+                            "div"
+                        );
+
+                    name.className =
+                        "share-recipient-name";
+
+                    name.textContent =
+                        username;
+
+                    const button =
+                        document.createElement(
+                            "button"
+                        );
+
+                    button.type =
+                        "button";
+
+                    button.className =
+                        "share-send-btn";
+
+                    button.textContent =
+                        "Send";
+
+                    button.addEventListener(
+                        "click",
+                        () =>
+                            sharePostToUser(
+                                recipient.userId,
+                                button
+                            )
+                    );
+
+                    row.appendChild(avatar);
+                    row.appendChild(name);
+                    row.appendChild(button);
+
+                    list.appendChild(row);
+                }
+            );
+        }
+        catch (error) {
+
+            console.error(
+                "Share recipients error:",
+                error
+            );
+
+            list.innerHTML = "";
+
+            const errorBox =
+                document.createElement(
+                    "div"
+                );
+
+            errorBox.className =
+                "share-error";
+
+            errorBox.textContent =
+                "Conversations could not be loaded. Please try again.";
+
+            list.appendChild(errorBox);
+        }
+    }
+
+
+    function closeShareModal() {
+
+        const modal =
+            document.getElementById(
+                "shareModal"
+            );
+
+        if (modal) {
+            modal.classList.remove(
+                "open"
+            );
+        }
+
+        document.body.style.overflow =
+            "";
+
+        currentSharePostId = null;
+    }
+
+
+    function handleShareBackdrop(event) {
+
+        if (event.target?.id ===
+            "shareModal") {
+            closeShareModal();
+        }
+    }
+
+
+    async function sharePostToUser(
+        receiverId,
+        button
+    ) {
+
+        if (!currentSharePostId ||
+            !receiverId ||
+            !button) {
+            return;
+        }
+
+        const form =
+            document.getElementById(
+                "share-form-" +
+                currentSharePostId
+            );
+
+        const tokenInput =
+            form?.querySelector(
+                'input[name="__RequestVerificationToken"]'
+            );
+
+        const originalText =
+            button.textContent;
+
+        button.disabled = true;
+        button.textContent =
+            "Sending...";
+
+        try {
+
+            const body =
+                new URLSearchParams();
+
+            body.append(
+                "postId",
+                currentSharePostId
+            );
+
+            body.append(
+                "receiverId",
+                receiverId
+            );
+
+            body.append(
+                "__RequestVerificationToken",
+                tokenInput?.value || ""
+            );
+
+            const response =
+                await fetch(
+                    "/PostShare/Send",
+                    {
+                        method: "POST",
+                        headers: {
+                            "Content-Type":
+                                "application/x-www-form-urlencoded",
+                            "X-Requested-With":
+                                "XMLHttpRequest"
+                        },
+                        body:
+                            body.toString()
+                    }
+                );
+
+            const data =
+                await response.json();
+
+            if (!response.ok ||
+                data?.success !== true) {
+
+                throw new Error(
+                    data?.message ||
+                    "Post could not be shared."
+                );
+            }
+
+            button.textContent =
+                "Sent";
+
+            const countElement =
+                document.getElementById(
+                    "share-count-" +
+                    currentSharePostId
+                );
+
+            if (countElement &&
+                data?.shareCount !== undefined) {
+
+                countElement.textContent =
+                    "↗ " +
+                    data.shareCount;
+            }
+
+            const status =
+                document.getElementById(
+                    "share-status-" +
+                    currentSharePostId
+                );
+
+            if (status) {
+                status.textContent =
+                    "Shared in Messages";
+            }
+        }
+        catch (error) {
+
+            console.error(
+                "Share to chat error:",
+                error
+            );
+
+            button.disabled = false;
+
+            button.textContent =
+                originalText || "Send";
+
+            alert(
+                error?.message ||
+                "Post could not be shared."
+            );
+        }
+    }
+
 
     function filterSkills() {
 

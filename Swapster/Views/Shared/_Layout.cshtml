@@ -134,8 +134,7 @@
                 color: #6674ff;
             }
 
-        .layout-signup-btn,
-        .layout-dashboard-btn {
+        .layout-signup-btn {
             text-decoration: none;
             border: none;
             background: linear-gradient(135deg, #6674ff, #ff64aa);
@@ -151,8 +150,7 @@
             white-space: nowrap;
         }
 
-            .layout-signup-btn:hover,
-            .layout-dashboard-btn:hover {
+            .layout-signup-btn:hover {
                 transform: translateY(-2px);
                 box-shadow: 0 16px 32px rgba(102, 116, 255, 0.32);
             }
@@ -308,19 +306,19 @@
 </head>
 
 @{
-        var bodyClass = ViewData["BodyClass"]?.ToString() ?? "";
-        var hideNavbar = ViewData["HideNavbar"] != null;
+            var bodyClass = ViewData["BodyClass"]?.ToString() ?? "";
+            var hideNavbar = ViewData["HideNavbar"] != null;
 
-        var fullWidth =
-                ViewData["FullWidth"] != null ||
-                bodyClass == "auth-page" ||
-                bodyClass == "landing-page" ||
-                bodyClass == "dashboard-page" ||
-                bodyClass == "privacy-page" ||
-                bodyClass == "terms-page" ||
-                bodyClass == "skills-page";
+            var fullWidth =
+                            ViewData["FullWidth"] != null ||
+                            bodyClass == "auth-page" ||
+                            bodyClass == "landing-page" ||
+                            bodyClass == "dashboard-page" ||
+                            bodyClass == "privacy-page" ||
+                            bodyClass == "terms-page" ||
+                            bodyClass == "skills-page";
 
-        var isLoggedIn = Context.Session.GetInt32("UserId") != null;
+            var isLoggedIn = Context.Session.GetInt32("UserId") != null;
 }
 
 <body class="@bodyClass">
@@ -360,12 +358,6 @@
                 <div class="layout-nav-area" id="layoutNavArea">
 
                     <ul class="layout-nav-links">
-                        <li>
-                            <a asp-controller="Home" asp-action="Index">
-                                Home
-                            </a>
-                        </li>
-
                         @if (isLoggedIn)
                         {
                             <li>
@@ -375,34 +367,11 @@
                             </li>
                         }
 
-                        <li>
-                            <a asp-controller="Skill" asp-action="Index">
-                                Skills
-                            </a>
-                        </li>
-
-                        <li>
-                            <a asp-controller="Home" asp-action="Privacy">
-                                Privacy
-                            </a>
-                        </li>
-
-                        <li>
-                            <a asp-controller="Home" asp-action="Terms">
-                                Terms
-                            </a>
-                        </li>
                     </ul>
 
                     <div class="layout-auth-actions">
                         @if (isLoggedIn)
                         {
-                            <a asp-controller="Home"
-                               asp-action="Dashboard"
-                               class="layout-dashboard-btn">
-                                My Dashboard
-                            </a>
-
                             <form asp-controller="Account" asp-action="Logout" method="post" class="m-0">
                                 <button type="submit" class="layout-logout-btn">
                                     Logout

@@ -1,9 +1,77 @@
 ﻿@model Swapster.Models.ChatViewModel
+@using Microsoft.EntityFrameworkCore
+@using Swapster.Models
+@inject Swapster.Data.ApplicationDbContext Db
 
 @{
     ViewData["Title"] = "Messages";
     ViewData["HideNavbar"] = true;
     ViewData["FullWidth"] = true;
+
+    const string sharedPostPrefix =
+        "[[SHARED_POST:";
+
+    const string sharedPostSuffix =
+        "]]";
+
+    var sharedPostIds =
+        new HashSet<int>();
+
+    if (Model?.Messages != null)
+    {
+        foreach (var message in Model.Messages)
+        {
+            string messageContent =
+                message.Content ?? string.Empty;
+
+            if (messageContent.StartsWith(
+                    sharedPostPrefix) &&
+                messageContent.EndsWith(
+                    sharedPostSuffix))
+            {
+                int numberLength =
+                    messageContent.Length -
+                    sharedPostPrefix.Length -
+                    sharedPostSuffix.Length;
+
+                if (numberLength > 0)
+                {
+                    string numberText =
+                        messageContent.Substring(
+                            sharedPostPrefix.Length,
+                            numberLength
+                        );
+
+                    if (int.TryParse(
+                            numberText,
+                            out int sharedPostId))
+                    {
+                        sharedPostIds.Add(
+                            sharedPostId
+                        );
+                    }
+                }
+            }
+        }
+    }
+
+    Dictionary<int, Post> sharedPosts =
+        new Dictionary<int, Post>();
+
+    if (sharedPostIds.Count > 0)
+    {
+        sharedPosts =
+            await Db.Posts
+                .AsNoTracking()
+                .Include(post => post.User)
+                .Where(post =>
+                    sharedPostIds.Contains(
+                        post.PostId
+                    ))
+                .ToDictionaryAsync(
+                    post => post.PostId
+                );
+    }
 }
 
 <style>
@@ -39,6 +107,7 @@
         display: flex;
         align-items: center;
         justify-content: space-between;
+        gap: 14px;
     }
 
         .chat-header h2 {
@@ -74,6 +143,7 @@
         padding: 11px 15px;
         border-radius: 17px;
         line-height: 1.5;
+        overflow-wrap: anywhere;
     }
 
     .mine .message-bubble {
@@ -92,7 +162,79 @@
     .message-time {
         margin-top: 5px;
         font-size: 10px;
-        opacity: .7;
+        opacity: .72;
+    }
+
+    /* Shared post message uses a card instead of a normal text bubble. */
+    .message-row.shared-post-row .message-bubble {
+        width: min(430px, 78vw);
+        max-width: 78%;
+        padding: 0;
+        overflow: hidden;
+        background: white;
+        color: #111827;
+        border: 1px solid #e5e7eb;
+        box-shadow: 0 8px 22px rgba(17, 24, 39, 0.06);
+    }
+
+    .shared-post-label {
+        padding: 10px 13px;
+        color: #6b7280;
+        font-size: 11px;
+        font-weight: 800;
+        border-bottom: 1px solid #eef2f7;
+        background: #fafbff;
+    }
+
+    .shared-post-body {
+        padding: 13px;
+    }
+
+    .shared-post-author {
+        margin-bottom: 7px;
+        font-size: 13px;
+        font-weight: 900;
+        color: #111827;
+    }
+
+    .shared-post-content {
+        color: #374151;
+        font-size: 13px;
+        line-height: 1.5;
+        white-space: pre-line;
+        overflow-wrap: anywhere;
+    }
+
+    .shared-post-image,
+    .shared-post-video {
+        display: block;
+        width: 100%;
+        max-height: 300px;
+        margin-top: 10px;
+        border-radius: 12px;
+        object-fit: cover;
+        background: #111827;
+    }
+
+    .shared-post-link {
+        display: inline-block;
+        margin-top: 11px;
+        color: #6674ff;
+        text-decoration: none;
+        font-size: 12px;
+        font-weight: 850;
+    }
+
+    .shared-post-message-time {
+        padding: 0 13px 11px;
+        color: #9ca3af;
+        font-size: 10px;
+    }
+
+    .shared-post-unavailable {
+        padding: 14px;
+        color: #6b7280;
+        font-size: 13px;
     }
 
     .message-form {
@@ -123,6 +265,30 @@
         font-weight: 800;
         cursor: pointer;
     }
+
+    @@media (max-width: 650px) {
+        .chat-page {
+            padding: 12px;
+        }
+
+        .messages-area {
+            height: 62vh;
+            padding: 14px;
+        }
+
+        .message-bubble,
+        .message-row.shared-post-row .message-bubble {
+            max-width: 88%;
+        }
+
+        .chat-header {
+            padding: 16px;
+        }
+
+        .message-form {
+            padding: 12px;
+        }
+    }
 </style>
 
 <div class="chat-page">
@@ -133,10 +299,10 @@
 
             <h2>@Model.OtherUsername</h2>
 
-            <a asp-controller="Home"
-               asp-action="Dashboard"
+            <a asp-controller="Chat"
+               asp-action="Index"
                class="back-link">
-                Back to Dashboard
+                Back to Messages
             </a>
 
         </div>
@@ -149,23 +315,130 @@
                 foreach (var message in Model.Messages)
                 {
                     bool mine =
-                    message.SenderId == Model.CurrentUserId;
+                    message.SenderId ==
+                    Model.CurrentUserId;
 
-                    <div class="message-row @(mine ? "mine" : "theirs")">
+                    string messageContent =
+                    message.Content ??
+                    string.Empty;
 
-                        <div class="message-bubble">
+                    bool sharedPostMessage =
+                    false;
 
-                            <div>
-                                @message.Content
-                            </div>
+                    int sharedPostId =
+                    0;
 
-                            <div class="message-time">
-                                @(message.SentAt.ToLocalTime().ToString("dd MMM, hh:mm tt"))
+                    if (messageContent.StartsWith(
+                    sharedPostPrefix) &&
+                    messageContent.EndsWith(
+                    sharedPostSuffix))
+                    {
+                        int numberLength =
+                        messageContent.Length -
+                        sharedPostPrefix.Length -
+                        sharedPostSuffix.Length;
+
+                        if (numberLength > 0)
+                        {
+                            string numberText =
+                            messageContent.Substring(
+                            sharedPostPrefix.Length,
+                            numberLength
+                            );
+
+                            sharedPostMessage =
+                            int.TryParse(
+                            numberText,
+                            out sharedPostId
+                            );
+                        }
+                    }
+
+                    if (sharedPostMessage)
+                    {
+                        <div class="message-row shared-post-row @(mine ? "mine" : "theirs")">
+
+                            <div class="message-bubble">
+
+                                <div class="shared-post-label">
+                                    Shared a post
+                                </div>
+
+                                @if (sharedPosts.TryGetValue(
+                                                    sharedPostId,
+                                                    out Post? sharedPost))
+                                {
+                                    <div class="shared-post-body">
+
+                                        <div class="shared-post-author">
+                                            @(sharedPost.User?.Username ?? "Swapster User")
+                                        </div>
+
+                                        @if (!string.IsNullOrWhiteSpace(
+                                                                sharedPost.Content))
+                                        {
+                                            <div class="shared-post-content">@sharedPost.Content</div>
+                                        }
+
+                                        @if (!string.IsNullOrWhiteSpace(
+                                                                sharedPost.ImagePath))
+                                        {
+                                            <img src="@sharedPost.ImagePath"
+                                                 class="shared-post-image"
+                                                 alt="Shared post image" />
+                                        }
+
+                                        @if (!string.IsNullOrWhiteSpace(
+                                                                sharedPost.VideoPath))
+                                        {
+                                            <video class="shared-post-video"
+                                                   controls
+                                                   preload="metadata">
+                                                <source src="@sharedPost.VideoPath" />
+                                                Your browser does not support video playback.
+                                            </video>
+                                        }
+
+                                        <a asp-controller="Home"
+                                           asp-action="Dashboard"
+                                           asp-fragment="post-@sharedPost.PostId"
+                                           class="shared-post-link">
+                                            View Post →
+                                        </a>
+
+                                    </div>
+                                }
+                                else
+                                {
+                                    <div class="shared-post-unavailable">
+                                        This shared post is no longer available.
+                                    </div>
+                                }
+
+                                <div class="shared-post-message-time">
+                                    @(message.SentAt.ToLocalTime().ToString("dd MMM, hh:mm tt"))
+                                </div>
+
                             </div>
 
                         </div>
+                    }
+                    else
+                    {
+                        <div class="message-row @(mine ? "mine" : "theirs")">
 
-                    </div>
+                            <div class="message-bubble">
+
+                                <div>@message.Content</div>
+
+                                <div class="message-time">
+                                    @(message.SentAt.ToLocalTime().ToString("dd MMM, hh:mm tt"))
+                                </div>
+
+                            </div>
+
+                        </div>
+                    }
                 }
             }
             else
@@ -209,7 +482,9 @@
 
 <script>
     const messagesArea =
-        document.getElementById("messagesArea");
+        document.getElementById(
+            "messagesArea"
+        );
 
     if (messagesArea) {
         messagesArea.scrollTop =

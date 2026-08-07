@@ -27,87 +27,6 @@ namespace Swapster.Controllers
             _passwordHasher = new PasswordHasher<User>();
         }
 
-        private bool SendVerificationEmail(User user)
-        {
-            string token =
-                Guid.NewGuid().ToString("N");
-
-            user.EmailVerificationToken =
-                token;
-
-            user.EmailVerificationTokenExpiry =
-                DateTime.UtcNow.AddHours(24);
-
-            _context.SaveChanges();
-
-            string? verificationLink =
-                Url.Action(
-                    "VerifyEmail",
-                    "Account",
-                    new
-                    {
-                        token
-                    },
-                    Request.Scheme
-                );
-
-            if (string.IsNullOrWhiteSpace(verificationLink))
-            {
-                return false;
-            }
-
-            string subject =
-                "Verify Your Swapster Email";
-
-            string body = $@"
-        <h2>Verify Your Email</h2>
-
-        <p>Hello {user.Username},</p>
-
-        <p>
-            Thank you for creating your Swapster account.
-            Please verify your email before publishing skills.
-        </p>
-
-        <p>
-            <a href='{verificationLink}'
-               style='background:#6674ff;
-                      color:white;
-                      padding:12px 18px;
-                      text-decoration:none;
-                      border-radius:6px;
-                      display:inline-block;'>
-
-                Verify Email
-            </a>
-        </p>
-
-        <p>
-            Or copy and open this link:
-        </p>
-
-        <p>{verificationLink}</p>
-
-        <p>
-            This verification link will expire in 24 hours.
-        </p>
-
-        <br />
-
-        <p>
-            Regards,
-            <br />
-            Swapster Team
-        </p>
-    ";
-
-            return _emailService.SendEmail(
-                user.Email,
-                subject,
-                body
-            );
-        }
-
         // =====================================================
         // SESSION HELPERS
         // =====================================================
@@ -138,16 +57,20 @@ namespace Swapster.Controllers
         private async Task<User?> GetAuthenticatedUserAsync()
         {
             int? userId =
-                HttpContext.Session.GetInt32("UserId");
+                HttpContext.Session.GetInt32(
+                    "UserId"
+                );
 
             if (userId == null)
             {
                 return null;
             }
 
-            var user = await _context.Users
-                .FirstOrDefaultAsync(item =>
-                    item.UserId == userId.Value);
+            var user =
+                await _context.Users
+                    .FirstOrDefaultAsync(item =>
+                        item.UserId ==
+                        userId.Value);
 
             if (user == null)
             {
@@ -155,14 +78,111 @@ namespace Swapster.Controllers
                 return null;
             }
 
-            // Blocked user ki existing session bhi close ho jayegi
-            if (user.IsBlocked)
+            if (user.IsBlocked ||
+                user.IsDeactivated)
             {
                 HttpContext.Session.Clear();
                 return null;
             }
 
             return user;
+        }
+
+        // =====================================================
+        // RESET PASSWORD EMAIL HELPER
+        // Used by Forgot Password + Settings Change Password
+        // =====================================================
+
+        private async Task<bool> CreateAndSendPasswordResetEmailAsync(
+            User user)
+        {
+            string token =
+                Guid.NewGuid().ToString("N");
+
+            user.VerificationToken =
+                token;
+
+            user.TokenExpiry =
+                DateTime.UtcNow.AddMinutes(15);
+
+            await _context.SaveChangesAsync();
+
+            string? resetLink =
+                Url.Action(
+                    "ResetPassword",
+                    "Account",
+                    new
+                    {
+                        token
+                    },
+                    Request.Scheme
+                );
+
+            if (string.IsNullOrWhiteSpace(
+                    resetLink))
+            {
+                return false;
+            }
+
+            string subject =
+                "Reset Your Swapster Password";
+
+            string body = $@"
+                <h2>Reset Your Password</h2>
+
+                <p>Hello {user.Username},</p>
+
+                <p>
+                    A password reset was requested for your
+                    Swapster account.
+                </p>
+
+                <p>
+                    Click the button below to set a new password:
+                </p>
+
+                <p>
+                    <a href='{resetLink}'
+                       style='background:#6674ff;
+                              color:white;
+                              padding:12px 18px;
+                              text-decoration:none;
+                              border-radius:6px;
+                              display:inline-block;
+                              font-weight:bold;'>
+                        Reset Password
+                    </a>
+                </p>
+
+                <p>
+                    Or copy and open this link:
+                </p>
+
+                <p>{resetLink}</p>
+
+                <p>
+                    This link will expire in 15 minutes.
+                </p>
+
+                <p>
+                    If you did not request this change,
+                    you can ignore this email.
+                </p>
+
+                <br />
+
+                <p>
+                    Regards,
+                    <br />
+                    Swapster Team
+                </p>
+            ";
+
+            return _emailService.SendEmail(
+                user.Email,
+                subject,
+                body
+            );
         }
 
         // =====================================================
@@ -186,7 +206,8 @@ namespace Swapster.Controllers
             ViewData["HideNavbar"] = true;
             ViewData["BodyClass"] = "auth-page";
 
-            email = email?.Trim() ?? string.Empty;
+            email =
+                email?.Trim() ?? string.Empty;
 
             if (string.IsNullOrWhiteSpace(email) ||
                 string.IsNullOrWhiteSpace(password))
@@ -197,9 +218,10 @@ namespace Swapster.Controllers
                 return View();
             }
 
-            var user = await _context.Users
-                .FirstOrDefaultAsync(item =>
-                    item.Email == email);
+            var user =
+                await _context.Users
+                    .FirstOrDefaultAsync(item =>
+                        item.Email == email);
 
             if (user == null)
             {
@@ -210,11 +232,12 @@ namespace Swapster.Controllers
             }
 
             var passwordResult =
-                _passwordHasher.VerifyHashedPassword(
-                    user,
-                    user.PasswordHash,
-                    password
-                );
+                _passwordHasher
+                    .VerifyHashedPassword(
+                        user,
+                        user.PasswordHash,
+                        password
+                    );
 
             if (passwordResult ==
                 PasswordVerificationResult.Failed)
@@ -225,7 +248,16 @@ namespace Swapster.Controllers
                 return View();
             }
 
-            // Blocked user login nahi kar sakta
+            // Self-deactivated account stays disabled until
+            // an administrator reactivates it.
+            if (user.IsDeactivated)
+            {
+                ViewBag.Error =
+                    "Your account is deactivated. Please contact an administrator to reactivate it.";
+
+                return View();
+            }
+
             if (user.IsBlocked)
             {
                 ViewBag.Error =
@@ -263,7 +295,8 @@ namespace Swapster.Controllers
             ViewData["HideNavbar"] = true;
             ViewData["BodyClass"] = "auth-page";
 
-            email = email?.Trim() ?? string.Empty;
+            email =
+                email?.Trim() ?? string.Empty;
 
             if (string.IsNullOrWhiteSpace(email) ||
                 string.IsNullOrWhiteSpace(password))
@@ -274,9 +307,10 @@ namespace Swapster.Controllers
                 return View();
             }
 
-            var user = await _context.Users
-                .FirstOrDefaultAsync(item =>
-                    item.Email == email);
+            var user =
+                await _context.Users
+                    .FirstOrDefaultAsync(item =>
+                        item.Email == email);
 
             if (user == null)
             {
@@ -287,11 +321,12 @@ namespace Swapster.Controllers
             }
 
             var passwordResult =
-                _passwordHasher.VerifyHashedPassword(
-                    user,
-                    user.PasswordHash,
-                    password
-                );
+                _passwordHasher
+                    .VerifyHashedPassword(
+                        user,
+                        user.PasswordHash,
+                        password
+                    );
 
             if (passwordResult ==
                 PasswordVerificationResult.Failed)
@@ -342,9 +377,9 @@ namespace Swapster.Controllers
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Signup(
-    User user,
-    string password,
-    string confirmPassword)
+            User user,
+            string password,
+            string confirmPassword)
         {
             ViewData["HideNavbar"] = true;
             ViewData["BodyClass"] = "auth-page";
@@ -358,14 +393,19 @@ namespace Swapster.Controllers
             }
 
             user.Username =
-                user.Username?.Trim() ?? string.Empty;
+                user.Username?.Trim()
+                ?? string.Empty;
 
             user.Email =
-                user.Email?.Trim() ?? string.Empty;
+                user.Email?.Trim()
+                ?? string.Empty;
 
-            if (string.IsNullOrWhiteSpace(user.Username) ||
-                string.IsNullOrWhiteSpace(user.Email) ||
-                string.IsNullOrWhiteSpace(password))
+            if (string.IsNullOrWhiteSpace(
+                    user.Username) ||
+                string.IsNullOrWhiteSpace(
+                    user.Email) ||
+                string.IsNullOrWhiteSpace(
+                    password))
             {
                 ViewBag.Error =
                     "Please fill all required fields.";
@@ -373,7 +413,8 @@ namespace Swapster.Controllers
                 return View(user);
             }
 
-            if (password != confirmPassword)
+            if (password !=
+                confirmPassword)
             {
                 ViewBag.Error =
                     "Password and confirm password do not match.";
@@ -382,8 +423,10 @@ namespace Swapster.Controllers
             }
 
             bool emailExists =
-                await _context.Users.AnyAsync(item =>
-                    item.Email == user.Email);
+                await _context.Users
+                    .AnyAsync(item =>
+                        item.Email ==
+                        user.Email);
 
             if (emailExists)
             {
@@ -393,7 +436,8 @@ namespace Swapster.Controllers
                 return View(user);
             }
 
-            user.AccessLevel = 2;
+            user.AccessLevel =
+                2;
 
             user.PasswordHash =
                 _passwordHasher.HashPassword(
@@ -401,10 +445,17 @@ namespace Swapster.Controllers
                     password
                 );
 
-            // New user initially unverified hoga
-            user.IsEmailVerified = false;
+            user.IsEmailVerified =
+                false;
 
-            user.IsBlocked = false;
+            user.IsBlocked =
+                false;
+
+            user.IsDeactivated =
+                false;
+
+            user.DeactivatedAt =
+                null;
 
             user.CreatedAt =
                 DateTime.UtcNow;
@@ -425,7 +476,8 @@ namespace Swapster.Controllers
                     "Account",
                     new
                     {
-                        token = user.EmailVerificationToken
+                        token =
+                            user.EmailVerificationToken
                     },
                     Request.Scheme
                 );
@@ -434,48 +486,52 @@ namespace Swapster.Controllers
                 "Verify Your Swapster Email";
 
             string body = $@"
-        <h2>Verify Your Email</h2>
+                <h2>Verify Your Email</h2>
 
-        <p>Hello {user.Username},</p>
+                <p>Hello {user.Username},</p>
 
-        <p>
-            Your Swapster account has been created.
-            Please verify your email before adding skills.
-        </p>
+                <p>
+                    Your Swapster account has been created.
+                    Please verify your email before adding skills.
+                </p>
 
-        <p>
-            <a href='{verificationLink}'
-               style='background:#6674ff;
-                      color:white;
-                      padding:12px 18px;
-                      text-decoration:none;
-                      border-radius:6px;
-                      display:inline-block;'>
+                <p>
+                    <a href='{verificationLink}'
+                       style='background:#6674ff;
+                              color:white;
+                              padding:12px 18px;
+                              text-decoration:none;
+                              border-radius:6px;
+                              display:inline-block;
+                              font-weight:bold;'>
+                        Verify Email
+                    </a>
+                </p>
 
-                Verify Email
-            </a>
-        </p>
+                <p>
+                    Or copy and open this link:
+                </p>
 
-        <p>
-            Or copy and open this link:
-        </p>
+                <p>{verificationLink}</p>
 
-        <p>{verificationLink}</p>
+                <p>
+                    This verification link will expire
+                    in 24 hours.
+                </p>
 
-        <p>
-            This verification link will expire in 24 hours.
-        </p>
+                <br />
 
-        <br />
-
-        <p>
-            Regards,
-            <br />
-            Swapster Team
-        </p>
-    ";
+                <p>
+                    Regards,
+                    <br />
+                    Swapster Team
+                </p>
+            ";
 
             bool emailSent =
+                !string.IsNullOrWhiteSpace(
+                    verificationLink
+                ) &&
                 _emailService.SendEmail(
                     user.Email,
                     subject,
@@ -500,13 +556,15 @@ namespace Swapster.Controllers
         }
 
         // =====================================================
-        // FORGOT PASSWORD
+        // VERIFY EMAIL
         // =====================================================
+
         [HttpGet]
         public async Task<IActionResult> VerifyEmail(
-    string token)
+            string token)
         {
-            if (string.IsNullOrWhiteSpace(token))
+            if (string.IsNullOrWhiteSpace(
+                    token))
             {
                 TempData["Error"] =
                     "Invalid email verification link.";
@@ -517,11 +575,13 @@ namespace Swapster.Controllers
                 );
             }
 
-            var user = await _context.Users
-                .FirstOrDefaultAsync(item =>
-                    item.EmailVerificationToken == token &&
-                    item.EmailVerificationTokenExpiry >
-                    DateTime.UtcNow);
+            var user =
+                await _context.Users
+                    .FirstOrDefaultAsync(item =>
+                        item.EmailVerificationToken ==
+                            token &&
+                        item.EmailVerificationTokenExpiry >
+                            DateTime.UtcNow);
 
             if (user == null)
             {
@@ -534,11 +594,14 @@ namespace Swapster.Controllers
                 );
             }
 
-            user.IsEmailVerified = true;
+            user.IsEmailVerified =
+                true;
 
-            user.EmailVerificationToken = null;
+            user.EmailVerificationToken =
+                null;
 
-            user.EmailVerificationTokenExpiry = null;
+            user.EmailVerificationTokenExpiry =
+                null;
 
             await _context.SaveChangesAsync();
 
@@ -551,29 +614,20 @@ namespace Swapster.Controllers
             );
         }
 
+        // =====================================================
+        // RESEND EMAIL VERIFICATION
+        // =====================================================
+
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> ResendVerification()
+        public async Task<IActionResult>
+            ResendVerification()
         {
-            int? userId =
-                HttpContext.Session.GetInt32("UserId");
-
-            if (userId == null)
-            {
-                return RedirectToAction(
-                    "Login",
-                    "Account"
-                );
-            }
-
-            var user = await _context.Users
-                .FirstOrDefaultAsync(item =>
-                    item.UserId == userId.Value);
+            var user =
+                await GetAuthenticatedUserAsync();
 
             if (user == null)
             {
-                HttpContext.Session.Clear();
-
                 return RedirectToAction(
                     "Login",
                     "Account"
@@ -605,40 +659,60 @@ namespace Swapster.Controllers
                     "Account",
                     new
                     {
-                        token = user.EmailVerificationToken
+                        token =
+                            user.EmailVerificationToken
                     },
                     Request.Scheme
                 );
+
+            if (string.IsNullOrWhiteSpace(
+                    verificationLink))
+            {
+                TempData["Error"] =
+                    "Verification link could not be generated.";
+
+                return RedirectToAction(
+                    "MyAccount",
+                    "Account"
+                );
+            }
 
             string subject =
                 "Verify Your Swapster Email";
 
             string body = $@"
-        <h2>Verify Your Email</h2>
+                <h2>Verify Your Email</h2>
 
-        <p>Hello {user.Username},</p>
+                <p>Hello {user.Username},</p>
 
-        <p>
-            Please verify your Swapster email before publishing skills.
-        </p>
+                <p>
+                    Please verify your Swapster email
+                    before publishing skills.
+                </p>
 
-        <p>
-            <a href='{verificationLink}'
-               style='background:#6674ff;
-                      color:white;
-                      padding:12px 18px;
-                      text-decoration:none;
-                      border-radius:6px;
-                      display:inline-block;'>
+                <p>
+                    <a href='{verificationLink}'
+                       style='background:#6674ff;
+                              color:white;
+                              padding:12px 18px;
+                              text-decoration:none;
+                              border-radius:6px;
+                              display:inline-block;
+                              font-weight:bold;'>
+                        Verify Email
+                    </a>
+                </p>
 
-                Verify Email
-            </a>
-        </p>
+                <p>
+                    This link will expire in 24 hours.
+                </p>
 
-        <p>
-            This link will expire in 24 hours.
-        </p>
-    ";
+                <p>
+                    Regards,
+                    <br />
+                    Swapster Team
+                </p>
+            ";
 
             bool emailSent =
                 _emailService.SendEmail(
@@ -667,6 +741,10 @@ namespace Swapster.Controllers
             );
         }
 
+        // =====================================================
+        // FORGOT PASSWORD
+        // =====================================================
+
         [HttpGet]
         public IActionResult ForgotPassword()
         {
@@ -683,9 +761,11 @@ namespace Swapster.Controllers
             ViewData["HideNavbar"] = true;
             ViewData["BodyClass"] = "auth-page";
 
-            email = email?.Trim() ?? string.Empty;
+            email =
+                email?.Trim() ?? string.Empty;
 
-            if (string.IsNullOrWhiteSpace(email))
+            if (string.IsNullOrWhiteSpace(
+                    email))
             {
                 ViewBag.Error =
                     "Please enter your email.";
@@ -693,9 +773,10 @@ namespace Swapster.Controllers
                 return View();
             }
 
-            var user = await _context.Users
-                .FirstOrDefaultAsync(item =>
-                    item.Email == email);
+            var user =
+                await _context.Users
+                    .FirstOrDefaultAsync(item =>
+                        item.Email == email);
 
             if (user == null)
             {
@@ -705,80 +786,9 @@ namespace Swapster.Controllers
                 return View();
             }
 
-            string token =
-                Guid.NewGuid().ToString();
-
-            user.VerificationToken = token;
-
-            user.TokenExpiry =
-                DateTime.UtcNow.AddMinutes(15);
-
-            await _context.SaveChangesAsync();
-
-            string? resetLink =
-                Url.Action(
-                    "ResetPassword",
-                    "Account",
-                    new
-                    {
-                        token
-                    },
-                    Request.Scheme
-                );
-
-            string subject =
-                "Reset Your Swapster Password";
-
-            string body = $@"
-                <h2>Reset Your Password</h2>
-
-                <p>Hello {user.Username},</p>
-
-                <p>
-                    You requested to reset your Swapster password.
-                </p>
-
-                <p>
-                    Click the button below to reset your password:
-                </p>
-
-                <p>
-                    <a href='{resetLink}'
-                       style='background:#6674ff;
-                              color:white;
-                              padding:12px 18px;
-                              text-decoration:none;
-                              border-radius:6px;
-                              display:inline-block;'>
-
-                        Reset Password
-                    </a>
-                </p>
-
-                <p>
-                    Or copy this link and open it in your browser:
-                </p>
-
-                <p>{resetLink}</p>
-
-                <p>
-                    This link will expire in 15 minutes.
-                </p>
-
-                <br />
-
-                <p>
-                    Regards,
-                    <br />
-                    Swapster Team
-                </p>
-            ";
-
             bool emailSent =
-                _emailService.SendEmail(
-                    email,
-                    subject,
-                    body
+                await CreateAndSendPasswordResetEmailAsync(
+                    user
                 );
 
             if (!emailSent)
@@ -796,6 +806,52 @@ namespace Swapster.Controllers
         }
 
         // =====================================================
+        // SETTINGS -> CHANGE PASSWORD
+        // Sends reset link to logged-in user's current email.
+        // =====================================================
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult>
+            SendPasswordResetLink()
+        {
+            var user =
+                await GetAuthenticatedUserAsync();
+
+            if (user == null)
+            {
+                return RedirectToAction(
+                    "Login",
+                    "Account"
+                );
+            }
+
+            bool emailSent =
+                await CreateAndSendPasswordResetEmailAsync(
+                    user
+                );
+
+            if (!emailSent)
+            {
+                TempData["Error"] =
+                    "Password reset email could not be sent. Please try again.";
+
+                return RedirectToAction(
+                    "Settings",
+                    "Home"
+                );
+            }
+
+            TempData["Success"] =
+                "A password reset link has been sent to your email. The link will expire in 15 minutes.";
+
+            return RedirectToAction(
+                "Settings",
+                "Home"
+            );
+        }
+
+        // =====================================================
         // RESET PASSWORD GET
         // =====================================================
 
@@ -806,18 +862,22 @@ namespace Swapster.Controllers
             ViewData["HideNavbar"] = true;
             ViewData["BodyClass"] = "auth-page";
 
-            if (string.IsNullOrWhiteSpace(token))
+            if (string.IsNullOrWhiteSpace(
+                    token))
             {
                 return Content(
                     "Invalid or expired token."
                 );
             }
 
-            var user = await _context.Users
-                .AsNoTracking()
-                .FirstOrDefaultAsync(item =>
-                    item.VerificationToken == token &&
-                    item.TokenExpiry > DateTime.UtcNow);
+            var user =
+                await _context.Users
+                    .AsNoTracking()
+                    .FirstOrDefaultAsync(item =>
+                        item.VerificationToken ==
+                            token &&
+                        item.TokenExpiry >
+                            DateTime.UtcNow);
 
             if (user == null)
             {
@@ -826,7 +886,8 @@ namespace Swapster.Controllers
                 );
             }
 
-            ViewBag.Token = token;
+            ViewBag.Token =
+                token;
 
             return View();
         }
@@ -843,18 +904,23 @@ namespace Swapster.Controllers
             ViewData["HideNavbar"] = true;
             ViewData["BodyClass"] = "auth-page";
 
-            if (string.IsNullOrWhiteSpace(token) ||
-                string.IsNullOrWhiteSpace(newPassword))
+            if (string.IsNullOrWhiteSpace(
+                    token) ||
+                string.IsNullOrWhiteSpace(
+                    newPassword))
             {
                 return Content(
                     "Invalid password reset request."
                 );
             }
 
-            var user = await _context.Users
-                .FirstOrDefaultAsync(item =>
-                    item.VerificationToken == token &&
-                    item.TokenExpiry > DateTime.UtcNow);
+            var user =
+                await _context.Users
+                    .FirstOrDefaultAsync(item =>
+                        item.VerificationToken ==
+                            token &&
+                        item.TokenExpiry >
+                            DateTime.UtcNow);
 
             if (user == null)
             {
@@ -869,16 +935,35 @@ namespace Swapster.Controllers
                     newPassword
                 );
 
-            user.VerificationToken = null;
-            user.TokenExpiry = null;
+            user.VerificationToken =
+                null;
+
+            user.TokenExpiry =
+                null;
 
             await _context.SaveChangesAsync();
 
-            // Password reset se account unblock nahi hoga
             if (user.IsBlocked)
             {
+                HttpContext.Session.Clear();
+
                 TempData["Error"] =
                     "Password reset successfully, but your account is blocked by the administrator.";
+
+                return RedirectToAction(
+                    "Login",
+                    "Account"
+                );
+            }
+
+            // Password reset does not reactivate a
+            // deactivated account.
+            if (user.IsDeactivated)
+            {
+                HttpContext.Session.Clear();
+
+                TempData["Success"] =
+                    "Password reset successfully. Your account is still deactivated and must be reactivated by an administrator.";
 
                 return RedirectToAction(
                     "Login",
@@ -906,104 +991,8 @@ namespace Swapster.Controllers
         }
 
         // =====================================================
-        // CHANGE PASSWORD GET
+        // MY ACCOUNT
         // =====================================================
-
-        [HttpGet]
-        public async Task<IActionResult> ChangePassword()
-        {
-            ViewData["HideNavbar"] = true;
-            ViewData["BodyClass"] = "auth-page";
-
-            var user =
-                await GetAuthenticatedUserAsync();
-
-            if (user == null)
-            {
-                return RedirectToAction(
-                    "Login",
-                    "Account"
-                );
-            }
-
-            return View();
-        }
-
-        // =====================================================
-        // CHANGE PASSWORD POST
-        // =====================================================
-
-        [HttpPost]
-        public async Task<IActionResult> ChangePassword(
-            string oldPassword,
-            string newPassword,
-            string confirmPassword)
-        {
-            ViewData["HideNavbar"] = true;
-            ViewData["BodyClass"] = "auth-page";
-
-            var user =
-                await GetAuthenticatedUserAsync();
-
-            if (user == null)
-            {
-                return RedirectToAction(
-                    "Login",
-                    "Account"
-                );
-            }
-
-            if (string.IsNullOrWhiteSpace(oldPassword) ||
-                string.IsNullOrWhiteSpace(newPassword) ||
-                string.IsNullOrWhiteSpace(confirmPassword))
-            {
-                ViewBag.Error =
-                    "All fields are required.";
-
-                return View();
-            }
-
-            if (newPassword != confirmPassword)
-            {
-                ViewBag.Error =
-                    "New password and confirm password do not match.";
-
-                return View();
-            }
-
-            var passwordResult =
-                _passwordHasher.VerifyHashedPassword(
-                    user,
-                    user.PasswordHash,
-                    oldPassword
-                );
-
-            if (passwordResult ==
-                PasswordVerificationResult.Failed)
-            {
-                ViewBag.Error =
-                    "Incorrect current password.";
-
-                return View();
-            }
-
-            user.PasswordHash =
-                _passwordHasher.HashPassword(
-                    user,
-                    newPassword
-                );
-
-            await _context.SaveChangesAsync();
-
-            TempData["Success"] =
-                "Password changed successfully.";
-
-            return RedirectToAction(
-                "MyAccount",
-                "Account"
-            );
-        }
-
 
         [HttpGet]
         public async Task<IActionResult> MyAccount()
@@ -1024,14 +1013,15 @@ namespace Swapster.Controllers
             }
 
             ViewBag.IsEmailVerified =
-            user.IsEmailVerified;
+                user.IsEmailVerified;
 
             // Current user's active offered skills
             var mySkills =
                 await _context.UserSkills
                     .AsNoTracking()
                     .Where(skill =>
-                        skill.UserId == user.UserId &&
+                        skill.UserId ==
+                            user.UserId &&
                         skill.IsActive &&
                         !skill.IsDeleted)
                     .OrderByDescending(skill =>
@@ -1043,7 +1033,8 @@ namespace Swapster.Controllers
                 await _context.UserWantedSkills
                     .AsNoTracking()
                     .Where(skill =>
-                        skill.UserId == user.UserId &&
+                        skill.UserId ==
+                            user.UserId &&
                         skill.IsActive &&
                         !skill.IsDeleted)
                     .OrderByDescending(skill =>
@@ -1057,11 +1048,13 @@ namespace Swapster.Controllers
                     .Include(skill =>
                         skill.User)
                     .Where(skill =>
-                        skill.UserId != user.UserId &&
+                        skill.UserId !=
+                            user.UserId &&
                         skill.IsActive &&
                         !skill.IsDeleted &&
                         skill.User != null &&
-                        !skill.User.IsBlocked)
+                        !skill.User.IsBlocked &&
+                        !skill.User.IsDeactivated)
                     .ToListAsync();
 
             // Other users' active wanted skills
@@ -1071,11 +1064,13 @@ namespace Swapster.Controllers
                     .Include(skill =>
                         skill.User)
                     .Where(skill =>
-                        skill.UserId != user.UserId &&
+                        skill.UserId !=
+                            user.UserId &&
                         skill.IsActive &&
                         !skill.IsDeleted &&
                         skill.User != null &&
-                        !skill.User.IsBlocked)
+                        !skill.User.IsBlocked &&
+                        !skill.User.IsDeactivated)
                     .ToListAsync();
 
             var myWantedNames =
@@ -1083,7 +1078,8 @@ namespace Swapster.Controllers
                     wantedSkills
                         .Where(skill =>
                             !string.IsNullOrWhiteSpace(
-                                skill.SkillName))
+                                skill.SkillName
+                            ))
                         .Select(skill =>
                             skill.SkillName.Trim()),
                     StringComparer.OrdinalIgnoreCase
@@ -1094,7 +1090,8 @@ namespace Swapster.Controllers
                     mySkills
                         .Where(skill =>
                             !string.IsNullOrWhiteSpace(
-                                skill.SkillName))
+                                skill.SkillName
+                            ))
                         .Select(skill =>
                             skill.SkillName.Trim()),
                     StringComparer.OrdinalIgnoreCase
@@ -1104,7 +1101,8 @@ namespace Swapster.Controllers
                 otherOfferedSkills
                     .Where(skill =>
                         myWantedNames.Contains(
-                            skill.SkillName.Trim()))
+                            skill.SkillName.Trim()
+                        ))
                     .Select(skill =>
                         skill.UserId)
                     .Distinct()
@@ -1113,28 +1111,33 @@ namespace Swapster.Controllers
             var recommendedProfiles =
                 new List<ProfileRecommendationViewModel>();
 
-            foreach (int candidateUserId in candidateUserIds)
+            foreach (int candidateUserId
+                in candidateUserIds)
             {
                 var candidateOffered =
                     otherOfferedSkills
                         .Where(skill =>
-                            skill.UserId == candidateUserId)
+                            skill.UserId ==
+                            candidateUserId)
                         .ToList();
 
                 var candidateWanted =
                     otherWantedSkills
                         .Where(skill =>
-                            skill.UserId == candidateUserId)
+                            skill.UserId ==
+                            candidateUserId)
                         .ToList();
 
                 var candidateUser =
                     candidateOffered
-                        .Select(skill => skill.User)
+                        .Select(skill =>
+                            skill.User)
                         .FirstOrDefault(item =>
                             item != null)
                     ??
                     candidateWanted
-                        .Select(skill => skill.User)
+                        .Select(skill =>
+                            skill.User)
                         .FirstOrDefault(item =>
                             item != null);
 
@@ -1147,22 +1150,26 @@ namespace Swapster.Controllers
                     candidateOffered
                         .Where(skill =>
                             myWantedNames.Contains(
-                                skill.SkillName.Trim()))
+                                skill.SkillName.Trim()
+                            ))
                         .Select(skill =>
                             skill.SkillName.Trim())
                         .Distinct(
-                            StringComparer.OrdinalIgnoreCase)
+                            StringComparer.OrdinalIgnoreCase
+                        )
                         .ToList();
 
                 var youTeach =
                     candidateWanted
                         .Where(skill =>
                             myOfferedNames.Contains(
-                                skill.SkillName.Trim()))
+                                skill.SkillName.Trim()
+                            ))
                         .Select(skill =>
                             skill.SkillName.Trim())
                         .Distinct(
-                            StringComparer.OrdinalIgnoreCase)
+                            StringComparer.OrdinalIgnoreCase
+                        )
                         .ToList();
 
                 if (!theyTeach.Any())
@@ -1177,14 +1184,21 @@ namespace Swapster.Controllers
                             candidateUser.UserId,
 
                         Username =
-                            candidateUser.Username ?? "User",
+                            candidateUser.Username
+                            ?? "User",
 
                         TheyTeach =
-                            string.Join(", ", theyTeach),
+                            string.Join(
+                                ", ",
+                                theyTeach
+                            ),
 
                         YouTeach =
                             youTeach.Any()
-                                ? string.Join(", ", youTeach)
+                                ? string.Join(
+                                    ", ",
+                                    youTeach
+                                )
                                 : "No mutual teaching skill yet",
 
                         MatchType =
@@ -1212,7 +1226,8 @@ namespace Swapster.Controllers
                         user.Username ?? "User",
 
                     Email =
-                        user.Email ?? "Not available",
+                        user.Email
+                        ?? "Not available",
 
                     MySkills =
                         mySkills,
@@ -1228,221 +1243,8 @@ namespace Swapster.Controllers
         }
 
         // =====================================================
-        // UPDATE ACCOUNT
+        // LOGOUT
         // =====================================================
-
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> UpdateAccount(
-      string username,
-      string email)
-        {
-            ViewData["HideNavbar"] = true;
-            ViewData["FullWidth"] = true;
-            ViewData["BodyClass"] = "dashboard-page";
-
-            var user =
-                await GetAuthenticatedUserAsync();
-
-            if (user == null)
-            {
-                return RedirectToAction(
-                    "Login",
-                    "Account"
-                );
-            }
-
-            username =
-                username?.Trim() ?? string.Empty;
-
-            email =
-                email?.Trim() ?? string.Empty;
-
-            // =====================================================
-            // BASIC VALIDATION
-            // =====================================================
-
-            if (string.IsNullOrWhiteSpace(username) ||
-                string.IsNullOrWhiteSpace(email))
-            {
-                TempData["Error"] =
-                    "Username and email are required.";
-
-                return RedirectToAction(
-                    "MyAccount",
-                    "Account"
-                );
-            }
-
-            // =====================================================
-            // DUPLICATE EMAIL CHECK
-            // =====================================================
-
-            bool emailExists =
-                await _context.Users.AnyAsync(item =>
-                    item.UserId != user.UserId &&
-                    item.Email.ToLower() == email.ToLower());
-
-            if (emailExists)
-            {
-                TempData["Error"] =
-                    "This email is already used by another account.";
-
-                return RedirectToAction(
-                    "MyAccount",
-                    "Account"
-                );
-            }
-
-            // Check whether email was actually changed
-            bool emailChanged =
-                !string.Equals(
-                    user.Email?.Trim(),
-                    email,
-                    StringComparison.OrdinalIgnoreCase
-                );
-
-            user.Username =
-                username;
-
-            user.Email =
-                email;
-
-            // =====================================================
-            // EMAIL CHANGE REQUIRES VERIFICATION AGAIN
-            // =====================================================
-
-            if (emailChanged)
-            {
-                user.IsEmailVerified =
-                    false;
-
-                user.EmailVerificationToken =
-                    Guid.NewGuid().ToString("N");
-
-                user.EmailVerificationTokenExpiry =
-                    DateTime.UtcNow.AddHours(24);
-            }
-
-            await _context.SaveChangesAsync();
-
-            // Update username and email in session
-            SetUserSession(user);
-
-            // =====================================================
-            // SEND VERIFICATION EMAIL TO NEW EMAIL
-            // =====================================================
-
-            if (emailChanged)
-            {
-                string? verificationLink =
-                    Url.Action(
-                        "VerifyEmail",
-                        "Account",
-                        new
-                        {
-                            token =
-                                user.EmailVerificationToken
-                        },
-                        Request.Scheme
-                    );
-
-                if (string.IsNullOrWhiteSpace(verificationLink))
-                {
-                    TempData["Error"] =
-                        "Account updated, but the verification link could not be generated.";
-
-                    return RedirectToAction(
-                        "MyAccount",
-                        "Account"
-                    );
-                }
-
-                string subject =
-                    "Verify Your New Swapster Email";
-
-                string body = $@"
-            <h2>Verify Your New Email</h2>
-
-            <p>Hello {user.Username},</p>
-
-            <p>
-                Your Swapster email address has been changed
-                to <strong>{user.Email}</strong>.
-            </p>
-
-            <p>
-                Please verify your new email before publishing
-                a skill swap entry.
-            </p>
-
-            <p>
-                <a href='{verificationLink}'
-                   style='
-                       background:#6674ff;
-                       color:white;
-                       padding:12px 18px;
-                       text-decoration:none;
-                       border-radius:6px;
-                       display:inline-block;
-                       font-weight:bold;'>
-
-                    Verify New Email
-                </a>
-            </p>
-
-            <p>
-                Or copy and open this link in your browser:
-            </p>
-
-            <p>{verificationLink}</p>
-
-            <p>
-                This verification link will expire in 24 hours.
-            </p>
-
-            <br />
-
-            <p>
-                Regards,
-                <br />
-                Swapster Team
-            </p>
-        ";
-
-                bool emailSent =
-                    _emailService.SendEmail(
-                        user.Email,
-                        subject,
-                        body
-                    );
-
-                if (emailSent)
-                {
-                    TempData["Success"] =
-                        "Account updated. A verification link has been sent to your new email.";
-                }
-                else
-                {
-                    TempData["Error"] =
-                        "Account updated, but the verification email could not be sent. Use the resend verification option.";
-                }
-
-                return RedirectToAction(
-                    "MyAccount",
-                    "Account"
-                );
-            }
-
-            // Email change nahi hui, sirf username update hua
-            TempData["Success"] =
-                "Account updated successfully.";
-
-            return RedirectToAction(
-                "MyAccount",
-                "Account"
-            );
-        }
 
         [HttpPost]
         public IActionResult Logout()

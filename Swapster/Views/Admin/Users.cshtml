@@ -9,6 +9,20 @@
     var deactivatedUserIds =
         ViewBag.DeactivatedUserIds as HashSet<int>
         ?? new HashSet<int>();
+
+    var successMessage =
+        TempData["Success"]?.ToString();
+
+    var deactivationMessage =
+        "Your account has been deactivated. An administrator must reactivate it before you can sign in again.";
+
+    bool showSuccessMessage =
+        !string.IsNullOrWhiteSpace(successMessage)
+        && !string.Equals(
+            successMessage,
+            deactivationMessage,
+            StringComparison.OrdinalIgnoreCase
+        );
 }
 
 <style>
@@ -383,10 +397,10 @@
 
     </div>
 
-    @if (TempData["Success"] != null)
+    @if (showSuccessMessage)
     {
         <div class="alert-success">
-            @TempData["Success"]
+            @successMessage
         </div>
     }
 
@@ -634,10 +648,10 @@
 
                                                 <button type="submit"
                                                         class="action-btn @(isDeactivated
-                                                                                                                    ? "reactivate-btn"
-                                                                                                                    : user.IsBlocked
-                                                                                                                        ? "unblock-btn"
-                                                                                                                        : "block-btn")">
+                                                                                                                                                ? "reactivate-btn"
+                                                                                                                                                : user.IsBlocked
+                                                                                                                                                ? "unblock-btn"
+                                                                                                                                                : "block-btn")">
 
                                                     @(isDeactivated
                                                                                         ? "Reactivate"

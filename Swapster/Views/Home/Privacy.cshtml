@@ -36,13 +36,23 @@
         text-decoration: none;
         font-size: 28px;
         font-weight: 900;
-        color: #111827;
+        color: #d9573b;
         letter-spacing: -0.8px;
     }
 
         .brand-name span {
             color: #6674ff;
         }
+
+    .brand-swap-text {
+        color: #d9573b;
+        -webkit-text-fill-color: #d9573b;
+    }
+
+    .brand-ster-text {
+        color: #6674ff;
+        -webkit-text-fill-color: #6674ff;
+    }
 
     .nav-actions {
         display: flex;
@@ -96,10 +106,10 @@
         color: #111827;
     }
 
-        .privacy-hero h1 span {
-            background: linear-gradient(135deg, #6674ff, #ff64aa);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
+        .privacy-hero h1 .brand-swap-text,
+        .privacy-hero h1 .brand-ster-text {
+            background: none;
+            -webkit-background-clip: initial;
         }
 
     .privacy-hero p {
@@ -413,8 +423,8 @@
     <!-- ================= HERO ================= -->
 
     <section class="privacy-hero">
-       
-        <h1>Your privacy matters at <span>Swapster.</span></h1>
+
+        <h1>Your privacy matters at <span class="brand-swap-text">Swap</span><span class="brand-ster-text">ster</span>.</h1>
 
         <p>
             This Privacy Policy explains what information Swapster collects, how we use it,
@@ -440,7 +450,7 @@
             <a href="#protection">Data Protection</a>
             <a href="#sharing">Information Sharing</a>
             <a href="#responsibilities">User Responsibilities</a>
-            <a href="#cookies">Cookies</a>
+            <a href="#cookies">Essential Cookies</a>
             <a href="#rights">Your Choices</a>
             <a href="#changes">Policy Updates</a>
             <a href="#contact">Contact Us</a>
@@ -506,7 +516,7 @@
 
             <div class="policy-section" id="protection">
                 <div class="section-title">
-                  <h3>3. Data Protection</h3>
+                    <h3>3. Data Protection</h3>
                 </div>
 
                 <p>
@@ -558,17 +568,18 @@
 
             <div class="policy-section" id="cookies">
                 <div class="section-title">
-                    <h3>6. Cookies</h3>
+                    <h3>6. Essential Cookies</h3>
                 </div>
 
                 <p>
-                    Swapster may use cookies or similar technologies to improve your browsing experience,
-                    remember sessions, and understand how the platform is used.
+                    Swapster does not use advertising or analytics cookies. The platform uses only essential
+                    cookies required for core functionality such as keeping you signed in, maintaining your
+                    session, and protecting forms against unauthorized requests.
                 </p>
 
                 <p>
-                    You may manage cookies through your browser settings, but some features may not work properly
-                    if cookies are disabled.
+                    These essential cookies are necessary for features such as login, session-based account access,
+                    and security validation. 
                 </p>
             </div>
 
@@ -635,7 +646,7 @@
     </section>
 
     <footer class="privacy-footer">
-        © 2026 Swapster. All rights reserved.
+        © 2026 <span class="brand-swap-text">Swap</span><span class="brand-ster-text">ster</span>. All rights reserved.
     </footer>
 
 </div>

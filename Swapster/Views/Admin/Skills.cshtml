@@ -4,6 +4,20 @@
     ViewData["Title"] = "Skill Management";
     ViewData["HideNavbar"] = true;
     ViewData["FullWidth"] = true;
+
+    var successMessage =
+        TempData["Success"]?.ToString();
+
+    var deactivationMessage =
+        "Your account has been deactivated. An administrator must reactivate it before you can sign in again.";
+
+    bool showSuccessMessage =
+        !string.IsNullOrWhiteSpace(successMessage)
+        && !string.Equals(
+            successMessage,
+            deactivationMessage,
+            StringComparison.OrdinalIgnoreCase
+        );
 }
 
 <style>
@@ -78,7 +92,7 @@
         max-width: 1400px;
         margin: 0 auto 22px;
         display: grid;
-        grid-template-columns: repeat(5, 1fr);
+        grid-template-columns: repeat(2, 1fr);
         gap: 14px;
     }
 
@@ -117,7 +131,7 @@
 
     .filter-form {
         display: grid;
-        grid-template-columns: minmax(230px, 1fr) repeat(4, 160px) auto auto;
+        grid-template-columns: minmax(230px, 1fr) repeat(3, 160px) auto auto;
         gap: 10px;
     }
 
@@ -233,21 +247,6 @@
         color: #4f46e5;
     }
 
-    .active-badge {
-        background: #ecfdf5;
-        color: #059669;
-    }
-
-    .inactive-badge {
-        background: #fff7ed;
-        color: #ea580c;
-    }
-
-    .deleted-badge {
-        background: #fef2f2;
-        color: #dc2626;
-    }
-
     .action-group {
         display: flex;
         flex-wrap: wrap;
@@ -275,24 +274,9 @@
         color: white;
     }
 
-    .edit-btn {
-        background: #eef2ff;
-        color: #4f46e5;
-    }
-
-    .status-btn {
-        background: #fff7ed;
-        color: #ea580c;
-    }
-
     .delete-btn {
         background: #fef2f2;
         color: #dc2626;
-    }
-
-    .restore-btn {
-        background: #ecfdf5;
-        color: #059669;
     }
 
     .empty-state {
@@ -336,7 +320,7 @@
             <h1>Skill Management</h1>
 
             <p>
-                Search, review, edit and moderate skills across Swapster.
+                Search and review skills across Swapster.
             </p>
         </div>
 
@@ -348,10 +332,10 @@
 
     </div>
 
-    @if (TempData["Success"] != null)
+    @if (showSuccessMessage)
     {
         <div class="alert-success">
-            @TempData["Success"]
+            @successMessage
         </div>
     }
 
@@ -372,21 +356,6 @@
         <div class="stat-card">
             <strong>@Model.TotalWantedSkills</strong>
             <span>Wanted skills</span>
-        </div>
-
-        <div class="stat-card">
-            <strong>@Model.ActiveSkills</strong>
-            <span>Active skills</span>
-        </div>
-
-        <div class="stat-card">
-            <strong>@Model.InactiveSkills</strong>
-            <span>Inactive skills</span>
-        </div>
-
-        <div class="stat-card">
-            <strong>@Model.DeletedSkills</strong>
-            <span>Deleted skills</span>
         </div>
 
     </section>
@@ -439,31 +408,6 @@
                         Level @level
                     </option>
                 }
-
-            </select>
-
-            <select name="statusFilter"
-                    class="filter-control">
-
-                <option value="all"
-                        selected="@(Model.StatusFilter == "all")">
-                    All Statuses
-                </option>
-
-                <option value="active"
-                        selected="@(Model.StatusFilter == "active")">
-                    Active
-                </option>
-
-                <option value="inactive"
-                        selected="@(Model.StatusFilter == "inactive")">
-                    Inactive
-                </option>
-
-                <option value="deleted"
-                        selected="@(Model.StatusFilter == "deleted")">
-                    Deleted
-                </option>
 
             </select>
 
@@ -520,24 +464,27 @@
 
                     <thead>
                         <tr>
-                            <th>ID</th>
+                            <th>No.</th>
                             <th>Skill</th>
                             <th>Description</th>
                             <th>Level</th>
                             <th>Owner</th>
                             <th>Requests</th>
-                            <th>Status</th>
                             <th>Actions</th>
                         </tr>
                     </thead>
 
                     <tbody>
 
-                        @foreach (var skill in Model.OfferedSkills)
+                        @{
+                            int offeredNo = 1;
+                        }
+
+                        @foreach (var skill in Model.OfferedSkills.OrderBy(skill => skill.SkillId))
                         {
                             <tr>
 
-                                <td>@skill.SkillId</td>
+                                <td>@offeredNo</td>
 
                                 <td class="skill-name">
                                     @skill.SkillName
@@ -566,27 +513,6 @@
                                 </td>
 
                                 <td>
-                        @if (skill.IsDeleted)
-                                    {
-                                        <span class="badge deleted-badge">
-                                            Deleted
-                                        </span>
-                                    }
-                                    else if (skill.IsActive)
-                                    {
-                                        <span class="badge active-badge">
-                                            Active
-                                        </span>
-                                    }
-                                    else
-                                    {
-                                        <span class="badge inactive-badge">
-                                            Inactive
-                                        </span>
-                                    }
-                                </td>
-
-                                <td>
 
                                     <div class="action-group">
 
@@ -598,78 +524,39 @@
                                             View
                                         </a>
 
-                                        @if (!skill.IsDeleted)
-                                        {
-                                            <a asp-controller="Admin"
-                                               asp-action="EditSkill"
-                                               asp-route-type="offered"
-                                               asp-route-id="@skill.SkillId"
-                                               class="action-btn edit-btn">
-                                                Edit
-                                            </a>
+                                        <form asp-controller="Admin"
+                                              asp-action="DeleteSkill"
+                                              method="post"
+                                              onsubmit="return confirm('Delete this skill permanently? This cannot be undone.');">
 
-                                            <form asp-controller="Admin"
-                                                  asp-action="ToggleSkillStatus"
-                                                  method="post">
+                                            @Html.AntiForgeryToken()
 
-                                                @Html.AntiForgeryToken()
+                                            <input type="hidden"
+                                                   name="SkillType"
+                                                   value="offered" />
 
-                                                <input type="hidden"
-                                                       name="type"
-                                                       value="offered" />
+                                            <input type="hidden"
+                                                   name="SkillId"
+                                                   value="@skill.SkillId" />
 
-                                                <input type="hidden"
-                                                       name="id"
-                                                       value="@skill.SkillId" />
+                                            <input type="hidden"
+                                                   name="SkillName"
+                                                   value="@skill.SkillName" />
 
-                                                <button type="submit"
-                                                        class="action-btn status-btn">
-
-                                                    @(skill.IsActive
-                                                                                        ? "Deactivate"
-                                                                                        : "Activate")
-
-                                </button>
-
-                                            </form>
-
-                                            <a asp-controller="Admin"
-                                               asp-action="DeleteSkill"
-                                               asp-route-type="offered"
-                                               asp-route-id="@skill.SkillId"
-                                               class="action-btn delete-btn">
+                                            <button type="submit"
+                                                    class="action-btn delete-btn">
                                                 Delete
-                                            </a>
-                                                        }
-                                        else
-                                        {
-                                            <form asp-controller="Admin"
-                                                  asp-action="RestoreSkill"
-                                                  method="post">
+                                            </button>
 
-                                                @Html.AntiForgeryToken()
-
-                                                <input type="hidden"
-                                                       name="type"
-                                                       value="offered" />
-
-                                                <input type="hidden"
-                                                       name="id"
-                                                       value="@skill.SkillId" />
-
-                                                <button type="submit"
-                                                        class="action-btn restore-btn">
-                                                    Restore
-                                                </button>
-
-                                            </form>
-                                        }
+                                        </form>
 
                                     </div>
 
                                 </td>
 
                             </tr>
+
+                                offeredNo++;
                         }
 
                     </tbody>
@@ -704,23 +591,26 @@
 
                     <thead>
                         <tr>
-                            <th>ID</th>
+                            <th>No.</th>
                             <th>Skill</th>
                             <th>Desired Level</th>
                             <th>Owner</th>
                             <th>Added</th>
-                            <th>Status</th>
                             <th>Actions</th>
                         </tr>
                     </thead>
 
                     <tbody>
 
-                        @foreach (var skill in Model.WantedSkills)
+                        @{
+                            int wantedNo = 1;
+                        }
+
+                        @foreach (var skill in Model.WantedSkills.OrderBy(skill => skill.WantedSkillId))
                         {
                             <tr>
 
-                                <td>@skill.WantedSkillId</td>
+                                <td>@wantedNo</td>
 
                                 <td class="skill-name">
                                     @skill.SkillName
@@ -743,27 +633,6 @@
                                 </td>
 
                                 <td>
-                                    @if (skill.IsDeleted)
-                                    {
-                                        <span class="badge deleted-badge">
-                                            Deleted
-                                        </span>
-                                    }
-                                    else if (skill.IsActive)
-                                    {
-                                        <span class="badge active-badge">
-                                            Active
-                                        </span>
-                                    }
-                                    else
-                                    {
-                                        <span class="badge inactive-badge">
-                                            Inactive
-                                        </span>
-                                    }
-                                </td>
-
-                                <td>
 
                                     <div class="action-group">
 
@@ -775,78 +644,39 @@
                                             View
                                         </a>
 
-                                        @if (!skill.IsDeleted)
-                                        {
-                                            <a asp-controller="Admin"
-                                               asp-action="EditSkill"
-                                               asp-route-type="wanted"
-                                               asp-route-id="@skill.WantedSkillId"
-                                               class="action-btn edit-btn">
-                                                Edit
-                                            </a>
+                                        <form asp-controller="Admin"
+                                              asp-action="DeleteSkill"
+                                              method="post"
+                                              onsubmit="return confirm('Delete this skill permanently? This cannot be undone.');">
 
-                                            <form asp-controller="Admin"
-                                                  asp-action="ToggleSkillStatus"
-                                                  method="post">
+                                            @Html.AntiForgeryToken()
 
-                                                @Html.AntiForgeryToken()
+                                            <input type="hidden"
+                                                   name="SkillType"
+                                                   value="wanted" />
 
-                                                <input type="hidden"
-                                                       name="type"
-                                                       value="wanted" />
+                                            <input type="hidden"
+                                                   name="SkillId"
+                                                   value="@skill.WantedSkillId" />
 
-                                                <input type="hidden"
-                                                       name="id"
-                                                       value="@skill.WantedSkillId" />
+                                            <input type="hidden"
+                                                   name="SkillName"
+                                                   value="@skill.SkillName" />
 
-                                                <button type="submit"
-                                                        class="action-btn status-btn">
-
-                                                    @(skill.IsActive
-                                                                                        ? "Deactivate"
-                                                                                        : "Activate")
-
-                                </button>
-
-                                            </form>
-
-                                            <a asp-controller="Admin"
-                                               asp-action="DeleteSkill"
-                                               asp-route-type="wanted"
-                                               asp-route-id="@skill.WantedSkillId"
-                                               class="action-btn delete-btn">
+                                            <button type="submit"
+                                                    class="action-btn delete-btn">
                                                 Delete
-                                            </a>
-                                                        }
-                                        else
-                                        {
-                                            <form asp-controller="Admin"
-                                                  asp-action="RestoreSkill"
-                                                  method="post">
+                                            </button>
 
-                                                @Html.AntiForgeryToken()
-
-                                                <input type="hidden"
-                                                       name="type"
-                                                       value="wanted" />
-
-                                                <input type="hidden"
-                                                       name="id"
-                                                       value="@skill.WantedSkillId" />
-
-                                                <button type="submit"
-                                                        class="action-btn restore-btn">
-                                                    Restore
-                                                </button>
-
-                                            </form>
-                                        }
+                                        </form>
 
                                     </div>
 
                                 </td>
 
                             </tr>
+
+                            wantedNo++;
                         }
 
                     </tbody>

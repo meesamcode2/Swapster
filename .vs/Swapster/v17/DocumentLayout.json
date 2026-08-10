@@ -3,44 +3,12 @@
   "WorkspaceRootPath": "C:\\Users\\Meesam\\source\\repos\\Swapster\\",
   "Documents": [
     {
-      "AbsoluteMoniker": "D:0:0:{F803AD3F-87F0-438D-BA51-BEB13DB127A2}|Swapster\\Swapster.csproj|c:\\users\\meesam\\source\\repos\\swapster\\swapster\\views\\shared\\_layout.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
-      "RelativeMoniker": "D:0:0:{F803AD3F-87F0-438D-BA51-BEB13DB127A2}|Swapster\\Swapster.csproj|solutionrelative:swapster\\views\\shared\\_layout.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
+      "AbsoluteMoniker": "D:0:0:{F803AD3F-87F0-438D-BA51-BEB13DB127A2}|Swapster\\Swapster.csproj|c:\\users\\meesam\\source\\repos\\swapster\\swapster\\data\\applicationdbcontext.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{F803AD3F-87F0-438D-BA51-BEB13DB127A2}|Swapster\\Swapster.csproj|solutionrelative:swapster\\data\\applicationdbcontext.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{F803AD3F-87F0-438D-BA51-BEB13DB127A2}|Swapster\\Swapster.csproj|c:\\users\\meesam\\source\\repos\\swapster\\swapster\\views\\skill\\index.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
-      "RelativeMoniker": "D:0:0:{F803AD3F-87F0-438D-BA51-BEB13DB127A2}|Swapster\\Swapster.csproj|solutionrelative:swapster\\views\\skill\\index.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{F803AD3F-87F0-438D-BA51-BEB13DB127A2}|Swapster\\Swapster.csproj|c:\\users\\meesam\\source\\repos\\swapster\\swapster\\views\\home\\dashboard.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
-      "RelativeMoniker": "D:0:0:{F803AD3F-87F0-438D-BA51-BEB13DB127A2}|Swapster\\Swapster.csproj|solutionrelative:swapster\\views\\home\\dashboard.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{F803AD3F-87F0-438D-BA51-BEB13DB127A2}|Swapster\\Swapster.csproj|c:\\users\\meesam\\source\\repos\\swapster\\swapster\\controllers\\postsharecontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{F803AD3F-87F0-438D-BA51-BEB13DB127A2}|Swapster\\Swapster.csproj|solutionrelative:swapster\\controllers\\postsharecontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{F803AD3F-87F0-438D-BA51-BEB13DB127A2}|Swapster\\Swapster.csproj|c:\\users\\meesam\\source\\repos\\swapster\\swapster\\views\\chat\\conversation.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
-      "RelativeMoniker": "D:0:0:{F803AD3F-87F0-438D-BA51-BEB13DB127A2}|Swapster\\Swapster.csproj|solutionrelative:swapster\\views\\chat\\conversation.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{F803AD3F-87F0-438D-BA51-BEB13DB127A2}|Swapster\\Swapster.csproj|c:\\users\\meesam\\source\\repos\\swapster\\swapster\\views\\chat\\index.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
-      "RelativeMoniker": "D:0:0:{F803AD3F-87F0-438D-BA51-BEB13DB127A2}|Swapster\\Swapster.csproj|solutionrelative:swapster\\views\\chat\\index.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{F803AD3F-87F0-438D-BA51-BEB13DB127A2}|Swapster\\Swapster.csproj|c:\\users\\meesam\\source\\repos\\swapster\\swapster\\models\\postshare.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{F803AD3F-87F0-438D-BA51-BEB13DB127A2}|Swapster\\Swapster.csproj|solutionrelative:swapster\\models\\postshare.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{F803AD3F-87F0-438D-BA51-BEB13DB127A2}|Swapster\\Swapster.csproj|c:\\users\\meesam\\source\\repos\\swapster\\swapster\\models\\postcomment.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{F803AD3F-87F0-438D-BA51-BEB13DB127A2}|Swapster\\Swapster.csproj|solutionrelative:swapster\\models\\postcomment.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{F803AD3F-87F0-438D-BA51-BEB13DB127A2}|Swapster\\Swapster.csproj|c:\\users\\meesam\\source\\repos\\swapster\\swapster\\models\\postlike.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{F803AD3F-87F0-438D-BA51-BEB13DB127A2}|Swapster\\Swapster.csproj|solutionrelative:swapster\\models\\postlike.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{F803AD3F-87F0-438D-BA51-BEB13DB127A2}|Swapster\\Swapster.csproj|c:\\users\\meesam\\source\\repos\\swapster\\swapster\\models\\user.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{F803AD3F-87F0-438D-BA51-BEB13DB127A2}|Swapster\\Swapster.csproj|solutionrelative:swapster\\models\\user.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+      "AbsoluteMoniker": "D:0:0:{F803AD3F-87F0-438D-BA51-BEB13DB127A2}|Swapster\\Swapster.csproj|c:\\users\\meesam\\source\\repos\\swapster\\swapster\\controllers\\accountcontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{F803AD3F-87F0-438D-BA51-BEB13DB127A2}|Swapster\\Swapster.csproj|solutionrelative:swapster\\controllers\\accountcontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
       "AbsoluteMoniker": "D:0:0:{F803AD3F-87F0-438D-BA51-BEB13DB127A2}|Swapster\\Swapster.csproj|c:\\users\\meesam\\source\\repos\\swapster\\swapster\\models\\myaccountviewmodel.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
@@ -54,151 +22,8 @@
       "DocumentGroups": [
         {
           "DockedWidth": 200,
-          "SelectedChildIndex": 0,
+          "SelectedChildIndex": 2,
           "Children": [
-            {
-              "$type": "Document",
-              "DocumentIndex": 0,
-              "Title": "_Layout.cshtml",
-              "DocumentMoniker": "C:\\Users\\Meesam\\source\\repos\\Swapster\\Swapster\\Views\\Shared\\_Layout.cshtml",
-              "RelativeDocumentMoniker": "Swapster\\Views\\Shared\\_Layout.cshtml",
-              "ToolTip": "C:\\Users\\Meesam\\source\\repos\\Swapster\\Swapster\\Views\\Shared\\_Layout.cshtml",
-              "RelativeToolTip": "Swapster\\Views\\Shared\\_Layout.cshtml",
-              "ViewState": "AgIAANUBAAAAAAAAAAAAAOwBAAAHAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
-              "WhenOpened": "2026-08-07T10:54:56.786Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 1,
-              "Title": "Index.cshtml",
-              "DocumentMoniker": "C:\\Users\\Meesam\\source\\repos\\Swapster\\Swapster\\Views\\Skill\\Index.cshtml",
-              "RelativeDocumentMoniker": "Swapster\\Views\\Skill\\Index.cshtml",
-              "ToolTip": "C:\\Users\\Meesam\\source\\repos\\Swapster\\Swapster\\Views\\Skill\\Index.cshtml",
-              "RelativeToolTip": "Swapster\\Views\\Skill\\Index.cshtml",
-              "ViewState": "AgIAAA4BAAAAAAAAAAAAACUBAAAJAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
-              "WhenOpened": "2026-08-07T10:48:56.712Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 3,
-              "Title": "PostShareController.cs",
-              "DocumentMoniker": "C:\\Users\\Meesam\\source\\repos\\Swapster\\Swapster\\Controllers\\PostShareController.cs",
-              "RelativeDocumentMoniker": "Swapster\\Controllers\\PostShareController.cs",
-              "ToolTip": "C:\\Users\\Meesam\\source\\repos\\Swapster\\Swapster\\Controllers\\PostShareController.cs",
-              "RelativeToolTip": "Swapster\\Controllers\\PostShareController.cs",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAYAAAAPAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-08-07T10:44:10.145Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 4,
-              "Title": "Conversation.cshtml",
-              "DocumentMoniker": "C:\\Users\\Meesam\\source\\repos\\Swapster\\Swapster\\Views\\Chat\\Conversation.cshtml",
-              "RelativeDocumentMoniker": "Swapster\\Views\\Chat\\Conversation.cshtml",
-              "ToolTip": "C:\\Users\\Meesam\\source\\repos\\Swapster\\Swapster\\Views\\Chat\\Conversation.cshtml",
-              "RelativeToolTip": "Swapster\\Views\\Chat\\Conversation.cshtml",
-              "ViewState": "AgIAANYBAAAAAAAAAAAAAO0BAAAAAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
-              "WhenOpened": "2026-08-07T10:39:12.716Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 5,
-              "Title": "Index.cshtml",
-              "DocumentMoniker": "C:\\Users\\Meesam\\source\\repos\\Swapster\\Swapster\\Views\\Chat\\Index.cshtml",
-              "RelativeDocumentMoniker": "Swapster\\Views\\Chat\\Index.cshtml",
-              "ToolTip": "C:\\Users\\Meesam\\source\\repos\\Swapster\\Swapster\\Views\\Chat\\Index.cshtml",
-              "RelativeToolTip": "Swapster\\Views\\Chat\\Index.cshtml",
-              "ViewState": "AgIAAFcAAAAAAAAAAAAAAG4AAAAGAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
-              "WhenOpened": "2026-08-07T10:38:45.702Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 2,
-              "Title": "Dashboard.cshtml",
-              "DocumentMoniker": "C:\\Users\\Meesam\\source\\repos\\Swapster\\Swapster\\Views\\Home\\Dashboard.cshtml",
-              "RelativeDocumentMoniker": "Swapster\\Views\\Home\\Dashboard.cshtml",
-              "ToolTip": "C:\\Users\\Meesam\\source\\repos\\Swapster\\Swapster\\Views\\Home\\Dashboard.cshtml",
-              "RelativeToolTip": "Swapster\\Views\\Home\\Dashboard.cshtml",
-              "ViewState": "AgIAAA8HAAAAAAAAAAAhwBsHAAAvAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
-              "WhenOpened": "2026-08-07T10:22:53.062Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 6,
-              "Title": "PostShare.cs",
-              "DocumentMoniker": "C:\\Users\\Meesam\\source\\repos\\Swapster\\Swapster\\Models\\PostShare.cs",
-              "RelativeDocumentMoniker": "Swapster\\Models\\PostShare.cs",
-              "ToolTip": "C:\\Users\\Meesam\\source\\repos\\Swapster\\Swapster\\Models\\PostShare.cs",
-              "RelativeToolTip": "Swapster\\Models\\PostShare.cs",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAABcAAAABAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-08-07T10:17:54.41Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 7,
-              "Title": "PostComment.cs",
-              "DocumentMoniker": "C:\\Users\\Meesam\\source\\repos\\Swapster\\Swapster\\Models\\PostComment.cs",
-              "RelativeDocumentMoniker": "Swapster\\Models\\PostComment.cs",
-              "ToolTip": "C:\\Users\\Meesam\\source\\repos\\Swapster\\Swapster\\Models\\PostComment.cs",
-              "RelativeToolTip": "Swapster\\Models\\PostComment.cs",
-              "ViewState": "AgIAAAQAAAAAAAAAAAAAABsAAAABAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-08-07T10:17:11.675Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 8,
-              "Title": "PostLike.cs",
-              "DocumentMoniker": "C:\\Users\\Meesam\\source\\repos\\Swapster\\Swapster\\Models\\PostLike.cs",
-              "RelativeDocumentMoniker": "Swapster\\Models\\PostLike.cs",
-              "ToolTip": "C:\\Users\\Meesam\\source\\repos\\Swapster\\Swapster\\Models\\PostLike.cs",
-              "RelativeToolTip": "Swapster\\Models\\PostLike.cs",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAABcAAAABAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-08-07T10:15:14.279Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 9,
-              "Title": "User.cs",
-              "DocumentMoniker": "C:\\Users\\Meesam\\source\\repos\\Swapster\\Swapster\\Models\\User.cs",
-              "RelativeDocumentMoniker": "Swapster\\Models\\User.cs",
-              "ToolTip": "C:\\Users\\Meesam\\source\\repos\\Swapster\\Swapster\\Models\\User.cs",
-              "RelativeToolTip": "Swapster\\Models\\User.cs",
-              "ViewState": "AgIAACsAAAAAAAAAAAAAAEIAAAABAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-08-07T08:19:31.036Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 10,
-              "Title": "MyAccountViewModel.cs",
-              "DocumentMoniker": "C:\\Users\\Meesam\\source\\repos\\Swapster\\Swapster\\Models\\MyAccountViewModel.cs",
-              "RelativeDocumentMoniker": "Swapster\\Models\\MyAccountViewModel.cs",
-              "ToolTip": "C:\\Users\\Meesam\\source\\repos\\Swapster\\Swapster\\Models\\MyAccountViewModel.cs",
-              "RelativeToolTip": "Swapster\\Models\\MyAccountViewModel.cs",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAABYAAAABAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-07-31T07:24:00.527Z",
-              "EditorCaption": ""
-            },
             {
               "$type": "Bookmark",
               "Name": "ST:0:0:{cce594b6-0c39-4442-ba28-10c64ac7e89f}"
@@ -206,6 +31,44 @@
             {
               "$type": "Bookmark",
               "Name": "ST:0:0:{aa2115a1-9712-457b-9047-dbb71ca2cdd2}"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 0,
+              "Title": "ApplicationDbContext.cs",
+              "DocumentMoniker": "C:\\Users\\Meesam\\source\\repos\\Swapster\\Swapster\\Data\\ApplicationDbContext.cs",
+              "RelativeDocumentMoniker": "Swapster\\Data\\ApplicationDbContext.cs",
+              "ToolTip": "C:\\Users\\Meesam\\source\\repos\\Swapster\\Swapster\\Data\\ApplicationDbContext.cs",
+              "RelativeToolTip": "Swapster\\Data\\ApplicationDbContext.cs",
+              "ViewState": "AgIAABEAAAAAAAAAAAA0wCMAAAAJAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-08-09T12:23:55.983Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 1,
+              "Title": "AccountController.cs",
+              "DocumentMoniker": "C:\\Users\\Meesam\\source\\repos\\Swapster\\Swapster\\Controllers\\AccountController.cs",
+              "RelativeDocumentMoniker": "Swapster\\Controllers\\AccountController.cs",
+              "ToolTip": "C:\\Users\\Meesam\\source\\repos\\Swapster\\Swapster\\Controllers\\AccountController.cs",
+              "RelativeToolTip": "Swapster\\Controllers\\AccountController.cs",
+              "ViewState": "AgIAANQEAAAAAAAAAAAwwOsEAAABAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-08-09T06:03:09.333Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 2,
+              "Title": "MyAccountViewModel.cs",
+              "DocumentMoniker": "C:\\Users\\Meesam\\source\\repos\\Swapster\\Swapster\\Models\\MyAccountViewModel.cs",
+              "RelativeDocumentMoniker": "Swapster\\Models\\MyAccountViewModel.cs",
+              "ToolTip": "C:\\Users\\Meesam\\source\\repos\\Swapster\\Swapster\\Models\\MyAccountViewModel.cs",
+              "RelativeToolTip": "Swapster\\Models\\MyAccountViewModel.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAABYAAAABAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-07-31T07:24:00.527Z"
             }
           ]
         }

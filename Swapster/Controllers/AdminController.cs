@@ -602,12 +602,14 @@ namespace Swapster.Controllers
             IQueryable<UserSkill> offeredQuery =
                 _context.UserSkills
                     .AsNoTracking()
-                    .Include(skill => skill.User);
+                    .Include(skill => skill.User)
+                    .Where(skill => !skill.IsDeleted);
 
             IQueryable<UserWantedSkill> wantedQuery =
                 _context.UserWantedSkills
                     .AsNoTracking()
-                    .Include(skill => skill.User);
+                    .Include(skill => skill.User)
+                    .Where(skill => !skill.IsDeleted);
 
             // Search by skill, username or email
             if (!string.IsNullOrWhiteSpace(cleanedSearch))
@@ -1402,7 +1404,8 @@ namespace Swapster.Controllers
                     await _context.UserSkills
                         .AsNoTracking()
                         .FirstOrDefaultAsync(item =>
-                            item.SkillId == id);
+                            item.SkillId == id &&
+                            !item.IsDeleted);
 
                 if (skill == null)
                 {
@@ -1434,7 +1437,8 @@ namespace Swapster.Controllers
                     await _context.UserWantedSkills
                         .AsNoTracking()
                         .FirstOrDefaultAsync(item =>
-                            item.WantedSkillId == id);
+                            item.WantedSkillId == id &&
+                            !item.IsDeleted);
 
                 if (skill == null)
                 {
@@ -1467,7 +1471,7 @@ namespace Swapster.Controllers
         }
 
         // =====================================================
-        // DELETE SKILL POST — SOFT DELETE
+        // DELETE SKILL POST — PERMANENT DELETE
         // =====================================================
 
         [HttpPost]
@@ -1487,20 +1491,7 @@ namespace Swapster.Controllers
                 model.SkillType?.Trim().ToLower() ??
                 string.Empty;
 
-            model.AdminNote =
-                model.AdminNote?.Trim() ??
-                string.Empty;
-
-            if (string.IsNullOrWhiteSpace(
-                model.AdminNote))
-            {
-                ModelState.AddModelError(
-                    nameof(model.AdminNote),
-                    "Deletion reason is required."
-                );
-
-                return View(model);
-            }
+            string deletedSkillName;
 
             if (model.SkillType == "offered")
             {
@@ -1518,11 +1509,10 @@ namespace Swapster.Controllers
                     return RedirectToAction(nameof(Skills));
                 }
 
-                skill.IsDeleted = true;
-                skill.IsActive = false;
+                deletedSkillName =
+                    skill.SkillName;
 
-                skill.AdminNote =
-                    model.AdminNote;
+                _context.UserSkills.Remove(skill);
             }
             else if (model.SkillType == "wanted")
             {
@@ -1540,11 +1530,10 @@ namespace Swapster.Controllers
                     return RedirectToAction(nameof(Skills));
                 }
 
-                skill.IsDeleted = true;
-                skill.IsActive = false;
+                deletedSkillName =
+                    skill.SkillName;
 
-                skill.AdminNote =
-                    model.AdminNote;
+                _context.UserWantedSkills.Remove(skill);
             }
             else
             {
@@ -1557,91 +1546,7 @@ namespace Swapster.Controllers
             await _context.SaveChangesAsync();
 
             TempData["Success"] =
-                $"{model.SkillName} has been removed.";
-
-            return RedirectToAction(nameof(Skills));
-        }
-
-        // =====================================================
-        // RESTORE DELETED SKILL
-        // =====================================================
-
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> RestoreSkill(
-            string type,
-            int id)
-        {
-            if (!IsAdmin())
-            {
-                return RedirectToAction(
-                    "AdminLogin",
-                    "Account"
-                );
-            }
-
-            type =
-                type?.Trim().ToLower() ??
-                string.Empty;
-
-            string skillName;
-
-            if (type == "offered")
-            {
-                var skill =
-                    await _context.UserSkills
-                        .FirstOrDefaultAsync(item =>
-                            item.SkillId == id);
-
-                if (skill == null)
-                {
-                    TempData["Error"] =
-                        "Offered skill was not found.";
-
-                    return RedirectToAction(nameof(Skills));
-                }
-
-                skill.IsDeleted = false;
-                skill.IsActive = true;
-                skill.AdminNote = null;
-
-                skillName =
-                    skill.SkillName;
-            }
-            else if (type == "wanted")
-            {
-                var skill =
-                    await _context.UserWantedSkills
-                        .FirstOrDefaultAsync(item =>
-                            item.WantedSkillId == id);
-
-                if (skill == null)
-                {
-                    TempData["Error"] =
-                        "Wanted skill was not found.";
-
-                    return RedirectToAction(nameof(Skills));
-                }
-
-                skill.IsDeleted = false;
-                skill.IsActive = true;
-                skill.AdminNote = null;
-
-                skillName =
-                    skill.SkillName;
-            }
-            else
-            {
-                TempData["Error"] =
-                    "Invalid skill type.";
-
-                return RedirectToAction(nameof(Skills));
-            }
-
-            await _context.SaveChangesAsync();
-
-            TempData["Success"] =
-                $"{skillName} has been restored.";
+                $"{deletedSkillName} has been permanently deleted.";
 
             return RedirectToAction(nameof(Skills));
         }

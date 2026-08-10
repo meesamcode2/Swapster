@@ -34,13 +34,23 @@
         text-decoration: none;
         font-size: 28px;
         font-weight: 900;
-        color: #111827;
+        color: #d9573b;
         letter-spacing: -0.8px;
     }
 
         .brand-name span {
             color: #6674ff;
         }
+
+    .brand-swap-text {
+        color: #d9573b;
+        -webkit-text-fill-color: #d9573b;
+    }
+
+    .brand-ster-text {
+        color: #6674ff;
+        -webkit-text-fill-color: #6674ff;
+    }
 
     .nav-actions {
         display: flex;
@@ -92,10 +102,10 @@
         color: #111827;
     }
 
-        .terms-hero h1 span {
-            background: linear-gradient(135deg, #6674ff, #ff64aa);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
+        .terms-hero h1 .brand-swap-text,
+        .terms-hero h1 .brand-ster-text {
+            background: none;
+            -webkit-background-clip: initial;
         }
 
     .terms-hero p {
@@ -396,7 +406,7 @@
 
 <div class="terms-wrapper">
 
-  
+
     <nav class="terms-nav">
         <a asp-controller="Home" asp-action="Index" class="brand-name">
             Swap<span>ster</span>
@@ -412,8 +422,8 @@
     <!-- ================= HERO ================= -->
 
     <section class="terms-hero">
-        
-        <h1>Terms & Conditions for <span>Swapster.</span></h1>
+
+        <h1>Terms & Conditions for <span class="brand-swap-text">Swap</span><span class="brand-ster-text">ster</span>.</h1>
 
         <p>
             These Terms & Conditions explain the rules for using Swapster, your responsibilities
@@ -586,7 +596,7 @@
 
             <div class="terms-section" id="contact">
                 <div class="section-title">
-                   <h3>8. Contact Information</h3>
+                    <h3>8. Contact Information</h3>
                 </div>
 
                 <p>
@@ -619,7 +629,7 @@
     </section>
 
     <footer class="terms-footer">
-        © 2026 Swapster. All rights reserved.
+        © 2026 <span class="brand-swap-text">Swap</span><span class="brand-ster-text">ster</span>. All rights reserved.
     </footer>
 
 </div>

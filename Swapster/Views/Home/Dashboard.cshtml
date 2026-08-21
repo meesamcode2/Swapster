@@ -822,13 +822,13 @@
         position: absolute;
         top: 18px;
         right: 18px;
-        background: rgba(34, 197, 94, 0.10);
-        color: #16a34a;
+        background: #eef2ff;
+        color: #4f46e5;
         padding: 6px 11px;
         border-radius: 20px;
         font-size: 11px;
         font-weight: 800;
-        border: 1px solid rgba(34, 197, 94, 0.18);
+        border: 1px solid #e0e7ff;
     }
 
     .skill-card-icon {
@@ -844,27 +844,15 @@
         padding-right: 95px;
     }
 
-    .rating-container {
+    .skill-level {
+        width: fit-content;
         margin-bottom: 12px;
-        display: flex;
-        align-items: center;
-        gap: 7px;
-        flex-wrap: wrap;
-    }
-
-    .stars {
-        color: #ffb100;
-        font-size: 15px;
-        letter-spacing: 1px;
-    }
-
-    .rating-text {
+        padding: 6px 10px;
+        background: #eef2ff;
+        color: #4f46e5;
+        border-radius: 14px;
         font-size: 11px;
-        color: #6b7280;
-        font-weight: 650;
-        background: #f3f4f6;
-        padding: 3px 8px;
-        border-radius: 12px;
+        font-weight: 700;
     }
 
     .skill-description {
@@ -1458,7 +1446,7 @@
                             <div class="composer-media">
 
                                 <label class="image-picker">
-                                     Add Picture
+                                    Add Picture
 
                                     <input type="file"
                                            id="postImageInput"
@@ -1467,8 +1455,8 @@
                                            onchange="previewPostImage(this)" />
                                 </label>
 
-                                 <label class="image-picker">
-                                     Add Video
+                                <label class="image-picker">
+                                    Add Video
 
                                     <input type="file"
                                            id="postVideoInput"
@@ -1563,7 +1551,7 @@
                                 </video>
                             }
 
-                            
+
 
                             <div class="feed-actions">
 
@@ -1580,7 +1568,7 @@
 
                                     <button type="submit"
                                             class="feed-action @(hasLiked ? "liked" : "")">
-                                        @(hasLiked ? "👍 Liked" : "👍 Like")
+                                        @(hasLiked ? " Liked" : " Like")
                                     </button>
 
                                 </form>
@@ -1588,7 +1576,7 @@
                                 <button type="button"
                                         class="feed-action"
                                         onclick="toggleComments(@post.PostId)">
-                                    💬 Comment
+                                    Comment
                                 </button>
 
                                 <form id="share-form-@post.PostId"
@@ -1765,16 +1753,25 @@
                 {
                     foreach (var r in Model.RecommendedSkills.Take(6))
                     {
+                        var levelName = r.ProficiencyLevel switch
+                        {
+                            1 => "Beginner",
+                            2 => "Elementary",
+                            3 => "Intermediate",
+                            4 => "Advanced",
+                            5 => "Expert",
+                            _ => "Not Specified"
+                        };
+
                         <div class="skill-item">
 
                             <div class="skill-card">
 
                                 <div class="match-badge">
-                                    Best Match
+                                    Recommended
                                 </div>
 
                                 <div class="skill-card-icon">
-                                    💡
                                 </div>
 
                                 <div class="skill-title skill-name">
@@ -1782,36 +1779,16 @@
                                 </div>
 
 
-                                <div class="rating-container">
-
-                                    <span class="stars">
-
-                                        @for (int i = 1; i <= 5; i++)
-                                        {
-                                            if (i <= r.ProficiencyLevel)
-                                            {
-                                                <text>★</text>
-                                            }
-                                            else
-                                            {
-                                                <text>☆</text>
-                                            }
-                                        }
-
-                            </span>
-
-                            <span class="rating-text">
-                                Level @r.ProficiencyLevel/5
-                            </span>
-
-                        </div>
+                                <div class="skill-level">
+                                    Level: @levelName
+                                </div>
 
 
-                        <p class="skill-description">
+                                <p class="skill-description">
 
-                            @(string.IsNullOrWhiteSpace(r.Description)
-                                                        ? "No description available."
-                                                        : r.Description)
+                                    @(string.IsNullOrWhiteSpace(r.Description)
+                                                                ? "No description available."
+                                                                : r.Description)
 
                         </p>
 

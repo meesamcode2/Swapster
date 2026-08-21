@@ -81,11 +81,6 @@ namespace Swapster.Controllers
                     ? "all"
                     : roleFilter.Trim().ToLower();
 
-            statusFilter =
-                string.IsNullOrWhiteSpace(statusFilter)
-                    ? "all"
-                    : statusFilter.Trim().ToLower();
-
             IQueryable<User> usersQuery =
                 _context.Users.AsNoTracking();
 
@@ -305,7 +300,8 @@ namespace Swapster.Controllers
                 await _context.UserSkills
                     .AsNoTracking()
                     .Where(skill =>
-                        skill.UserId == id)
+                        skill.UserId == id &&
+                        !skill.IsDeleted)
                     .OrderBy(skill =>
                         skill.SkillName)
                     .ToListAsync();
@@ -314,7 +310,8 @@ namespace Swapster.Controllers
                 await _context.UserWantedSkills
                     .AsNoTracking()
                     .Where(skill =>
-                        skill.UserId == id)
+                        skill.UserId == id &&
+                        !skill.IsDeleted)
                     .OrderBy(skill =>
                         skill.SkillName)
                     .ToListAsync();
@@ -534,7 +531,7 @@ namespace Swapster.Controllers
 
         // =====================================================
         // SKILL MANAGEMENT
-        // Search + Filters + Sorting
+        // Search + Type/Level Filters + Sorting
         // =====================================================
 
         [HttpGet]
@@ -542,7 +539,6 @@ namespace Swapster.Controllers
             string? searchTerm,
             string typeFilter = "all",
             int levelFilter = 0,
-            string statusFilter = "all",
             string sortOrder = "latest")
         {
             if (!IsAdmin())
@@ -560,12 +556,6 @@ namespace Swapster.Controllers
                 string.IsNullOrWhiteSpace(typeFilter)
                     ? "all"
                     : typeFilter.Trim().ToLower();
-
-            statusFilter =
-                string.IsNullOrWhiteSpace(statusFilter)
-                    ? "all"
-                    : statusFilter.Trim().ToLower();
-
             sortOrder =
                 string.IsNullOrWhiteSpace(sortOrder)
                     ? "latest"
@@ -576,14 +566,6 @@ namespace Swapster.Controllers
                 typeFilter != "wanted")
             {
                 typeFilter = "all";
-            }
-
-            if (statusFilter != "all" &&
-                statusFilter != "active" &&
-                statusFilter != "inactive" &&
-                statusFilter != "deleted")
-            {
-                statusFilter = "all";
             }
 
             if (sortOrder != "latest" &&
@@ -643,36 +625,6 @@ namespace Swapster.Controllers
 
                 wantedQuery = wantedQuery.Where(skill =>
                     skill.DesiredLevel == levelFilter);
-            }
-
-            // Status filter
-            if (statusFilter == "active")
-            {
-                offeredQuery = offeredQuery.Where(skill =>
-                    skill.IsActive &&
-                    !skill.IsDeleted);
-
-                wantedQuery = wantedQuery.Where(skill =>
-                    skill.IsActive &&
-                    !skill.IsDeleted);
-            }
-            else if (statusFilter == "inactive")
-            {
-                offeredQuery = offeredQuery.Where(skill =>
-                    !skill.IsActive &&
-                    !skill.IsDeleted);
-
-                wantedQuery = wantedQuery.Where(skill =>
-                    !skill.IsActive &&
-                    !skill.IsDeleted);
-            }
-            else if (statusFilter == "deleted")
-            {
-                offeredQuery = offeredQuery.Where(skill =>
-                    skill.IsDeleted);
-
-                wantedQuery = wantedQuery.Where(skill =>
-                    skill.IsDeleted);
             }
 
             // Sorting
@@ -814,7 +766,7 @@ namespace Swapster.Controllers
                 SearchTerm = cleanedSearch,
                 TypeFilter = typeFilter,
                 LevelFilter = levelFilter,
-                StatusFilter = statusFilter,
+                StatusFilter = "all",
                 SortOrder = sortOrder,
 
                 TotalOfferedSkills =
@@ -826,37 +778,6 @@ namespace Swapster.Controllers
                     await _context.UserWantedSkills
                         .CountAsync(skill =>
                             !skill.IsDeleted),
-
-                ActiveSkills =
-                    await _context.UserSkills
-                        .CountAsync(skill =>
-                            skill.IsActive &&
-                            !skill.IsDeleted)
-                    +
-                    await _context.UserWantedSkills
-                        .CountAsync(skill =>
-                            skill.IsActive &&
-                            !skill.IsDeleted),
-
-                InactiveSkills =
-                    await _context.UserSkills
-                        .CountAsync(skill =>
-                            !skill.IsActive &&
-                            !skill.IsDeleted)
-                    +
-                    await _context.UserWantedSkills
-                        .CountAsync(skill =>
-                            !skill.IsActive &&
-                            !skill.IsDeleted),
-
-                DeletedSkills =
-                    await _context.UserSkills
-                        .CountAsync(skill =>
-                            skill.IsDeleted)
-                    +
-                    await _context.UserWantedSkills
-                        .CountAsync(skill =>
-                            skill.IsDeleted),
 
                 OfferedSkills =
                     offeredSkills,
@@ -895,7 +816,8 @@ namespace Swapster.Controllers
                     .AsNoTracking()
                     .Include(item => item.User)
                     .FirstOrDefaultAsync(item =>
-                        item.SkillId == id);
+                        item.SkillId == id &&
+                        !item.IsDeleted);
 
                 if (skill == null)
                 {
@@ -986,7 +908,8 @@ namespace Swapster.Controllers
                         .Include(item =>
                             item.User)
                         .FirstOrDefaultAsync(item =>
-                            item.WantedSkillId == id);
+                            item.WantedSkillId == id &&
+                            !item.IsDeleted);
 
                 if (skill == null)
                 {
@@ -1036,429 +959,6 @@ namespace Swapster.Controllers
 
                         AdminNote =
                             skill.AdminNote
-                    };
-
-                return View(model);
-            }
-
-            TempData["Error"] =
-                "Invalid skill type.";
-
-            return RedirectToAction(nameof(Skills));
-        }
-
-        // =====================================================
-        // EDIT SKILL GET
-        // =====================================================
-
-        [HttpGet]
-        public async Task<IActionResult> EditSkill(
-            string type,
-            int id)
-        {
-            if (!IsAdmin())
-            {
-                return RedirectToAction(
-                    "AdminLogin",
-                    "Account"
-                );
-            }
-
-            type =
-                type?.Trim().ToLower() ??
-                string.Empty;
-
-            if (type == "offered")
-            {
-                var skill =
-                    await _context.UserSkills
-                        .AsNoTracking()
-                        .FirstOrDefaultAsync(item =>
-                            item.SkillId == id);
-
-                if (skill == null)
-                {
-                    TempData["Error"] =
-                        "Offered skill was not found.";
-
-                    return RedirectToAction(nameof(Skills));
-                }
-
-                var model =
-                    new AdminEditSkillViewModel
-                    {
-                        SkillType =
-                            "offered",
-
-                        SkillId =
-                            skill.SkillId,
-
-                        SkillName =
-                            skill.SkillName,
-
-                        Description =
-                            skill.Description ??
-                            string.Empty,
-
-                        Level =
-                            skill.ProficiencyLevel
-                    };
-
-                return View(model);
-            }
-
-            if (type == "wanted")
-            {
-                var skill =
-                    await _context.UserWantedSkills
-                        .AsNoTracking()
-                        .FirstOrDefaultAsync(item =>
-                            item.WantedSkillId == id);
-
-                if (skill == null)
-                {
-                    TempData["Error"] =
-                        "Wanted skill was not found.";
-
-                    return RedirectToAction(nameof(Skills));
-                }
-
-                var model =
-                    new AdminEditSkillViewModel
-                    {
-                        SkillType =
-                            "wanted",
-
-                        SkillId =
-                            skill.WantedSkillId,
-
-                        SkillName =
-                            skill.SkillName,
-
-                        Description =
-                            string.Empty,
-
-                        Level =
-                            skill.DesiredLevel
-                    };
-
-                return View(model);
-            }
-
-            TempData["Error"] =
-                "Invalid skill type.";
-
-            return RedirectToAction(nameof(Skills));
-        }
-
-        // =====================================================
-        // EDIT SKILL POST
-        // =====================================================
-
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> EditSkill(
-            AdminEditSkillViewModel model)
-        {
-            if (!IsAdmin())
-            {
-                return RedirectToAction(
-                    "AdminLogin",
-                    "Account"
-                );
-            }
-
-            model.SkillType =
-                model.SkillType?.Trim().ToLower() ??
-                string.Empty;
-
-            model.SkillName =
-                model.SkillName?.Trim() ??
-                string.Empty;
-
-            if (string.IsNullOrWhiteSpace(
-                model.SkillName))
-            {
-                ModelState.AddModelError(
-                    nameof(model.SkillName),
-                    "Skill name is required."
-                );
-            }
-
-            if (model.Level < 1 ||
-                model.Level > 5)
-            {
-                ModelState.AddModelError(
-                    nameof(model.Level),
-                    "Level must be between 1 and 5."
-                );
-            }
-
-            if (!ModelState.IsValid)
-            {
-                return View(model);
-            }
-
-            if (model.SkillType == "offered")
-            {
-                var skill =
-                    await _context.UserSkills
-                        .FirstOrDefaultAsync(item =>
-                            item.SkillId ==
-                            model.SkillId);
-
-                if (skill == null)
-                {
-                    TempData["Error"] =
-                        "Offered skill was not found.";
-
-                    return RedirectToAction(nameof(Skills));
-                }
-
-                skill.SkillName =
-                    model.SkillName;
-
-                skill.Description =
-                    model.Description?.Trim() ??
-                    string.Empty;
-
-                skill.ProficiencyLevel =
-                    model.Level;
-            }
-            else if (model.SkillType == "wanted")
-            {
-                var skill =
-                    await _context.UserWantedSkills
-                        .FirstOrDefaultAsync(item =>
-                            item.WantedSkillId ==
-                            model.SkillId);
-
-                if (skill == null)
-                {
-                    TempData["Error"] =
-                        "Wanted skill was not found.";
-
-                    return RedirectToAction(nameof(Skills));
-                }
-
-                skill.SkillName =
-                    model.SkillName;
-
-                skill.DesiredLevel =
-                    model.Level;
-            }
-            else
-            {
-                TempData["Error"] =
-                    "Invalid skill type.";
-
-                return RedirectToAction(nameof(Skills));
-            }
-
-            await _context.SaveChangesAsync();
-
-            TempData["Success"] =
-                "Skill updated successfully.";
-
-            return RedirectToAction(
-                nameof(SkillDetails),
-                new
-                {
-                    type = model.SkillType,
-                    id = model.SkillId
-                }
-            );
-        }
-
-        // =====================================================
-        // ACTIVATE / DEACTIVATE SKILL
-        // =====================================================
-
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> ToggleSkillStatus(
-            string type,
-            int id)
-        {
-            if (!IsAdmin())
-            {
-                return RedirectToAction(
-                    "AdminLogin",
-                    "Account"
-                );
-            }
-
-            type =
-                type?.Trim().ToLower() ??
-                string.Empty;
-
-            bool newStatus;
-            string skillName;
-
-            if (type == "offered")
-            {
-                var skill =
-                    await _context.UserSkills
-                        .FirstOrDefaultAsync(item =>
-                            item.SkillId == id);
-
-                if (skill == null)
-                {
-                    TempData["Error"] =
-                        "Offered skill was not found.";
-
-                    return RedirectToAction(nameof(Skills));
-                }
-
-                if (skill.IsDeleted)
-                {
-                    TempData["Error"] =
-                        "Deleted skill cannot be activated or deactivated.";
-
-                    return RedirectToAction(nameof(Skills));
-                }
-
-                skill.IsActive =
-                    !skill.IsActive;
-
-                newStatus =
-                    skill.IsActive;
-
-                skillName =
-                    skill.SkillName;
-            }
-            else if (type == "wanted")
-            {
-                var skill =
-                    await _context.UserWantedSkills
-                        .FirstOrDefaultAsync(item =>
-                            item.WantedSkillId == id);
-
-                if (skill == null)
-                {
-                    TempData["Error"] =
-                        "Wanted skill was not found.";
-
-                    return RedirectToAction(nameof(Skills));
-                }
-
-                if (skill.IsDeleted)
-                {
-                    TempData["Error"] =
-                        "Deleted skill cannot be activated or deactivated.";
-
-                    return RedirectToAction(nameof(Skills));
-                }
-
-                skill.IsActive =
-                    !skill.IsActive;
-
-                newStatus =
-                    skill.IsActive;
-
-                skillName =
-                    skill.SkillName;
-            }
-            else
-            {
-                TempData["Error"] =
-                    "Invalid skill type.";
-
-                return RedirectToAction(nameof(Skills));
-            }
-
-            await _context.SaveChangesAsync();
-
-            TempData["Success"] =
-                newStatus
-                    ? $"{skillName} has been activated."
-                    : $"{skillName} has been deactivated.";
-
-            return RedirectToAction(nameof(Skills));
-        }
-
-        // =====================================================
-        // DELETE SKILL GET
-        // =====================================================
-
-        [HttpGet]
-        public async Task<IActionResult> DeleteSkill(
-            string type,
-            int id)
-        {
-            if (!IsAdmin())
-            {
-                return RedirectToAction(
-                    "AdminLogin",
-                    "Account"
-                );
-            }
-
-            type =
-                type?.Trim().ToLower() ??
-                string.Empty;
-
-            if (type == "offered")
-            {
-                var skill =
-                    await _context.UserSkills
-                        .AsNoTracking()
-                        .FirstOrDefaultAsync(item =>
-                            item.SkillId == id &&
-                            !item.IsDeleted);
-
-                if (skill == null)
-                {
-                    TempData["Error"] =
-                        "Offered skill was not found.";
-
-                    return RedirectToAction(nameof(Skills));
-                }
-
-                var model =
-                    new AdminDeleteSkillViewModel
-                    {
-                        SkillType =
-                            "offered",
-
-                        SkillId =
-                            skill.SkillId,
-
-                        SkillName =
-                            skill.SkillName
-                    };
-
-                return View(model);
-            }
-
-            if (type == "wanted")
-            {
-                var skill =
-                    await _context.UserWantedSkills
-                        .AsNoTracking()
-                        .FirstOrDefaultAsync(item =>
-                            item.WantedSkillId == id &&
-                            !item.IsDeleted);
-
-                if (skill == null)
-                {
-                    TempData["Error"] =
-                        "Wanted skill was not found.";
-
-                    return RedirectToAction(nameof(Skills));
-                }
-
-                var model =
-                    new AdminDeleteSkillViewModel
-                    {
-                        SkillType =
-                            "wanted",
-
-                        SkillId =
-                            skill.WantedSkillId,
-
-                        SkillName =
-                            skill.SkillName
                     };
 
                 return View(model);
@@ -1604,9 +1104,7 @@ namespace Swapster.Controllers
             return RedirectToAction(nameof(Users));
         }
 
-        // =====================================================
-        // USER MANAGEMENT COUNT HELPER
-        // =====================================================
+
 
         private class CompletedExchangeCountItem
         {

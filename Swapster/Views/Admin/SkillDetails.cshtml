@@ -4,6 +4,16 @@
     ViewData["Title"] = "Skill Details";
     ViewData["HideNavbar"] = true;
     ViewData["FullWidth"] = true;
+
+    string levelName = Model.Level switch
+    {
+        1 => "Beginner",
+        2 => "Elementary",
+        3 => "Intermediate",
+        4 => "Advanced",
+        5 => "Expert",
+        _ => "Not Specified"
+    };
 }
 
 <style>
@@ -87,21 +97,6 @@
         font-weight: 800;
     }
 
-    .active {
-        background: #ecfdf5;
-        color: #059669;
-    }
-
-    .inactive {
-        background: #fff7ed;
-        color: #ea580c;
-    }
-
-    .deleted {
-        background: #fef2f2;
-        color: #dc2626;
-    }
-
     .level {
         background: #eef2ff;
         color: #4f46e5;
@@ -158,16 +153,6 @@
         font-weight: 800;
         text-decoration: none;
         cursor: pointer;
-    }
-
-    .edit-btn {
-        background: #eef2ff;
-        color: #4f46e5;
-    }
-
-    .status-btn {
-        background: #fff7ed;
-        color: #ea580c;
     }
 
     .delete-btn {
@@ -249,21 +234,8 @@
                 </div>
 
                 <div>
-                    @if (Model.IsDeleted)
-                    {
-                        <span class="badge deleted">Deleted</span>
-                    }
-                    else if (Model.IsActive)
-                    {
-                        <span class="badge active">Active</span>
-                    }
-                    else
-                    {
-                        <span class="badge inactive">Inactive</span>
-                    }
-
                     <span class="badge level">
-                        Level @Model.Level / 5
+                        Level: @levelName
                     </span>
                 </div>
 
@@ -297,53 +269,35 @@
                 </div>
             }
 
-            @if (!Model.IsDeleted)
-            {
-                <div class="actions">
+            <div class="actions">
 
-                    <a asp-controller="Admin"
-                       asp-action="EditSkill"
-                       asp-route-type="@Model.SkillType"
-                       asp-route-id="@Model.SkillId"
-                       class="action-btn edit-btn">
-                        Edit Skill
-                    </a>
+                <form asp-controller="Admin"
+                      asp-action="DeleteSkill"
+                      method="post"
+                      onsubmit="return confirm('Delete this skill permanently? This cannot be undone.');">
 
-                    <form asp-controller="Admin"
-                          asp-action="ToggleSkillStatus"
-                          method="post">
+                    @Html.AntiForgeryToken()
 
-                        @Html.AntiForgeryToken()
+                    <input type="hidden"
+                           name="SkillType"
+                           value="@Model.SkillType" />
 
-                        <input type="hidden"
-                               name="type"
-                               value="@Model.SkillType" />
+                    <input type="hidden"
+                           name="SkillId"
+                           value="@Model.SkillId" />
 
-                        <input type="hidden"
-                               name="id"
-                               value="@Model.SkillId" />
+                    <input type="hidden"
+                           name="SkillName"
+                           value="@Model.SkillName" />
 
-                        <button type="submit"
-                                class="action-btn status-btn">
-
-                            @(Model.IsActive
-                                                    ? "Deactivate"
-                                                    : "Activate")
-
+                    <button type="submit"
+                            class="action-btn delete-btn">
+                        Delete Skill
                     </button>
 
-                    </form>
+                </form>
 
-                    <a asp-controller="Admin"
-                       asp-action="DeleteSkill"
-                       asp-route-type="@Model.SkillType"
-                       asp-route-id="@Model.SkillId"
-                       class="action-btn delete-btn">
-                        Delete Skill
-                    </a>
-
-                </div>
-                        }
+            </div>
 
         </section>
 

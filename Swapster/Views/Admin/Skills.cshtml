@@ -401,13 +401,30 @@
                     All Levels
                 </option>
 
-                @for (int level = 1; level <= 5; level++)
-                {
-                    <option value="@level"
-                            selected="@(Model.LevelFilter == level)">
-                        Level @level
-                    </option>
-                }
+                <option value="1"
+                        selected="@(Model.LevelFilter == 1)">
+                    Beginner
+                </option>
+
+                <option value="2"
+                        selected="@(Model.LevelFilter == 2)">
+                    Elementary
+                </option>
+
+                <option value="3"
+                        selected="@(Model.LevelFilter == 3)">
+                    Intermediate
+                </option>
+
+                <option value="4"
+                        selected="@(Model.LevelFilter == 4)">
+                    Advanced
+                </option>
+
+                <option value="5"
+                        selected="@(Model.LevelFilter == 5)">
+                    Expert
+                </option>
 
             </select>
 
@@ -482,6 +499,16 @@
 
                         @foreach (var skill in Model.OfferedSkills.OrderBy(skill => skill.SkillId))
                         {
+                            var offeredLevelName = skill.ProficiencyLevel switch
+                            {
+                                1 => "Beginner",
+                                2 => "Elementary",
+                                3 => "Intermediate",
+                                4 => "Advanced",
+                                5 => "Expert",
+                                _ => "Not Specified"
+                            };
+
                             <tr>
 
                                 <td>@offeredNo</td>
@@ -498,7 +525,7 @@
 
                                 <td>
                                     <span class="badge level-badge">
-                                        @skill.ProficiencyLevel / 5
+                                        @offeredLevelName
                                     </span>
                                 </td>
 
@@ -608,6 +635,16 @@
 
                         @foreach (var skill in Model.WantedSkills.OrderBy(skill => skill.WantedSkillId))
                         {
+                            var wantedLevelName = skill.DesiredLevel switch
+                            {
+                                1 => "Beginner",
+                                2 => "Elementary",
+                                3 => "Intermediate",
+                                4 => "Advanced",
+                                5 => "Expert",
+                                _ => "Not Specified"
+                            };
+
                             <tr>
 
                                 <td>@wantedNo</td>
@@ -618,7 +655,7 @@
 
                                 <td>
                                     <span class="badge level-badge">
-                                        @skill.DesiredLevel / 5
+                                        @wantedLevelName
                                     </span>
                                 </td>
 

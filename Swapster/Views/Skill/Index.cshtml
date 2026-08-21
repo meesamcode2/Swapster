@@ -1,12 +1,11 @@
 ﻿@model IEnumerable<Swapster.Models.UserSkill>
 
 @{
-    ViewData["Title"] = "Available Matches & Skills";
+    ViewData["Title"] = "Available Skills";
     ViewData["BodyClass"] = "skills-page";
 }
 
 <style>
-    /* Aapki pehle wali saari CSS same rahegi... */
     .skills-page {
         margin: 0;
         font-family: 'Inter', 'Segoe UI', Arial, sans-serif;
@@ -29,13 +28,7 @@
         border-radius: 34px;
         padding: 42px;
         color: white;
-        display: grid;
-        grid-template-columns: 1.2fr 0.8fr;
-        align-items: center;
-        gap: 30px;
         box-shadow: 0 24px 55px rgba(102, 116, 255, 0.24);
-        position: relative;
-        overflow: hidden;
         margin-bottom: 30px;
     }
 
@@ -94,6 +87,12 @@
             color: #111827;
         }
 
+            .search-box input:focus {
+                border-color: #6674ff;
+                box-shadow: 0 0 0 4px rgba(102, 116, 255, 0.10);
+                background: white;
+            }
+
     .add-skill-btn {
         text-decoration: none;
         border: none;
@@ -122,12 +121,10 @@
         transition: 0.3s;
         display: flex;
         flex-direction: column;
-        position: relative;
-        overflow: hidden;
     }
 
         .skill-card:hover {
-            transform: translateY(-8px);
+            transform: translateY(-6px);
             box-shadow: 0 22px 45px rgba(102, 116, 255, 0.15);
         }
 
@@ -135,7 +132,18 @@
         font-size: 21px;
         font-weight: 900;
         color: #111827;
-        margin-bottom: 5px;
+        margin-bottom: 8px;
+    }
+
+    .skill-level {
+        width: fit-content;
+        margin: 0 0 14px;
+        padding: 6px 11px;
+        background: #eef2ff;
+        color: #4f46e5;
+        border-radius: 14px;
+        font-size: 12px;
+        font-weight: 700;
     }
 
     .skill-description {
@@ -152,143 +160,213 @@
         margin-bottom: 14px;
     }
 
+    .request-form {
+        margin: 0;
+    }
+
     .request-btn {
         width: fit-content;
-        text-decoration: none;
+        border: none;
         background: #111827;
-        color: white !important;
+        color: white;
         padding: 10px 17px;
         border-radius: 35px;
         font-size: 14px;
         font-weight: 850;
+        cursor: pointer;
+        font-family: inherit;
     }
+
+        .request-btn:hover {
+            background: #1f2937;
+        }
+
+    .empty-state {
+        background: white;
+        border: 1px solid #eef0f7;
+        border-radius: 24px;
+        padding: 40px 20px;
+        text-align: center;
+        color: #6b7280;
+        box-shadow: 0 16px 35px rgba(35, 45, 90, 0.06);
+    }
+
+        .empty-state h3 {
+            margin: 0;
+            color: #111827;
+        }
 
     .hidden {
         display: none !important;
     }
 
-    /* --- NEW ADDITIONS FOR RATINGS & MATCHES --- */
-    .rating-container {
-        margin-bottom: 12px;
-        display: flex;
-        align-items: center;
-        gap: 6px;
+    @@media (max-width: 1000px) {
+        .skills-grid {
+            grid-template-columns: repeat(2, 1fr);
+        }
     }
 
-    .stars {
-        color: #ffb100;
-        font-size: 16px;
-        letter-spacing: 2px;
-    }
+    @@media (max-width: 650px) {
+        .skills-wrapper {
+            padding: 25px 18px 50px;
+        }
 
-    .rating-text {
-        font-size: 12px;
-        color: #6b7280;
-        font-weight: 600;
-        background: #f3f4f6;
-        padding: 2px 8px;
-        border-radius: 12px;
-    }
+        .skills-hero {
+            padding: 28px 22px;
+            border-radius: 24px;
+        }
 
-    .match-badge {
-        position: absolute;
-        top: 20px;
-        right: 20px;
-        background: rgba(34, 197, 94, 0.1);
-        color: #16a34a;
-        padding: 6px 12px;
-        border-radius: 20px;
-        font-size: 12px;
-        font-weight: 800;
-        border: 1px solid rgba(34, 197, 94, 0.2);
+            .skills-hero h1 {
+                font-size: 36px;
+            }
+
+        .skills-toolbar {
+            flex-direction: column;
+            align-items: stretch;
+        }
+
+        .search-box {
+            max-width: none;
+        }
+
+        .add-skill-btn {
+            text-align: center;
+        }
+
+        .skills-grid {
+            grid-template-columns: 1fr;
+        }
     }
 </style>
 
 <div class="skills-wrapper">
 
     <section class="skills-hero">
-        <div class="skills-hero-content">
-            <h1>Smart Skill Matches</h1>
+        <div>
+            <h1>Explore Skills</h1>
+
             <p>
-                Discover personalized skill-swap matches. We calculate compatibility based on what you want to learn and what others are offering!
+                Browse skills shared by other Swapster users and send a swap request
+                when you find something you want to learn.
             </p>
         </div>
     </section>
 
     <div class="skills-toolbar">
+
         <div class="search-box">
             <span>🔍</span>
-            <input type="text" id="skillSearch" placeholder="Search skills by name..." onkeyup="filterSkills()" />
+
+            <input type="text"
+                   id="skillSearch"
+                   placeholder="Search skills by name..."
+                   onkeyup="filterSkills()" />
         </div>
-        <a asp-action="Create" class="add-skill-btn">+ Add Your Skill</a>
+
+        <a asp-action="Create"
+           class="add-skill-btn">
+            + Add Your Skill
+        </a>
+
     </div>
 
     @if (Model != null && Model.Any())
     {
-        <div class="skills-grid" id="skillsGrid">
+        <div class="skills-grid"
+             id="skillsGrid">
+
             @foreach (var item in Model)
             {
+                var levelName = item.ProficiencyLevel switch
+                {
+                    1 => "Beginner",
+                    2 => "Elementary",
+                    3 => "Intermediate",
+                    4 => "Advanced",
+                    5 => "Expert",
+                    _ => "Not Specified"
+                };
+
                 <div class="skill-item">
+
                     <div class="skill-card">
 
-                        <div class="match-badge">
-                            ✨ Best Match
+                        <div class="skill-title">
+                            @item.SkillName
                         </div>
 
-                        <div style="font-size: 32px; margin-bottom: 10px;">💡</div>
-
-                        <div class="skill-title">@item.SkillName</div>
-
-                        <div class="rating-container">
-                            <span class="stars">
-                                @for (int i = 1; i <= 5; i++)
-                                {
-                                    if (i <= item.ProficiencyLevel)
-                                    {
-                                        <text>★</text>
-                                    }
-                                    else
-                                    {
-
-                                        <text>☆</text>
-                                    }
-                                }
-                            </span>
-                            <span class="rating-text">Level @item.ProficiencyLevel/5</span>
+                        <div class="skill-level">
+                            Level: @levelName
                         </div>
 
-                        <p class="skill-description">@item.Description</p>
+                        <p class="skill-description">
+                            @(string.IsNullOrWhiteSpace(item.Description)
+                                                ? "No description available."
+                                                : item.Description)
+                </p>
 
                         <div class="owner">
-                             Instructor: @(item.User?.Username ?? "Swapster User")
+                            Offered by:
+                            @(item.User?.Username ?? "Swapster User")
                         </div>
 
-                        <a asp-controller="Request"
-                           asp-action="Send"
-                           asp-route-skillId="@item.SkillId"
-                           asp-route-receiverId="@item.UserId"
-                           class="request-btn">
-                            Send Swap Request
-                        </a>
+                        <form asp-controller="SkillRequest"
+                              asp-action="Send"
+                              method="post"
+                              class="request-form">
+
+                            @Html.AntiForgeryToken()
+
+                            <input type="hidden"
+                                   name="skillId"
+                                   value="@item.SkillId" />
+
+                            <input type="hidden"
+                                   name="receiverId"
+                                   value="@item.UserId" />
+
+                            <button type="submit"
+                                    class="request-btn">
+                                Send Swap Request
+                            </button>
+
+                        </form>
 
                     </div>
+
                 </div>
-            }
+                }
+
         </div>
     }
     else
     {
-        <div class="empty-state"><h3>No matches found</h3></div>
+        <div class="empty-state">
+            <h3>No skills found</h3>
+        </div>
     }
+
 </div>
 
 <script>
     function filterSkills() {
-        const query = document.getElementById("skillSearch").value.toLowerCase().trim();
-        const items = document.getElementsByClassName("skill-item");
+        const query =
+            document.getElementById("skillSearch")
+                .value
+                .toLowerCase()
+                .trim();
+
+        const items =
+            document.getElementsByClassName("skill-item");
+
         for (let i = 0; i < items.length; i++) {
-            const text = items[i].innerText.toLowerCase();
-            items[i].classList.toggle("hidden", !text.includes(query));
+            const text =
+                items[i].innerText.toLowerCase();
+
+            items[i].classList.toggle(
+                "hidden",
+                !text.includes(query)
+            );
         }
     }
 </script>

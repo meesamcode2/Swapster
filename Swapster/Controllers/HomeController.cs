@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Swapster.Data;
 using Swapster.Models;
+using Swapster.Services;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -16,10 +17,14 @@ namespace Swapster.Controllers
     public class HomeController : Controller
     {
         private readonly ApplicationDbContext _context;
+        private readonly AiRecommendationService _aiRecommendationService;
 
-        public HomeController(ApplicationDbContext context)
+        public HomeController(
+            ApplicationDbContext context,
+            AiRecommendationService aiRecommendationService)
         {
             _context = context;
+            _aiRecommendationService = aiRecommendationService;
         }
 
         // =====================================================
@@ -106,63 +111,37 @@ namespace Swapster.Controllers
                                 !skill.User.IsDeactivated)
                             .ToListAsync();
 
-                    var scoredSkills =
-                        allOtherSkills
-                            .Select(skill =>
-                            {
-                                var matchingWant =
-                                    currentUserWants
-                                        .FirstOrDefault(
-                                            wanted =>
-                                                string.Equals(
-                                                    wanted.SkillName
-                                                        ?.Trim(),
-                                                    skill.SkillName
-                                                        ?.Trim(),
-                                                    StringComparison
-                                                        .OrdinalIgnoreCase
-                                                )
-                                        );
+                    if (allOtherSkills.Any())
+                    {
+                        // Ask the Flask Transformer service to rank
+                        // the real SQL skills semantically.
+                        var rankedSkillIds =
+                            await _aiRecommendationService
+                                .GetRecommendedSkillIdsAsync(
+                                    currentUserWants,
+                                    allOtherSkills,
+                                    6
+                                );
 
-                                double score = 0;
+                        if (rankedSkillIds.Any())
+                        {
+                            var skillsById =
+                                allOtherSkills.ToDictionary(
+                                    skill => skill.SkillId
+                                );
 
-                                if (matchingWant != null)
-                                {
-                                    double difference =
-                                        matchingWant.DesiredLevel -
-                                        skill.ProficiencyLevel;
-
-                                    double sumOfSquares =
-                                        Math.Pow(
-                                            difference,
-                                            2
-                                        );
-
-                                    score =
-                                        1.0 /
-                                        (1.0 + sumOfSquares);
-                                }
-
-                                return new
-                                {
-                                    Skill = skill,
-                                    MatchScore = score
-                                };
-                            })
-                            .Where(result =>
-                                result.MatchScore > 0)
-                            .OrderByDescending(result =>
-                                result.MatchScore)
-                            .ThenByDescending(result =>
-                                result.Skill
-                                    .ProficiencyLevel)
-                            .Select(result =>
-                                result.Skill)
-                            .Take(6)
-                            .ToList();
-
-                    recommendedSkillsList =
-                        scoredSkills;
+                            recommendedSkillsList =
+                                rankedSkillIds
+                                    .Where(skillId =>
+                                        skillsById.ContainsKey(
+                                            skillId
+                                        ))
+                                    .Select(skillId =>
+                                        skillsById[skillId])
+                                    .Take(6)
+                                    .ToList();
+                        }
+                    }
                 }
             }
 

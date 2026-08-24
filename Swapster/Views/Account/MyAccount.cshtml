@@ -429,6 +429,111 @@
         font-size: 14px;
     }
 
+    /* ================= PROFILE SEARCH DETAILS ================= */
+
+    .profile-settings-card {
+        background: white;
+        border: 1px solid #eef0f7;
+        border-radius: 28px;
+        padding: 28px;
+        margin-bottom: 26px;
+        box-shadow: 0 16px 35px rgba(35, 45, 90, 0.07);
+    }
+
+    .profile-settings-header {
+        margin-bottom: 20px;
+    }
+
+        .profile-settings-header h3 {
+            margin: 0 0 6px;
+            font-size: 22px;
+            font-weight: 900;
+        }
+
+        .profile-settings-header p {
+            margin: 0;
+            color: #6b7280;
+            font-size: 13px;
+            line-height: 1.6;
+        }
+
+    .profile-details-grid {
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 16px;
+    }
+
+    .availability-title {
+        margin: 24px 0 6px;
+        font-size: 17px;
+        font-weight: 900;
+    }
+
+    .availability-help {
+        margin: 0 0 14px;
+        color: #6b7280;
+        font-size: 12px;
+    }
+
+    .availability-list {
+        display: grid;
+        gap: 10px;
+    }
+
+    .availability-row {
+        display: grid;
+        grid-template-columns: 130px 1fr 1fr;
+        gap: 12px;
+        align-items: center;
+        padding: 12px 14px;
+        border: 1px solid #eef0f7;
+        border-radius: 14px;
+        background: #f9fafb;
+    }
+
+    .availability-day {
+        display: flex;
+        align-items: center;
+        gap: 9px;
+        font-size: 13px;
+        font-weight: 800;
+        color: #374151;
+    }
+
+        .availability-day input {
+            width: 17px;
+            height: 17px;
+            accent-color: #6674ff;
+        }
+
+    .availability-time {
+        min-width: 0;
+    }
+
+        .availability-time:disabled {
+            background: #eef0f3;
+            color: #9ca3af;
+            cursor: not-allowed;
+        }
+
+    .profile-save-btn {
+        margin-top: 20px;
+        border: none;
+        background: #111827;
+        color: white;
+        border-radius: 24px;
+        padding: 11px 20px;
+        font-size: 13px;
+        font-weight: 850;
+        cursor: pointer;
+        transition: 0.2s;
+    }
+
+        .profile-save-btn:hover {
+            background: #1f2937;
+            transform: translateY(-1px);
+        }
+
     @@media (max-width: 950px) {
         .account-grid {
             grid-template-columns: 1fr;
@@ -477,6 +582,14 @@
         .verification-form,
         .verification-btn {
             width: 100%;
+        }
+
+        .profile-details-grid {
+            grid-template-columns: 1fr;
+        }
+
+        .availability-row {
+            grid-template-columns: 1fr;
         }
     }
 </style>
@@ -599,6 +712,154 @@
 
             </div>
         }
+
+        <!-- ================= PROFILE SEARCH DETAILS ================= -->
+
+        <section class="profile-settings-card">
+
+            <div class="profile-settings-header">
+                <h3>Profile Information & Availability</h3>
+                <p>
+                    Keep your profile details current so other users can understand
+                    your interests and find suitable skill-swap times.
+                </p>
+            </div>
+
+            <form asp-controller="Account"
+                  asp-action="UpdateProfile"
+                  method="post">
+
+                @Html.AntiForgeryToken()
+
+                <div class="form-group">
+                    <label asp-for="Bio"
+                           class="form-label">
+                        Bio
+                    </label>
+
+                    <textarea asp-for="Bio"
+                              class="form-control"
+                              rows="4"
+                              maxlength="1000"
+                              placeholder="Tell other users a little about yourself and how you like to learn or teach."></textarea>
+                </div>
+
+                <div class="form-group">
+                    <label asp-for="Interests"
+                           class="form-label">
+                        Interests
+                    </label>
+
+                    <input asp-for="Interests"
+                           class="form-control"
+                           maxlength="500"
+                           placeholder="e.g., Web Development, UI/UX, German, Football" />
+                </div>
+
+                <div class="profile-details-grid">
+
+                    <div class="form-group">
+                        <label asp-for="Location"
+                               class="form-label">
+                            Location
+                        </label>
+
+                        <input asp-for="Location"
+                               class="form-control"
+                               maxlength="100"
+                               placeholder="e.g., Islamabad, Rawalpindi" />
+                    </div>
+
+                    <div class="form-group">
+                        <label asp-for="Gender"
+                               class="form-label">
+                            Gender
+                        </label>
+
+                        <select asp-for="Gender"
+                                class="form-select">
+                            <option value="">
+                                Select gender
+                            </option>
+                            <option value="Male">
+                                Male
+                            </option>
+                            <option value="Female">
+                                Female
+                            </option>
+                            <option value="Other">
+                                Other
+                            </option>
+                            <option value="Prefer not to say">
+                                Prefer not to say
+                            </option>
+                        </select>
+                    </div>
+
+                </div>
+
+                <h4 class="availability-title">
+                    Weekly Availability
+                </h4>
+
+                <p class="availability-help">
+                    Select the days and time periods when you are normally
+                    available for a skill swap.
+                </p>
+
+                <div class="availability-list">
+
+                    @for (int i = 0;
+                                        i < Model.Availability.Count;
+                                        i++)
+                    {
+                        <div class="availability-row">
+
+                            <input asp-for="Availability[i].DayOfWeek"
+                                   type="hidden" />
+
+                            <input asp-for="Availability[i].DayName"
+                                   type="hidden" />
+
+                            <label class="availability-day">
+
+                                <input asp-for="Availability[i].IsAvailable"
+                                       class="availability-check"
+                                       data-row-index="@i"
+                                       onchange="toggleAvailabilityRow(@i)" />
+
+                                <span>
+                                    @Model.Availability[i].DayName
+                                </span>
+
+                            </label>
+
+                            <input asp-for="Availability[i].StartTime"
+                                   type="time"
+                                   step="60"
+                                   class="form-control availability-time"
+                                   id="availabilityStart-@i" />
+
+                            <input asp-for="Availability[i].EndTime"
+                                   type="time"
+                                   step="60"
+                                   class="form-control availability-time"
+                                   id="availabilityEnd-@i" />
+
+                        </div>
+                    }
+
+                </div>
+
+                <button type="submit"
+                        class="profile-save-btn">
+                    Save Profile Information
+                </button>
+
+            </form>
+
+        </section>
+
 
         <!-- ================= CREATE SKILL SWAP ================= -->
         @if (ViewBag.IsEmailVerified is bool verified && verified)
@@ -928,3 +1189,53 @@
     </main>
 
 </div>
+
+<script>
+    function toggleAvailabilityRow(index) {
+        const checkbox =
+            document.querySelector(
+                'input[data-row-index="' + index + '"]'
+            );
+
+        const start =
+            document.getElementById(
+                "availabilityStart-" + index
+            );
+
+        const end =
+            document.getElementById(
+                "availabilityEnd-" + index
+            );
+
+        if (!checkbox || !start || !end)
+            return;
+
+        const enabled =
+            checkbox.checked;
+
+        start.disabled =
+            !enabled;
+
+        end.disabled =
+            !enabled;
+
+        if (!enabled) {
+            start.value = "";
+            end.value = "";
+        }
+    }
+
+    document.addEventListener(
+        "DOMContentLoaded",
+        function () {
+            document
+                .querySelectorAll(
+                    ".availability-check"
+                )
+                .forEach(function (checkbox) {
+                    toggleAvailabilityRow(
+                        checkbox.dataset.rowIndex
+                    );
+                });
+        });
+</script>

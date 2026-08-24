@@ -16,6 +16,7 @@ namespace Swapster.Data
         public DbSet<SkillRequest> SkillRequests { get; set; } = null!;
         public DbSet<UserWantedSkill> UserWantedSkills { get; set; } = null!;
         public DbSet<UserProfile> UserProfiles { get; set; } = null!;
+        public DbSet<UserAvailability> UserAvailabilities { get; set; } = null!;
         public DbSet<Message> Messages { get; set; } = null!;
         public DbSet<Post> Posts { get; set; } = null!;
 
@@ -49,6 +50,42 @@ namespace Swapster.Data
                 .WithMany()
                 .HasForeignKey(request => request.SkillId)
                 .OnDelete(DeleteBehavior.Cascade);
+
+            // =====================================================
+            // USER PROFILE RELATIONSHIP
+            // One user should have one profile.
+            // =====================================================
+
+            modelBuilder.Entity<UserProfile>()
+                .HasOne(profile => profile.User)
+                .WithMany()
+                .HasForeignKey(profile => profile.UserId)
+                .OnDelete(DeleteBehavior.Cascade);
+
+            modelBuilder.Entity<UserProfile>()
+                .HasIndex(profile => profile.UserId)
+                .IsUnique();
+
+            // =====================================================
+            // USER AVAILABILITY RELATIONSHIP
+            // One user can have multiple day/time availability rows.
+            // =====================================================
+
+            modelBuilder.Entity<UserAvailability>()
+                .HasOne(availability => availability.User)
+                .WithMany()
+                .HasForeignKey(availability => availability.UserId)
+                .OnDelete(DeleteBehavior.Cascade);
+
+            modelBuilder.Entity<UserAvailability>()
+                .HasIndex(availability =>
+                    new
+                    {
+                        availability.UserId,
+                        availability.DayOfWeek,
+                        availability.StartTime,
+                        availability.EndTime
+                    });
 
             // =====================================================
             // MESSAGE RELATIONSHIPS

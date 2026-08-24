@@ -66,8 +66,11 @@ namespace Swapster.Controllers
         [HttpGet]
         public async Task<IActionResult> Index()
         {
-            var skills =
-                await _context.UserSkills
+            int? currentUserId =
+                GetCurrentUserId();
+
+            var query =
+                _context.UserSkills
                     .AsNoTracking()
                     .Include(skill => skill.User)
                     .Where(skill =>
@@ -75,7 +78,17 @@ namespace Swapster.Controllers
                         !skill.IsDeleted &&
                         skill.User != null &&
                         !skill.User.IsBlocked &&
-                        !skill.User.IsDeactivated)
+                        !skill.User.IsDeactivated);
+
+            if (currentUserId.HasValue)
+            {
+                query =
+                    query.Where(skill =>
+                        skill.UserId != currentUserId.Value);
+            }
+
+            var skills =
+                await query
                     .OrderByDescending(skill =>
                         skill.SkillId)
                     .ToListAsync();
@@ -89,10 +102,23 @@ namespace Swapster.Controllers
 
         [HttpGet]
         public async Task<IActionResult> Search(
-            string? searchTerm)
+            string? searchTerm,
+            string? location,
+            string? gender,
+            int? dayOfWeek,
+            TimeSpan? availableAt)
         {
+            int? currentUserId =
+                GetCurrentUserId();
+
             string cleanedSearch =
                 searchTerm?.Trim() ?? string.Empty;
+
+            string cleanedLocation =
+                location?.Trim() ?? string.Empty;
+
+            string cleanedGender =
+                gender?.Trim() ?? string.Empty;
 
             var query =
                 _context.UserSkills
@@ -105,6 +131,15 @@ namespace Swapster.Controllers
                         !skill.User.IsBlocked &&
                         !skill.User.IsDeactivated);
 
+            // Do not show the current user's own offered skills.
+            if (currentUserId.HasValue)
+            {
+                query =
+                    query.Where(skill =>
+                        skill.UserId != currentUserId.Value);
+            }
+
+            // Search by skill name, description, or username.
             if (!string.IsNullOrWhiteSpace(
                     cleanedSearch))
             {
@@ -129,6 +164,92 @@ namespace Swapster.Controllers
                         ));
             }
 
+            // Location is stored in UserProfiles.
+            if (!string.IsNullOrWhiteSpace(
+                    cleanedLocation))
+            {
+                var locationUserIds =
+                    _context.UserProfiles
+                        .AsNoTracking()
+                        .Where(profile =>
+                            profile.Location.Contains(
+                                cleanedLocation
+                            ))
+                        .Select(profile =>
+                            profile.UserId);
+
+                query =
+                    query.Where(skill =>
+                        locationUserIds.Contains(
+                            skill.UserId
+                        ));
+            }
+
+            // Gender is optional and stored in UserProfiles.
+            if (!string.IsNullOrWhiteSpace(
+                    cleanedGender))
+            {
+                var genderUserIds =
+                    _context.UserProfiles
+                        .AsNoTracking()
+                        .Where(profile =>
+                            profile.Gender ==
+                                cleanedGender)
+                        .Select(profile =>
+                            profile.UserId);
+
+                query =
+                    query.Where(skill =>
+                        genderUserIds.Contains(
+                            skill.UserId
+                        ));
+            }
+
+            // Availability can be filtered by day, time, or both.
+            if (dayOfWeek.HasValue ||
+                availableAt.HasValue)
+            {
+                var availabilityQuery =
+                    _context.UserAvailabilities
+                        .AsNoTracking()
+                        .Where(item =>
+                            item.IsActive);
+
+                if (dayOfWeek.HasValue &&
+                    dayOfWeek.Value >= 0 &&
+                    dayOfWeek.Value <= 6)
+                {
+                    availabilityQuery =
+                        availabilityQuery.Where(item =>
+                            item.DayOfWeek ==
+                                dayOfWeek.Value);
+                }
+
+                if (availableAt.HasValue)
+                {
+                    TimeSpan requestedTime =
+                        availableAt.Value;
+
+                    availabilityQuery =
+                        availabilityQuery.Where(item =>
+                            item.StartTime <=
+                                requestedTime &&
+                            item.EndTime >=
+                                requestedTime);
+                }
+
+                var availableUserIds =
+                    availabilityQuery
+                        .Select(item =>
+                            item.UserId);
+
+                query =
+                    query.Where(skill =>
+                        availableUserIds.Contains(
+                            skill.UserId
+                        ));
+            }
+
             var skills =
                 await query
                     .OrderByDescending(skill =>
@@ -137,6 +258,22 @@ namespace Swapster.Controllers
 
             ViewBag.SearchTerm =
                 cleanedSearch;
+
+            ViewBag.Location =
+                cleanedLocation;
+
+            ViewBag.Gender =
+                cleanedGender;
+
+            ViewBag.DayOfWeek =
+                dayOfWeek;
+
+            ViewBag.AvailableAt =
+                availableAt.HasValue
+                    ? availableAt.Value.ToString(
+                        @"hh\:mm"
+                    )
+                    : string.Empty;
 
             return View(
                 "Index",

@@ -1015,6 +1015,70 @@ namespace Swapster.Controllers
             ViewBag.IsEmailVerified =
                 user.IsEmailVerified;
 
+            // =====================================================
+            // CURRENT PROFILE + AVAILABILITY
+            // =====================================================
+
+            var userProfile =
+                await _context.UserProfiles
+                    .AsNoTracking()
+                    .FirstOrDefaultAsync(profile =>
+                        profile.UserId ==
+                            user.UserId);
+
+            var storedAvailability =
+                await _context.UserAvailabilities
+                    .AsNoTracking()
+                    .Where(item =>
+                        item.UserId ==
+                            user.UserId &&
+                        item.IsActive)
+                    .OrderBy(item =>
+                        item.StartTime)
+                    .ToListAsync();
+
+            int[] orderedDays =
+            {
+                1, // Monday
+                2, // Tuesday
+                3, // Wednesday
+                4, // Thursday
+                5, // Friday
+                6, // Saturday
+                0  // Sunday
+            };
+
+            var availability =
+                orderedDays
+                    .Select(day =>
+                    {
+                        var stored =
+                            storedAvailability
+                                .FirstOrDefault(item =>
+                                    item.DayOfWeek ==
+                                        day);
+
+                        return new AvailabilityDayViewModel
+                        {
+                            DayOfWeek =
+                                day,
+
+                            DayName =
+                                ((DayOfWeek)day)
+                                    .ToString(),
+
+                            IsAvailable =
+                                stored != null,
+
+                            StartTime =
+                                stored?.StartTime,
+
+                            EndTime =
+                                stored?.EndTime
+                        };
+                    })
+                    .ToList();
+
             // Current user's active offered skills
             var mySkills =
                 await _context.UserSkills
@@ -1229,6 +1293,25 @@ namespace Swapster.Controllers
                         user.Email
                         ?? "Not available",
 
+                    Bio =
+                        userProfile?.Bio
+                        ?? string.Empty,
+
+                    Interests =
+                        userProfile?.Interests
+                        ?? string.Empty,
+
+                    Location =
+                        userProfile?.Location
+                        ?? string.Empty,
+
+                    Gender =
+                        userProfile?.Gender
+                        ?? string.Empty,
+
+                    Availability =
+                        availability,
+
                     MySkills =
                         mySkills,
 
@@ -1240,6 +1323,263 @@ namespace Swapster.Controllers
                 };
 
             return View(model);
+        }
+
+        // =====================================================
+        // UPDATE PROFILE SEARCH DETAILS + AVAILABILITY
+        // Existing profile is updated; missing profile is created.
+        // =====================================================
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> UpdateProfile(
+            MyAccountViewModel model)
+        {
+            var user =
+                await GetAuthenticatedUserAsync();
+
+            if (user == null)
+            {
+                return RedirectToAction(
+                    "Login",
+                    "Account"
+                );
+            }
+
+            string bio =
+                model.Bio?.Trim()
+                ?? string.Empty;
+
+            string interests =
+                model.Interests?.Trim()
+                ?? string.Empty;
+
+            string location =
+                model.Location?.Trim()
+                ?? string.Empty;
+
+            string gender =
+                model.Gender?.Trim()
+                ?? string.Empty;
+
+            if (bio.Length > 1000)
+            {
+                TempData["Error"] =
+                    "Bio cannot exceed 1000 characters.";
+
+                return RedirectToAction(
+                    "MyAccount",
+                    "Account"
+                );
+            }
+
+            if (interests.Length > 500)
+            {
+                TempData["Error"] =
+                    "Interests cannot exceed 500 characters.";
+
+                return RedirectToAction(
+                    "MyAccount",
+                    "Account"
+                );
+            }
+
+            if (location.Length > 100)
+            {
+                TempData["Error"] =
+                    "Location cannot exceed 100 characters.";
+
+                return RedirectToAction(
+                    "MyAccount",
+                    "Account"
+                );
+            }
+
+            var allowedGenders =
+                new HashSet<string>(
+                    new[]
+                    {
+                        "Male",
+                        "Female",
+                        "Other",
+                        "Prefer not to say"
+                    },
+                    StringComparer.OrdinalIgnoreCase
+                );
+
+            if (!string.IsNullOrWhiteSpace(gender) &&
+                !allowedGenders.Contains(gender))
+            {
+                TempData["Error"] =
+                    "Please select a valid gender option.";
+
+                return RedirectToAction(
+                    "MyAccount",
+                    "Account"
+                );
+            }
+
+            if (!string.IsNullOrWhiteSpace(gender))
+            {
+                gender =
+                    allowedGenders
+                        .First(item =>
+                            string.Equals(
+                                item,
+                                gender,
+                                StringComparison.OrdinalIgnoreCase
+                            ));
+            }
+
+            var submittedAvailability =
+                model.Availability
+                ?? new List<AvailabilityDayViewModel>();
+
+            var activeDays =
+                submittedAvailability
+                    .Where(item =>
+                        item.IsAvailable)
+                    .GroupBy(item =>
+                        item.DayOfWeek)
+                    .Select(group =>
+                        group.First())
+                    .ToList();
+
+            foreach (var day in activeDays)
+            {
+                if (day.DayOfWeek < 0 ||
+                    day.DayOfWeek > 6)
+                {
+                    TempData["Error"] =
+                        "Invalid availability day.";
+
+                    return RedirectToAction(
+                        "MyAccount",
+                        "Account"
+                    );
+                }
+
+                if (!day.StartTime.HasValue ||
+                    !day.EndTime.HasValue)
+                {
+                    TempData["Error"] =
+                        $"{((DayOfWeek)day.DayOfWeek)} requires both start and end time.";
+
+                    return RedirectToAction(
+                        "MyAccount",
+                        "Account"
+                    );
+                }
+
+                if (day.StartTime.Value >=
+                    day.EndTime.Value)
+                {
+                    TempData["Error"] =
+                        $"{((DayOfWeek)day.DayOfWeek)} end time must be later than start time.";
+
+                    return RedirectToAction(
+                        "MyAccount",
+                        "Account"
+                    );
+                }
+            }
+
+            var profile =
+                await _context.UserProfiles
+                    .FirstOrDefaultAsync(item =>
+                        item.UserId ==
+                            user.UserId);
+
+            if (profile == null)
+            {
+                profile =
+                    new UserProfile
+                    {
+                        UserId =
+                            user.UserId,
+
+                        Bio =
+                            bio,
+
+                        Interests =
+                            interests,
+
+                        Location =
+                            location,
+
+                        Gender =
+                            gender
+                    };
+
+                _context.UserProfiles.Add(
+                    profile
+                );
+            }
+            else
+            {
+                // Keep ExperienceLevel and the legacy Skills field
+                // exactly as they already are. Actual offered/wanted skills
+                // continue to be managed in their dedicated tables.
+                profile.Bio =
+                    bio;
+
+                profile.Interests =
+                    interests;
+
+                profile.Location =
+                    location;
+
+                profile.Gender =
+                    gender;
+            }
+
+            var oldAvailability =
+                await _context.UserAvailabilities
+                    .Where(item =>
+                        item.UserId ==
+                            user.UserId)
+                    .ToListAsync();
+
+            if (oldAvailability.Any())
+            {
+                _context.UserAvailabilities
+                    .RemoveRange(
+                        oldAvailability
+                    );
+            }
+
+            foreach (var day in activeDays)
+            {
+                _context.UserAvailabilities.Add(
+                    new UserAvailability
+                    {
+                        UserId =
+                            user.UserId,
+
+                        DayOfWeek =
+                            day.DayOfWeek,
+
+                        StartTime =
+                            day.StartTime!.Value,
+
+                        EndTime =
+                            day.EndTime!.Value,
+
+                        IsActive =
+                            true
+                    }
+                );
+            }
+
+            await _context.SaveChangesAsync();
+
+            TempData["Success"] =
+                "Profile details and availability updated successfully.";
+
+            return RedirectToAction(
+                "MyAccount",
+                "Account"
+            );
         }
 
         // =====================================================

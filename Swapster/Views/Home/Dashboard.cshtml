@@ -157,13 +157,21 @@
 
     .search-icon {
         position: absolute;
-        left: 16px;
+        left: 14px;
         top: 50%;
         transform: translateY(-50%);
         color: #9ca3af;
         font-size: 15px;
-        pointer-events: none;
+        border: none;
+        background: transparent;
+        padding: 0;
+        cursor: pointer;
+        z-index: 2;
     }
+
+        .search-icon:hover {
+            color: #6674ff;
+        }
 
     .search-bar {
         width: 100%;
@@ -758,6 +766,26 @@
         margin-top: 10px;
     }
 
+    .hidden {
+        display: none !important;
+    }
+
+    .search-no-results {
+        display: none;
+        margin-top: 16px;
+        padding: 18px;
+        background: white;
+        border: 1px solid #e5e7eb;
+        border-radius: 16px;
+        color: #6b7280;
+        font-size: 13px;
+        text-align: center;
+    }
+
+        .search-no-results.show {
+            display: block;
+        }
+
     .section-header {
         display: flex;
         justify-content: space-between;
@@ -1326,17 +1354,25 @@
 
             <div class="topbar-actions">
 
-                <div class="search-wrapper">
+                <form asp-controller="Skill"
+                      asp-action="Search"
+                      method="get"
+                      class="search-wrapper">
 
-                    <span class="search-icon">⌕</span>
+                    <button type="submit"
+                            class="search-icon"
+                            aria-label="Search">
+                        ⌕
+                    </button>
 
                     <input type="text"
-                           id="searchInput"
+                           name="searchTerm"
                            class="search-bar"
-                           placeholder="Search skills..."
-                           onkeyup="filterSkills()" />
+                           placeholder="Search skills, descriptions or users..."
+                           autocomplete="off"
+                           aria-label="Search skills" />
 
-                </div>
+                </form>
 
                 <a asp-controller="Chat"
                    asp-action="Index"
@@ -1850,6 +1886,11 @@
                     </div>
                 }
 
+            </div>
+
+            <div id="searchNoResults"
+                 class="search-no-results">
+                No recommended skill matches your search.
             </div>
 
         </section>
@@ -2521,31 +2562,59 @@
 
     function filterSkills() {
 
-        let input =
-            document.getElementById("searchInput")
-                .value
+        const inputElement =
+            document.getElementById("searchInput");
+
+        const noResults =
+            document.getElementById("searchNoResults");
+
+        if (!inputElement)
+            return;
+
+        const query =
+            inputElement.value
+                .trim()
                 .toLowerCase();
 
-        let items =
-            document.getElementsByClassName("skill-item");
+        const items =
+            document.querySelectorAll(
+                "#skillsContainer .skill-item"
+            );
 
-        for (let i = 0; i < items.length; i++) {
+        let visibleCount = 0;
 
-            let nameElement =
-                items[i].getElementsByClassName("skill-name")[0];
+        items.forEach(item => {
+
+            const nameElement =
+                item.querySelector(".skill-name");
 
             if (!nameElement)
-                continue;
+                return;
 
-            let name =
-                nameElement.innerText.toLowerCase();
+            const skillName =
+                nameElement.textContent
+                    .trim()
+                    .toLowerCase();
 
-            if (name.includes(input)) {
-                items[i].classList.remove("hidden");
-            }
-            else {
-                items[i].classList.add("hidden");
-            }
+            const matches =
+                query === "" ||
+                skillName.includes(query);
+
+            item.classList.toggle(
+                "hidden",
+                !matches
+            );
+
+            if (matches)
+                visibleCount++;
+        });
+
+        if (noResults) {
+            noResults.classList.toggle(
+                "show",
+                query !== "" &&
+                visibleCount === 0
+            );
         }
     }
 

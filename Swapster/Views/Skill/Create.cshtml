@@ -48,13 +48,15 @@
         margin-bottom: 8px;
     }
 
-    .form-control, .form-select {
+    .form-control,
+    .form-select {
         border-radius: 12px;
         border: 1px solid #e5e7eb;
         padding: 12px 16px;
     }
 
-        .form-control:focus, .form-select:focus {
+        .form-control:focus,
+        .form-select:focus {
             border-color: #6674ff;
             box-shadow: 0 0 0 4px rgba(102, 116, 255, 0.13);
             outline: none;
@@ -77,56 +79,143 @@
             transform: translateY(-2px);
             box-shadow: 0 16px 32px rgba(102, 116, 255, 0.32);
         }
+
+    .level-help {
+        color: #6b7280;
+        font-size: 12px;
+        margin-top: 6px;
+    }
 </style>
 
 <div class="container">
     <div class="swap-card">
-        <h2 class="main-title"> Create a Skill Swap Entry</h2>
+        <h2 class="main-title">Create a Skill Swap Entry</h2>
 
-        <form asp-action="Create" method="post">
+        <form asp-controller="Skill"
+              asp-action="Create"
+              method="post">
+
             @Html.AntiForgeryToken()
 
+            <div asp-validation-summary="ModelOnly"
+                 class="text-danger mb-3"></div>
+
             <div class="row">
-                <h4 class="mb-3" style="font-weight: 800; color: #111827;"> What Can You Teach? (Your Offer)</h4>
+                <h4 class="mb-3"
+                    style="font-weight: 800; color: #111827;">
+                    What Can You Teach? (Your Offer)
+                </h4>
+
                 <div class="col-md-7 mb-3">
-                    <label class="form-label">Skill Name</label>
-                    <input asp-for="OfferedSkillName" class="form-control" placeholder="e.g., Python, C++, HTML" required />
+                    <label asp-for="OfferedSkillName"
+                           class="form-label">
+                        Skill Name
+                    </label>
+
+                    <input asp-for="OfferedSkillName"
+                           class="form-control"
+                           placeholder="e.g., Python, C++, ASP.NET MVC"
+                           required />
+
+                    <span asp-validation-for="OfferedSkillName"
+                          class="text-danger"></span>
                 </div>
+
                 <div class="col-md-5 mb-3">
-                    <label class="form-label">Your Expertise Level</label>
-                    <select asp-for="ProficiencyLevel" class="form-select" required>
-                        <option value="1">⭐ Level 1 (Beginner)</option>
-                        <option value="2">⭐⭐ Level 2 (Elementary)</option>
-                        <option value="3">⭐⭐⭐ Level 3 (Intermediate)</option>
-                        <option value="4">⭐⭐⭐⭐ Level 4 (Advanced)</option>
-                        <option value="5">⭐⭐⭐⭐⭐ Level 5 (Expert)</option>
+                    <label asp-for="ProficiencyLevel"
+                           class="form-label">
+                        Your Expertise Level
+                    </label>
+
+                    <select asp-for="ProficiencyLevel"
+                            class="form-select"
+                            required>
+                        <option value="1">Beginner</option>
+                        <option value="2">Elementary</option>
+                        <option value="3">Intermediate</option>
+                        <option value="4">Advanced</option>
+                        <option value="5">Expert</option>
                     </select>
+
+                    <div class="level-help">
+                        Select your current teaching level.
+                    </div>
+
+                    <span asp-validation-for="ProficiencyLevel"
+                          class="text-danger"></span>
                 </div>
+
                 <div class="col-12 mb-3">
-                    <label class="form-label">Brief Description</label>
-                    <textarea asp-for="Description" class="form-control" rows="3" placeholder="Tell others what you can help them learn..."></textarea>
+                    <label asp-for="Description"
+                           class="form-label">
+                        Brief Description
+                    </label>
+
+                    <textarea asp-for="Description"
+                              class="form-control"
+                              rows="3"
+                              placeholder="Tell others what you can help them learn..."></textarea>
+
+                    <span asp-validation-for="Description"
+                          class="text-danger"></span>
                 </div>
             </div>
+
 
             <div class="row">
-                <h4 class="mb-3" style="font-weight: 800; color: #111827;"> What Do You Want to Learn? (Your Need)</h4>
+                <h4 class="mb-3"
+                    style="font-weight: 800; color: #111827;">
+                    What Do You Want to Learn? (Your Need)
+                </h4>
+
                 <div class="col-md-7 mb-3">
-                    <label class="form-label">Skill Name</label>
-                    <input asp-for="WantedSkillName" class="form-control" placeholder="e.g., JavaScript, Java, C" required />
+                    <label asp-for="WantedSkillName"
+                           class="form-label">
+                        Skill Name
+                    </label>
+
+                    <input asp-for="WantedSkillName"
+                           class="form-control"
+                           placeholder="e.g., Web Development, Java, UI/UX Design"
+                           required />
+
+                    <span asp-validation-for="WantedSkillName"
+                          class="text-danger"></span>
                 </div>
+
                 <div class="col-md-5 mb-3">
-                    <label class="form-label">Target Level to Achieve</label>
-                    <select asp-for="DesiredLevel" class="form-select" required>
-                        <option value="1">⭐ Level 1 (Basics)</option>
-                        <option value="2">⭐⭐ Level 2 (Elementary)</option>
-                        <option value="3">⭐⭐⭐ Level 3 (Intermediate)</option>
-                        <option value="4">⭐⭐⭐⭐ Level 4 (Advanced)</option>
-                        <option value="5">⭐⭐⭐⭐⭐ Level 5 (Mastery)</option>
+                    <label asp-for="DesiredLevel"
+                           class="form-label">
+                        Target Level to Achieve
+                    </label>
+
+                    <select asp-for="DesiredLevel"
+                            class="form-select"
+                            required>
+                        <option value="1">Beginner</option>
+                        <option value="2">Elementary</option>
+                        <option value="3">Intermediate</option>
+                        <option value="4">Advanced</option>
+                        <option value="5">Expert</option>
                     </select>
+
+                    <div class="level-help">
+                        Select the level you want to reach.
+                    </div>
+
+                    <span asp-validation-for="DesiredLevel"
+                          class="text-danger"></span>
                 </div>
             </div>
 
-            <button type="submit" class="submit-btn">Publish Swap Entry </button>
+            <button type="submit"
+                    class="submit-btn">
+                Publish Swap Entry
+            </button>
         </form>
     </div>
 </div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

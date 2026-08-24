@@ -15,6 +15,15 @@ builder.Services.AddDbContext<ApplicationDbContext>(options =>
 
 builder.Services.AddScoped<EmailService>();
 
+builder.Services.AddHttpClient<AiRecommendationService>(client =>
+{
+    client.BaseAddress =
+        new Uri("http://127.0.0.1:5000/");
+
+    client.Timeout =
+        TimeSpan.FromSeconds(30);
+});
+
 builder.Services.AddDistributedMemoryCache();
 
 builder.Services.AddSession(options =>
